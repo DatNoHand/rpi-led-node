@@ -4,7 +4,11 @@
 **/
 
 // Config Vars
-var config = require('/config/config.js');
+var config = require('./config/config.js');
+
+// Websocket
+var WebSocket = require('ws');
+var WebSocketServer = require('ws').Server;
 
 // Other Modules
 var fs = require('fs');
@@ -16,10 +20,6 @@ var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/public'));
 
-// Websocket
-var WebSocket = require('ws');
-var WebSocketServer = require('ws').Server;
-
 var port = config.port;
 var NUM_LEDS = parseInt(config.led.num)
 var pixelData = new Uint32Array(NUM_LEDS)
@@ -29,8 +29,7 @@ httpsServer.listen(config.port);
 var wss = new WebSocketServer({ server: httpsServer });
 
 strip.init(NUM_LEDS)
-strip.setBrightness(config.led.brightness)
-
+strip.setBrightness(config.led.brightness)]
 console.log('Listening on '+config.wss.port);
 
 // Testing
