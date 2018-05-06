@@ -46,9 +46,6 @@ wss.on('connection', function(ws, req) {
       ws.terminate();
       }
 
-      ws.username = msg.username;
-      ws.uid = uuid.v1();
-
       switch (msg.type) {
         case:
         break;
