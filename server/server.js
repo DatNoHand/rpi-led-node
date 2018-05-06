@@ -29,7 +29,7 @@ httpsServer.listen(config.port);
 var wss = new WebSocketServer({ server: httpsServer });
 
 strip.init(NUM_LEDS)
-strip.setBrightness(config.led.brightness)]
+strip.setBrightness(config.led.brightness)
 console.log('Listening on '+config.wss.port);
 
 // Testing
