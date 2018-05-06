@@ -4,7 +4,7 @@
 **/
 
 // Config Vars
-var config = require('../config/master_'+env+'.js');
+var config = require('../config/config.js');
 
 // Other Modules
 var fs = require('fs');
