@@ -13,23 +13,28 @@ $('button.color').on('click', function () {
   var color = $(this).data('color')
   var bright = $('#br').val()
 
-  console.log('Clicked color ' + color)
-  send({type: 'color', bright: bright})
+  ledColor(color, bright)
+})
+
+$('button.color_man').on('click', function () {
+  var bright = $('#br').val()
+  var r = $('#red').val()
+  var g = $('#green').val()
+  var b = $('#blue').val()
+
+  ledColorMan(bright, r, g, b)
 })
 
 function send(msg) {
   ws.send(JSON.stringify(msg))
 }
 
-function led_off() {
-  $.ajax({
-  type: "POST",
-  url: '/api.php',
-  dataType: 'json',
-  data: {
-      func: 'led_off',
-  },
-  });
+function ledColor(bright, color) {
+  send({type: 'color', bright: bright, color: color})
+}
+
+function ledColorMan(bright, r, g, b) {
+  send({type: 'color_man', r: r, g: g, b: b})
 }
 
 function led_rainbow() {

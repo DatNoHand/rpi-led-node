@@ -114,6 +114,7 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 function ledColorMan(bright = config.led.brightness, r, g, b) {
   strip.brightness = bright
   color = rgbToHex(r, g, b)
+  console.log(bright)
   console.log(color)
 
   for (i = 0; i < config.led.num; i++) {
