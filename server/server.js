@@ -59,10 +59,10 @@ wss.on('connection', function(ws, req) {
     }
 
     ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
-    console.log(msg)
+    // console.log(msg)
 
+    ledOff()
     switch (msg.type) {
-      ledOff()
       case 'off':
         ledOff()
       break;
@@ -135,8 +135,6 @@ function ledColorMan(bright = config.led.brightness, r, g, b) {
 }
 
 function ledColor(bright = config.led.brightness, color) {
-  console.log(`Color: ${color}`)
-  console.log('Color: '+typeof(color))
   strip.setBrightness(parseInt(bright))
 
   for (i = 0; i < config.led.num; i++) {
@@ -149,7 +147,6 @@ function rgbToHex(r, g, b) {
   r = parseInt(r).toString(16)
   g = parseInt(g).toString(16)
   b = parseInt(b).toString(16)
-  console.log('0x'+r+g+b)
   return color = '0x'+r+g+b
 }
 
