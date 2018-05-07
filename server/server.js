@@ -32,7 +32,7 @@ var wss = new WebSocketServer({ server: httpServer });
 // Global Vars
 var loop
 
-console.log('Listening on '+config.port);
+console.log('Listening on '+port);
 
 strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
@@ -125,7 +125,7 @@ function ledColorMan(bright = config.led.brightness, r, g, b) {
 
 function ledColor(bright = config.led.brightness, color) {
   console.log(`Color: ${color}`)
-
+  console.log('Color: '+typeof(color))
   strip.brightness = bright
 
   for (i = 0; i < config.led.num; i++) {
