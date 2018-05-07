@@ -35,7 +35,6 @@ var loop
 console.log('Listening on '+config.port);
 
 strip.init(NUM_LEDS)
-console.log('strip initialized')
 strip.setBrightness(config.led.brightness)
 
 // Testing
@@ -79,19 +78,25 @@ wss.on('connection', function(ws, req) {
   });
 });
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function ledSpecial(bright = config.led.brightness, mode, arg) {
   strip.brightness = bright
 
   switch (mode) {
     case 'fancy':
-      loop = setInterval(() => {
-        for (var i = 0; i < config.led.num; i++) {
-          pixelData[i] = config.mode.fancy.color
-        }
-        strip.render(pixelData);
-        setTimeout(() => {}, config.mode.fancy.delay)
-        strip.reset()
-        setTimeout(() => {}, config.mode.fancy.delay)
+      for (var i = 0; i < config.led.num; i++) {
+        pixelData[i] = config.mode.fancy.color
+      }
+      strip.render(pixelData);
+
+      loop = setInterval( async () => {
+        await sleep(config.mode.fancy.delay)
+        strip.brightness = 0
+        await sleep(config.mode.fancy.delay)
+        strip.brightness = bright
       }, 1000 / 10);
 
     break;
