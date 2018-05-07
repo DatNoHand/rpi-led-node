@@ -13,7 +13,7 @@ config.name = 'LED Controller'
 
 // Mode specific config
 config.mode.fancy.color = '0xff00ff'
-config.mode.fancy.delay = 10
+config.mode.fancy.delay = 50
 
 config.mode.ambient.color = '0xff6e00'
 
