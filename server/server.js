@@ -79,23 +79,19 @@ wss.on('connection', function(ws, req) {
   });
 });
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function ledSpecial(bright = config.led.brightness, mode, arg) {
   strip.brightness = bright
 
   switch (mode) {
     case 'fancy':
-      loop = setInterval( async () => {
+      loop = setInterval(() => {
         for (var i = 0; i < config.led.num; i++) {
           pixelData[i] = config.mode.fancy.color
         }
         strip.render(pixelData);
-        await sleep(config.mode.fancy.delay)
+        setTimeout(() => {}, config.mode.fancy.delay)
         strip.reset()
-        await sleep(config.mode.fancy.delay)
+        setTimeout(() => {}, config.mode.fancy.delay)
       }, 1000 / 10);
 
     break;
