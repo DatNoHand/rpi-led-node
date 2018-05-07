@@ -25,8 +25,11 @@ var NUM_LEDS = parseInt(config.led.num)
 var pixelData = new Uint32Array(NUM_LEDS)
 
 var httpServer = http.createServer();
-httpsServer.listen(config.port);
-var wss = new WebSocketServer({ server: httpsServer });
+httpServer.listen(config.port);
+var wss = new WebSocketServer({ server: httpServer });
+
+// Global Vars
+var loop
 
 strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
@@ -57,17 +60,56 @@ wss.on('connection', function(ws, req) {
 
     switch (msg.type) {
       case 'color':
+        clearInterval(loop)
         ledColor(msg.bright, msg.color)
       break;
       case 'color_man':
+        clearInterval(loop)
         ledColorMan(msg.bright, msg.r, msg.g, msg.b)
       break;
       case 'special':
+        clearInterval(loop)
         ledSpecial(msg.bright, msg.mode, msg.arg)
       break;
     }
   });
 });
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function ledSpecial(bright, mode, arg) {
+  switch (mode) {
+    case 'fancy':
+      loop = setInterval(() => {
+        for (var i = 0; i < config.led.num; i++) {
+          pixelData[i] = config.mode.fancy.color
+        }
+        strip.render(pixelData);
+        await sleep(config.mode.fancy.delay)
+        strip.reset()
+        await sleep(config.mode.fancy.delay)
+      }, 1000 / 10);
+
+    break;
+    case 'ambient':
+    break;
+    case 'rider':
+    break;
+  }
+}
+
+function ledColorMan(bright = config.led.brightness, r, g, b) {
+  strip.brightness = bright
+  color = rgbToHex(r, g, b)
+  console.log(color)
+
+  for (i = 0; i < config.led.num, i++) {
+    pixelData[i] = color
+  }
+  strip.render(pixelData)
+}
 
 function ledColor(bright = config.led.brightness, color) {
   strip.brightness = bright
@@ -75,6 +117,13 @@ function ledColor(bright = config.led.brightness, color) {
     pixelData[i] = color
   }
   strip.render(pixelData)
+}
+
+function rgbToHex(r, g, b) {
+  r = r.toString(16)
+  g = g.toString(16)
+  b = b.toString(16)
+  return color = '0x'+r+g+b
 }
 
 function SendToEveryone(data) {
