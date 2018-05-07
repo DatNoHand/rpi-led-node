@@ -58,6 +58,7 @@ wss.on('connection', function(ws, req) {
     ws.terminate();
     }
 
+    ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
     console.log(msg)
 
     switch (msg.type) {
@@ -72,6 +73,9 @@ wss.on('connection', function(ws, req) {
       case 'special':
         clearInterval(loop)
         ledSpecial(msg.bright, msg.mode, msg.arg)
+      break;
+      case default:
+        ws.send(JSON.stringify({type: 'status', txt: 'ERR_NO_FUNCTION'}))
       break;
     }
   });

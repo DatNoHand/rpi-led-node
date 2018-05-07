@@ -9,6 +9,7 @@ ws.onmessage = (msg) => {
     alert(msg.txt)
 }
 
+
 $('button.color').on('click', function () {
   var color = $(this).data('color')
   var bright = $('#br').val()
@@ -25,8 +26,45 @@ $('button.color_man').on('click', function () {
   ledColorMan(bright, r, g, b)
 })
 
+$('button.fancy').on('click', function () {
+  var bright = $('#br').val()
+  ledFancy(bright)
+})
+
+$('button.rainbow').on('click', function () {
+  var bright = $('#br').val()
+  ledRainbow(bright)
+})
+
+$('button.ambient').on('click', function () {
+  var bright = $('#br').val()
+  ledAmbient(bright)
+})
+
+$('button.rider').on('click', function () {
+  var bright = $('#br').val()
+  ledRainbow(bright)
+})
+
 function send(msg) {
   ws.send(JSON.stringify(msg))
+}
+
+// Begin LED functions
+function ledRainbow(bright) {
+  send({type: 'special', bright: bright, mode: 'rainbow'})
+}
+
+function ledRider(bright) {
+  send({type: 'special', bright: bright, mode: 'rider'})
+}
+
+function ledAmbient(bright) {
+  send({type: 'special', bright: bright, mode: 'ambient'})
+}
+
+function ledFancy(bright) {
+  send({type: 'special', bright: bright, mode: 'fancy'})
 }
 
 function ledColor(bright, color) {
@@ -37,19 +75,7 @@ function ledColorMan(bright, r, g, b) {
   send({type: 'color_man', bright: bright, r: r, g: g, b: b})
 }
 
-function led_rainbow() {
-  br = $('#br').val();
-
-  $.ajax({
-  type: "POST",
-  url: '/api.php',
-  dataType: 'json',
-  data: {
-      func: 'led_rainbow',
-      bright: br
-  },
-  });
-}
+// End LED functions
 
 function led_epilepsy() {
   br = $('#br').val();
