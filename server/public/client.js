@@ -1,10 +1,10 @@
 var ws = new WebSocket('ws://'+window.location.host)
 
-ws.onopen(() => {
+ws.onopen = () => {
   ws.send(JSON.stringify({type: 'msg', txt: 'RANDOM NOISES', arg: Date.now()}))
 })
 
-ws.onmessage((msg) => {
+ws.onmessage = (msg) => {
   if (msg.type == 'status' && msg.txt != 'ok')
     alert(msg.txt)
 })
