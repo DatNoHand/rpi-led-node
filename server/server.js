@@ -97,12 +97,12 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
         strip.setBrightness(0)
         sleep(config.mode.fancy.delay)
         strip.setBrightness(parseInt(bright))
-      }, 1000 / 10);
+      }, 1000 / 30);
 
     break;
     case 'ambient':
       for (var i = 0; i < config.led.num; i++)  {
-        if (i % 5) {
+        if (i % 5 == 0) {
           pixelData[i] = config.mode.ambient.color
         } else {
           pixelData[i] = '0x000000'
