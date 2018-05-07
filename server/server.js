@@ -79,7 +79,9 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function ledSpecial(bright, mode, arg) {
+async function ledSpecial(bright = config.led.brightness, mode, arg) {
+  strip.brightness = bright
+
   switch (mode) {
     case 'fancy':
       loop = setInterval(() => {
@@ -94,8 +96,13 @@ async function ledSpecial(bright, mode, arg) {
 
     break;
     case 'ambient':
+      for (var i = 0; i < config.led.num; i++)  {
+        pixelData[i] = config.mode.ambient.color
+      }
+      strip.render(pixelData)
     break;
     case 'rider':
+    // TODO: get script from Karim
     break;
   }
 }
