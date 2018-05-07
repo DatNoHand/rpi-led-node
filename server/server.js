@@ -19,7 +19,6 @@ var http = require('http');
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/public'));
-console.log(__dirname)
 
 var port = config.port;
 var NUM_LEDS = parseInt(config.led.num)
@@ -64,7 +63,6 @@ wss.on('connection', function(ws, req) {
     switch (msg.type) {
       case 'color':
         clearInterval(loop)
-        console.log('LED Color '+msg.color)
         ledColor(msg.bright, msg.color)
       break;
       case 'color_man':
@@ -113,9 +111,8 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 
 function ledColorMan(bright = config.led.brightness, r, g, b) {
   strip.brightness = bright
+
   color = rgbToHex(r, g, b)
-  console.log(bright)
-  console.log(color)
 
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
