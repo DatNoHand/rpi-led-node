@@ -74,9 +74,6 @@ wss.on('connection', function(ws, req) {
         clearInterval(loop)
         ledSpecial(msg.bright, msg.mode, msg.arg)
       break;
-      case default:
-        ws.send(JSON.stringify({type: 'status', txt: 'ERR_NO_FUNCTION'}))
-      break;
     }
   });
 });
