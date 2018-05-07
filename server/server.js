@@ -62,6 +62,7 @@ wss.on('connection', function(ws, req) {
     console.log(msg)
 
     switch (msg.type) {
+      ledOff()
       case 'off':
         ledOff()
       break;
@@ -86,7 +87,9 @@ function sleep(ms) {
 }
 
 function ledOff() {
-  strip.setBrightness(0)
+  for (var i = 0; i < config.led.num; i++)  {
+    pixelData[i] = '0x000000'
+  }
 }
 
 function ledSpecial(bright = config.led.brightness, mode, arg) {
@@ -94,23 +97,23 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 
   switch (mode) {
     case 'fancy':
-      for (var i = 0; i < config.led.num; i++) {
-        pixelData[i] = config.mode.fancy.color
-      }
-      strip.render(pixelData);
+    for (var i = 0; i < config.led.num; i++) {
+      pixelData[i] = config.mode.fancy.color
+    }
+    strip.render(pixelData);
 
-      loop = setInterval(() => {
-        sleep(config.mode.fancy.delay)
-        strip.setBrightness(0)
-        sleep(config.mode.fancy.delay)
-        strip.setBrightness(parseInt(bright))
-      }, 1000 / 30);
+    loop = setInterval(() => {
+      sleep(config.mode.fancy.delay)
+      strip.setBrightness(0)
+      sleep(config.mode.fancy.delay)
+      strip.setBrightness(parseInt(bright))
+    }, 1000 / 30);
 
     break;
     case 'ambient':
-      for (var i = 0; i < config.led.num; i+=5)  {
-        pixelData[i] = config.mode.ambient.color
-      }
+    for (var i = 0; i < config.led.num; i+=5)  {
+      pixelData[i] = config.mode.ambient.color
+    }
     strip.render(pixelData)
     break;
     case 'rainbow':
