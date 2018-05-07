@@ -18,7 +18,7 @@ var strip = require('rpi-ws281x-native');
 var http = require('http');
 var express = require('express');
 var app = express();
-app.use(express.static('/public'));
+app.use(express.static(__dirname + '/public'));
 console.log(__dirname)
 
 var port = config.port;
@@ -26,8 +26,9 @@ var NUM_LEDS = parseInt(config.led.num)
 var pixelData = new Uint32Array(NUM_LEDS)
 
 var httpServer = http.createServer(app);
-var wss = new WebSocketServer({ server: httpServer });
 httpServer.listen(config.port);
+
+var wss = new WebSocketServer({ server: httpServer });
 
 // Global Vars
 var loop
