@@ -34,7 +34,7 @@ function ledColor(bright, color) {
 }
 
 function ledColorMan(bright, r, g, b) {
-  send({type: 'color_man', r: r, g: g, b: b})
+  send({type: 'color_man', bright: bright, r: r, g: g, b: b})
 }
 
 function led_rainbow() {
