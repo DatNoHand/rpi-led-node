@@ -35,6 +35,7 @@ var loop
 console.log('Listening on '+config.port);
 
 strip.init(NUM_LEDS)
+console.log('strip initialized')
 strip.setBrightness(config.led.brightness)
 
 // Testing
