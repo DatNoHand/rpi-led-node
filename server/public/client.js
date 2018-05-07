@@ -27,7 +27,7 @@ function led_color(color) {
       bright: br
   },
   });
-}
+}g
 
 function led_off() {
   $.ajax({

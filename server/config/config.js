@@ -7,7 +7,7 @@ config.mode.fancy = {}
 config.mode.ambient = {}
 
 // WebSocket config
-config.wss.port = '80';
+config.port = 80
 
 config.name = 'LED Controller'
 

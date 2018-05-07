@@ -33,7 +33,7 @@ var loop
 
 strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
-console.log('Listening on '+config.wss.port);
+console.log('Listening on '+config.port);
 
 // Testing
 // ledSpecial(30, 'ambient')
