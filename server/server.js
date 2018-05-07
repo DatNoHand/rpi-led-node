@@ -59,7 +59,7 @@ wss.on('connection', function(ws, req) {
     }
 
     ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
-    // console.log(msg)
+    console.log(msg)
 
     switch (msg.type) {
       case 'color':
@@ -124,6 +124,7 @@ function ledColorMan(bright = config.led.brightness, r, g, b) {
 }
 
 function ledColor(bright = config.led.brightness, color) {
+  console.log(`Color: ${color}`)
   strip.brightness = bright
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
