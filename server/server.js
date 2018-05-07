@@ -62,6 +62,9 @@ wss.on('connection', function(ws, req) {
     console.log(msg)
 
     switch (msg.type) {
+      case 'off':
+        ledOff()
+      break;
       case 'color':
         clearInterval(loop)
         ledColor(msg.bright, msg.color)
@@ -80,6 +83,10 @@ wss.on('connection', function(ws, req) {
 
 function sleep(ms) {
   return setTimeout(() => {}, ms);
+}
+
+function ledOff() {
+  strip.setBrightness(0)
 }
 
 function ledSpecial(bright = config.led.brightness, mode, arg) {
@@ -102,7 +109,6 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
     break;
     case 'ambient':
       for (var i = 0; i < config.led.num; i+=5)  {
-        console.log(i)
         pixelData[i] = config.mode.ambient.color
       }
     strip.render(pixelData)

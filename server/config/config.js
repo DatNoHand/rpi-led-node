@@ -15,7 +15,7 @@ config.name = 'LED Controller'
 config.mode.fancy.color = '0xff00ff'
 config.mode.fancy.delay = 10
 
-config.mode.ambient.color
+config.mode.ambient.color = '0xff6e00'
 
 // LED config
 config.led.brightness = 30

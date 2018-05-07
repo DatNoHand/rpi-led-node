@@ -8,6 +8,11 @@ ws.onmessage = (msg) => {
 // TODO: Control with GET
 
 // Button handlers
+
+$('button.off').on('click', function () {
+  ledOff()
+})
+
 $('button.color').on('click', function () {
   var color = $(this).data('color')
   var bright = $('#br').val()
@@ -58,6 +63,10 @@ $('button.rider').on('click', function () {
 // End Button handlers
 
 // Begin LED functions
+function ledOff() {
+  send({type: 'off'})
+}
+
 function ledRainbow(bright) {
   send({type: 'special', bright: bright, mode: 'rainbow'})
 }
