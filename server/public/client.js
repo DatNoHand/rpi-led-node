@@ -2,12 +2,12 @@ var ws = new WebSocket('ws://'+window.location.host)
 
 ws.onopen = () => {
   ws.send(JSON.stringify({type: 'msg', txt: 'RANDOM NOISES', arg: Date.now()}))
-})
+}
 
 ws.onmessage = (msg) => {
   if (msg.type == 'status' && msg.txt != 'ok')
     alert(msg.txt)
-})
+}
 
 $('btn.color').on('click', (e) => {
   var color = $(this.data('color'))
