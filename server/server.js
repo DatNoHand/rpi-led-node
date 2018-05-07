@@ -79,7 +79,7 @@ wss.on('connection', function(ws, req) {
 });
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return setTimeout(() => {}, ms);
 }
 
 function ledSpecial(bright = config.led.brightness, mode, arg) {
@@ -92,19 +92,26 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
       }
       strip.render(pixelData);
 
-      loop = setInterval( async () => {
-        await sleep(config.mode.fancy.delay)
+      loop = setInterval(() => {
+        sleep(config.mode.fancy.delay)
         strip.brightness = 0
-        await sleep(config.mode.fancy.delay)
+        sleep(config.mode.fancy.delay)
         strip.brightness = bright
       }, 1000 / 10);
 
     break;
     case 'ambient':
-      for (var i = 0; i < config.led.num; i+=5)  {
-        pixelData[i] = config.mode.ambient.color
+      for (var i = 0; i < config.led.num; i++)  {
+        if (i % 5) {
+          pixelData[i] = config.mode.ambient.color
+        } else {
+          pixelData[i] = '0x000000'
+        }
       }
       strip.render(pixelData)
+    break;
+    case 'rainbow':
+    // TODO: copy from github
     break;
     case 'rider':
     // TODO: get script from Karim
@@ -120,6 +127,7 @@ function ledColorMan(bright = config.led.brightness, r, g, b) {
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
   }
+
   strip.render(pixelData)
 }
 
@@ -131,8 +139,8 @@ function ledColor(bright = config.led.brightness, color) {
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
   }
+  strip.render(pixelData)
 }
-strip.render(pixelData)
 
 function rgbToHex(r, g, b) {
   r = r.toString(16)
