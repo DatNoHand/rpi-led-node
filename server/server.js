@@ -90,6 +90,7 @@ function ledOff() {
   for (var i = 0; i < config.led.num; i++)  {
     pixelData[i] = '0x000000'
   }
+  strip.render(pixelData)
 }
 
 function ledSpecial(bright = config.led.brightness, mode, arg) {
