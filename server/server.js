@@ -125,12 +125,14 @@ function ledColorMan(bright = config.led.brightness, r, g, b) {
 
 function ledColor(bright = config.led.brightness, color) {
   console.log(`Color: ${color}`)
+
   strip.brightness = bright
+
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
   }
-  strip.render(pixelData)
 }
+strip.render(pixelData)
 
 function rgbToHex(r, g, b) {
   r = r.toString(16)

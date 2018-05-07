@@ -12,6 +12,18 @@ $('button.color').on('click', function () {
   var color = $(this).data('color')
   var bright = $('#br').val()
 
+  switch (color) {
+    case 'red':
+      color = '0xff0000'
+    break
+    case 'green':
+      color = '0x00ff00'
+    break
+    case 'blue':
+      color = '0x0000ff'
+    break
+  }
+
   ledColor(bright, color)
 })
 
