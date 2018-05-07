@@ -59,7 +59,7 @@ wss.on('connection', function(ws, req) {
     }
 
     ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
-    console.log(msg)
+    // console.log(msg)
 
     switch (msg.type) {
       case 'color':
@@ -135,6 +135,7 @@ function rgbToHex(r, g, b) {
   r = r.toString(16)
   g = g.toString(16)
   b = b.toString(16)
+  console.log('0x'+r+g+b)
   return color = '0x'+r+g+b
 }
 
