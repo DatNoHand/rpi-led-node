@@ -18,5 +18,5 @@ config.mode.fancy.delay = 10
 config.mode.ambient.color
 
 // LED config
-config.led.brightness = '30'
+config.led.brightness = 30
 config.led.num = 923
