@@ -3,7 +3,7 @@
   <meta charset="utf">
   <link rel='stylesheet' href='style.css'></link>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="functions.js"></script>
+  <script src="client.js"></script>
   <title>LED Controller</title>
 </head>
 <body>
@@ -12,9 +12,9 @@
   <br>
   <p>Brightness</p>
   <input id="br" type="range" min="1" max="255"></input><br><br>
-  <button onclick="led_color('red')">Red</button>
-  <button onclick="led_color('green')">Green</button>
-  <button onclick="led_color('blue')">Blue</button>
+  <button class='color' data-color='red'>Red</button>
+  <button class='color' data-color='green'>Green</button>
+  <button class='color' data-color='blue'>Blue</button>
 
   <br><br><hr>
 
