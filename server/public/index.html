@@ -1,0 +1,40 @@
+<html>
+<head>
+  <meta charset="utf">
+  <link rel='stylesheet' href='style.css'></link>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="functions.js"></script>
+  <title>LED Controller</title>
+</head>
+<body>
+  <h1>LED Controller</h1>
+  <button onclick="led_off()">Off</button>
+  <br>
+  <p>Brightness</p>
+  <input id="br" type="range" min="1" max="255"></input><br><br>
+  <button onclick="led_color('red')">Red</button>
+  <button onclick="led_color('green')">Green</button>
+  <button onclick="led_color('blue')">Blue</button>
+
+  <br><br><hr>
+
+  Red
+  <input id="red" type="range" min="1" max="255"></input>
+  Green
+  <input id="green" type="range" min="1" max="255"></input>
+  Blue
+  <input id="blue" type="range" min="1" max="255"></input>
+  <button onclick="led_color_man()">Apply</button>
+
+  <br><br><hr><br>
+
+  <input id="hex" placeholder="#8f00ff - 6 stellig!"></input>
+  <button onclick="led_color_hex()">Apply</button>
+
+  <br><br><hr><br>
+
+  <button onclick="led_epilepsy()">Fancy</button>
+  <button onclick="led_rainbow()">Rainbow</button>
+  <button onclick="led_ambient()">Ambient</button>
+
+</body>
