@@ -64,6 +64,7 @@ wss.on('connection', function(ws, req) {
     switch (msg.type) {
       case 'color':
         clearInterval(loop)
+        console.log('LED Color '+msg.color)
         ledColor(msg.bright, msg.color)
       break;
       case 'color_man':
