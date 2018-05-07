@@ -14,7 +14,7 @@ $('button.color').on('click', function () {
   var color = $(this).data('color')
   var bright = $('#br').val()
 
-  ledColor(color, bright)
+  ledColor(bright, color)
 })
 
 $('button.color_man').on('click', function () {
