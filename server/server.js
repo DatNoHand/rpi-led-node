@@ -43,8 +43,6 @@ wss.on('connection', function(ws, req) {
   SendToEveryone({type: 'msg', txt: 'LED Controller - Control your LED\'s from anywhere!'})
 
   ws.on('message', (msg) => {
-    var valid = false;
-
     try {
       var msg = JSON.parse(msg);
     } catch   (e){
@@ -58,6 +56,8 @@ wss.on('connection', function(ws, req) {
     ws.terminate();
     }
 
+    console.log(msg)
+    
     switch (msg.type) {
       case 'color':
         clearInterval(loop)

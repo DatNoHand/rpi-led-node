@@ -1,3 +1,9 @@
+var ws = new WebSocket('ws://'+window.location.host)
+
+ws.onopen(() => {
+  ws.send(JSON.stringify({type: 'msg', txt: 'RANDOM NOISES', arg: Date.now()}))
+})
+
 function led_color(color) {
   br = $('#br').val();
 
