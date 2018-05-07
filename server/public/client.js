@@ -43,7 +43,7 @@ $('button.ambient').on('click', function () {
 
 $('button.rider').on('click', function () {
   var bright = $('#br').val()
-  ledRainbow(bright)
+  ledRider(bright)
 })
 
 function send(msg) {
