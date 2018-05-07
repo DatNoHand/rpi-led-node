@@ -101,14 +101,11 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 
     break;
     case 'ambient':
-      for (var i = 0; i < config.led.num; i++)  {
-        if (i % 5 == 0) {
-          pixelData[i] = config.mode.ambient.color
-        } else {
-          pixelData[i] = '0x000000'
-        }
+      for (var i = 0; i < config.led.num; i+=5)  {
+        console.log(i)
+        pixelData[i] = config.mode.ambient.color
       }
-      strip.render(pixelData)
+    strip.render(pixelData)
     break;
     case 'rainbow':
     // TODO: copy from github
