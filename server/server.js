@@ -57,7 +57,7 @@ wss.on('connection', function(ws, req) {
     }
 
     console.log(msg)
-    
+
     switch (msg.type) {
       case 'color':
         clearInterval(loop)
@@ -112,7 +112,7 @@ function ledColorMan(bright = config.led.brightness, r, g, b) {
   color = rgbToHex(r, g, b)
   console.log(color)
 
-  for (i = 0; i < config.led.num, i++) {
+  for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
   }
   strip.render(pixelData)
