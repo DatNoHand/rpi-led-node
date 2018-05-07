@@ -83,7 +83,7 @@ function sleep(ms) {
 }
 
 function ledSpecial(bright = config.led.brightness, mode, arg) {
-  strip.brightness = bright
+  strip.setBrightness(bright)
 
   switch (mode) {
     case 'fancy':
@@ -94,9 +94,9 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 
       loop = setInterval(() => {
         sleep(config.mode.fancy.delay)
-        strip.brightness = 0
+        strip.setBrightness(0)
         sleep(config.mode.fancy.delay)
-        strip.brightness = bright
+        strip.setBrightness(bright)
       }, 1000 / 10);
 
     break;
@@ -120,21 +120,18 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 }
 
 function ledColorMan(bright = config.led.brightness, r, g, b) {
-  strip.brightness = bright
-
+  strip.setBrightness(bright)
   color = rgbToHex(r, g, b)
-
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
   }
-
   strip.render(pixelData)
 }
 
 function ledColor(bright = config.led.brightness, color) {
   console.log(`Color: ${color}`)
   console.log('Color: '+typeof(color))
-  strip.brightness = bright
+  strip.setBrightness(bright)
 
   for (i = 0; i < config.led.num; i++) {
     pixelData[i] = color
