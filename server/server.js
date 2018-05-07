@@ -143,25 +143,25 @@ function ledColor(bright = config.led.brightness, color) {
 }
 
 function rgbToHex(r, g, b) {
-  r = r.toString(16)
-  g = g.toString(16)
-  b = b.toString(16)
+  r = parseInt(r).toString(16)
+  g = parseInt(g).toString(16)
+  b = parseInt(b).toString(16)
   console.log('0x'+r+g+b)
   return color = '0x'+r+g+b
 }
 
 function SendToEveryone(data) {
-        wss.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(data));
-        }
-        });
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
 }
 
 function SendToEveryoneButOrigin(data, ws) {
-        wss.clients.forEach(function each(client) {
-                if (client !== ws && client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify(data));
-                }
-        });
+  wss.clients.forEach(function each(client) {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
 }
