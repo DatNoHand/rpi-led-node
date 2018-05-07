@@ -79,12 +79,12 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function ledSpecial(bright = config.led.brightness, mode, arg) {
+function ledSpecial(bright = config.led.brightness, mode, arg) {
   strip.brightness = bright
 
   switch (mode) {
     case 'fancy':
-      loop = setInterval(() => {
+      loop = setInterval( async () => {
         for (var i = 0; i < config.led.num; i++) {
           pixelData[i] = config.mode.fancy.color
         }
@@ -96,7 +96,7 @@ async function ledSpecial(bright = config.led.brightness, mode, arg) {
 
     break;
     case 'ambient':
-      for (var i = 0; i < config.led.num; i++)  {
+      for (var i = 0; i < config.led.num; i+=5)  {
         pixelData[i] = config.mode.ambient.color
       }
       strip.render(pixelData)
