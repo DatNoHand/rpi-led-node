@@ -9,25 +9,17 @@ ws.onmessage = (msg) => {
     alert(msg.txt)
 }
 
-$('btn.color').on('click', (e) => {
-  var color = $(this.data('color'))
-  console.log('Clicked color '+color)
+$('button.color').on('click', function () {
+  var color = $(this).data('color')
+  var bright = $('#br').val()
+
+  console.log('Clicked color ' + color)
+  send({type: 'color', bright: bright})
 })
 
-function led_color(color) {
-  br = $('#br').val();
-
-  $.ajax({
-  type: "POST",
-  url: '/api.php',
-  dataType: 'json',
-  data: {
-      func: 'led_color',
-      color: color,
-      bright: br
-  },
-  });
-}g
+function send(msg) {
+  ws.send(JSON.stringify(msg))
+}
 
 function led_off() {
   $.ajax({
