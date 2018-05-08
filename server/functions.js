@@ -71,6 +71,7 @@ function wheel (pos) {
     return '0x'+(pos*3).toString(16)+'00'+(255-pos*3).toString(16)
   }
 }
+
 function ledRainbow(iterations) {
   for (var i = 0; i < 256*iterations; i++) {
     for (var j = 0; j < NUM_LEDS; j++) {
