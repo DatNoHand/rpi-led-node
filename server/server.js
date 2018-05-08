@@ -37,6 +37,9 @@ console.log('Listening on '+port);
 strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
 
+// On ready, show (green) lights
+ledColor(config.led.brightness, '0x00ff00')
+
 // Testing
 // ledSpecial(30, 'ambient')
 
