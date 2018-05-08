@@ -37,7 +37,7 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
       loop = setInterval(() => { ledRainbow(10) }, 5000)
     break;
     case 'rider':
-    // TODO: get script from Karim
+      loop = setInterval(() => { ledRider(config.mode.rider.color, 100)})
     break;
   }
 }
@@ -81,6 +81,26 @@ function ledRainbow(iterations) {
   }
   sleep(50)
 }
+
+function ledRider(color, wait_ms) {
+  for (var i = 0; i < conifg.led.num; i++) {
+    pixelData[i] = color
+    strip.render(pixelData)
+    sleep(wait_ms)
+    pixelData[i] = '0x000000'
+    pixelData[i-1] = '0x000000'
+  }
+
+  for (var i = config.led.num; i > 0; i--) {
+    pixelData[i] = color
+    strip.render(pixelData)
+    sleep(wait_ms)
+    pixelData[i] = '0x000000'
+    pixelData[i+1] = '0x000000'
+  }
+}
+
+
 
 function rgbToHex(r, g, b) {
   r = parseInt(r).toString(16)
