@@ -52,7 +52,6 @@ wss.on('connection', function(ws, req) {
       ws.terminate();
     }
 
-    // If there is no type in the message
     if (!msg.type) {
     ws.send('{"type": "err", "msg": "ERR_SYNTAX"}');
     ws.terminate();
