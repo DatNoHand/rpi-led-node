@@ -5,7 +5,6 @@
 
 // Config Vars
 var config = require('./config/config.js')
-var functions = require('./functions.js')()
 
 // Websocket
 var WebSocket = require('ws');
@@ -173,7 +172,7 @@ function ledRainbow(iterations) {
 }
 
 function ledRider(color, wait_ms) {
-  for (var i = 0; i < conifg.led.num; i++) {
+  for (var i = 0; i < config.led.num; i++) {
     pixelData[i] = color
     strip.render(pixelData)
     sleep(wait_ms)
