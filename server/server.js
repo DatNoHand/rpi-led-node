@@ -4,8 +4,8 @@
 **/
 
 // Config Vars
-var config = require('./config/config.js');
-var functions = require('./functions.js')
+var config = require('./config/config.js')
+var functions = require('./functions.js')()
 
 // Websocket
 var WebSocket = require('ws');
@@ -63,7 +63,7 @@ wss.on('connection', function(ws, req) {
     // console.log(msg)
 
     ledOff()
-    
+
     switch (msg.type) {
       case 'off':
         ledOff()
