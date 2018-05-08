@@ -5,6 +5,7 @@
 
 // Config Vars
 var config = require('./config/config.js');
+var functions = require('./functions.js')
 
 // Websocket
 var WebSocket = require('ws');
@@ -62,6 +63,7 @@ wss.on('connection', function(ws, req) {
     // console.log(msg)
 
     ledOff()
+    
     switch (msg.type) {
       case 'off':
         ledOff()
@@ -81,75 +83,6 @@ wss.on('connection', function(ws, req) {
     }
   });
 });
-
-function sleep(ms) {
-  return setTimeout(() => {}, ms);
-}
-
-function ledOff() {
-  for (var i = 0; i < config.led.num; i++)  {
-    pixelData[i] = '0x000000'
-  }
-  strip.render(pixelData)
-}
-
-function ledSpecial(bright = config.led.brightness, mode, arg) {
-  strip.setBrightness(parseInt(bright))
-
-  switch (mode) {
-    case 'fancy':
-    for (var i = 0; i < config.led.num; i++) {
-      pixelData[i] = config.mode.fancy.color
-    }
-    strip.render(pixelData);
-
-    loop = setInterval(() => {
-      sleep(config.mode.fancy.delay)
-      strip.setBrightness(0)
-      sleep(config.mode.fancy.delay)
-      strip.setBrightness(parseInt(bright))
-    }, 1000 / 30);
-
-    break;
-    case 'ambient':
-    for (var i = 0; i < config.led.num; i+=5)  {
-      pixelData[i] = config.mode.ambient.color
-    }
-    strip.render(pixelData)
-    break;
-    case 'rainbow':
-    // TODO: copy from github
-    break;
-    case 'rider':
-    // TODO: get script from Karim
-    break;
-  }
-}
-
-function ledColorMan(bright = config.led.brightness, r, g, b) {
-  strip.setBrightness(parseInt(bright))
-  color = rgbToHex(r, g, b)
-  for (i = 0; i < config.led.num; i++) {
-    pixelData[i] = color
-  }
-  strip.render(pixelData)
-}
-
-function ledColor(bright = config.led.brightness, color) {
-  strip.setBrightness(parseInt(bright))
-
-  for (i = 0; i < config.led.num; i++) {
-    pixelData[i] = color
-  }
-  strip.render(pixelData)
-}
-
-function rgbToHex(r, g, b) {
-  r = parseInt(r).toString(16)
-  g = parseInt(g).toString(16)
-  b = parseInt(b).toString(16)
-  return color = '0x'+r+g+b
-}
 
 function SendToEveryone(data) {
   wss.clients.forEach(function each(client) {
