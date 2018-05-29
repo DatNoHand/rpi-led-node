@@ -17,7 +17,10 @@ var strip = require('rpi-ws281x-native');
 // HTTPS Server for WSS
 var http = require('http');
 var express = require('express');
+var bodyParser = require('body-parser')
 var app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded());
 app.use(express.static(__dirname + '/public'));
 
 var port = config.port;
@@ -40,8 +43,30 @@ strip.setBrightness(config.led.brightness)
 // On ready, show (green) lights
 ledColor(config.led.brightness, '0x00ff00')
 
-// Testing
-// ledSpecial(30, 'ambient')
+app.post('/api', function(req, res) {
+  var mode
+
+  switch (req.body.func) {
+    case 'off':
+      ledOff()
+    break;
+    case 'color':
+      clearInterval(loop)
+      ledColor(req.body.bright, req.body.color)
+    break;
+    case 'color_man':
+      clearInterval(loop)
+      ledColorMan(req.body.bright, req.body.r, req.body.g, req.body.b)
+    break;
+    case 'special':
+      clearInterval(loop)
+      ledSpecial(req.body.bright, req.body.mode, req.body.arg)
+    break;
+  }
+  console.log(req.body)
+  res.send(req.body)
+})
+
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
@@ -125,10 +150,7 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
     strip.render(pixelData)
     break;
     case 'rainbow':
-      loop = setInterval(() => { ledRainbow(10) }, 5000)
-    break;
-    case 'rider':
-      loop = setInterval(() => { ledRider(config.mode.rider.color, 100)})
+      loop = setInterval(() => { ledRainbow(10) }, 0)
     break;
   }
 }
@@ -172,26 +194,6 @@ function ledRainbow(iterations) {
   }
   sleep(50)
 }
-
-function ledRider(color, wait_ms) {
-  for (var i = 0; i < config.led.num; i++) {
-    pixelData[i] = color
-    strip.render(pixelData)
-    sleep(wait_ms)
-    pixelData[i] = '0x000000'
-    pixelData[i-1] = '0x000000'
-  }
-
-  for (var i = config.led.num; i > 0; i--) {
-    pixelData[i] = color
-    strip.render(pixelData)
-    sleep(wait_ms)
-    pixelData[i] = '0x000000'
-    pixelData[i+1] = '0x000000'
-  }
-}
-
-
 
 function rgbToHex(r, g, b) {
   r = parseInt(r).toString(16)
