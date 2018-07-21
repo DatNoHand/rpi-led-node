@@ -41,7 +41,7 @@ strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
 
 // On ready, show (green) lights
-ledColor(config.led.brightness, '0x00ff00')
+ledColor(config.led.brightness, config.led.ready_color)
 
 app.post('/api', function(req, res) {
   var mode
@@ -63,15 +63,12 @@ app.post('/api', function(req, res) {
       ledSpecial(req.body.bright, req.body.mode, req.body.arg)
     break;
   }
-  console.log(req.body)
   res.send(req.body)
 })
 
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
-  SendToEveryone({type: 'msg', txt: 'LED Controller - Control your LED\'s from anywhere!'})
-
   ws.on('message', (msg) => {
     try {
       var msg = JSON.parse(msg);
@@ -81,12 +78,11 @@ wss.on('connection', function(ws, req) {
     }
 
     if (!msg.type) {
-    ws.send('{"type": "err", "msg": "ERR_SYNTAX"}');
-    ws.terminate();
+      ws.send('{"type": "err", "msg": "ERR_SYNTAX"}');
+      ws.terminate();
     }
 
     ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
-    // console.log(msg)
 
     ledOff()
 
@@ -114,11 +110,14 @@ wss.on('connection', function(ws, req) {
 * Unsorted (as of now)
 * Maybe moved to different file later
 **/
+
 function sleep(ms) {
   return setTimeout(() => {}, ms);
 }
 
 function ledOff() {
+  clearInterval(loop);
+  
   for (var i = 0; i < config.led.num; i++)  {
     pixelData[i] = '0x000000'
   }
