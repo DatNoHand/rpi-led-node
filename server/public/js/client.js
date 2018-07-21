@@ -32,7 +32,7 @@ $('button.color').on('click', function () {
   ledColor(bright, color)
 })
 
-$('button.color_man').on('click', function () {
+$('.button.color_man').on('click', function () {
   var bright = $('#br').val()
   var r = $('#red').val()
   var g = $('#green').val()
@@ -41,22 +41,22 @@ $('button.color_man').on('click', function () {
   ledColorMan(bright, r, g, b)
 })
 
-$('button.fancy').on('click', function () {
+$('.button.fancy').on('click', function () {
   var bright = $('#br').val()
   ledFancy(bright)
 })
 
-$('button.rainbow').on('click', function () {
+$('.button.rainbow').on('click', function () {
   var bright = $('#br').val()
   ledRainbow(bright)
 })
 
-$('button.ambient').on('click', function () {
+$('.button.ambient').on('click', function () {
   var bright = $('#br').val()
   ledAmbient(bright)
 })
 
-$('button.rider').on('click', function () {
+$('.button.rider').on('click', function () {
   var bright = $('#br').val()
   ledRider(bright)
 })
