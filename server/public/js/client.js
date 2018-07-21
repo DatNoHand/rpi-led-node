@@ -1,18 +1,18 @@
 var ws = new WebSocket('ws://'+window.location.host)
+var lights_on = false;
 
 ws.onmessage = (msg) => {
   if (msg.type == 'status' && msg.txt != 'ok')
     alert(msg.txt)
 }
 
-// TODO: Control with GET
+// TODO: _1 Control with GET
+// TODO: _2 Make Color Buttons work (#ez #zufaul)
 
 // Button handlers
 
-$('button.off').on('click', function () {
-  ledOff()
-})
-
+// TODO: _2
+/*
 $('button.color').on('click', function () {
   var color = $(this).data('color')
   var bright = $('#br').val()
@@ -28,38 +28,58 @@ $('button.color').on('click', function () {
       color = '0x0000ff'
     break
   }
-
   ledColor(bright, color)
 })
-
-$('.button.color_man').on('click', function () {
-  var bright = $('#br').val()
-  var r = $('#red').val()
-  var g = $('#green').val()
-  var b = $('#blue').val()
-
-  ledColorMan(bright, r, g, b)
-})
+*/
 
 $('.button.fancy').on('click', function () {
   var bright = $('#br').val()
   ledFancy(bright)
+  Lamp(true)
 })
 
 $('.button.rainbow').on('click', function () {
   var bright = $('#br').val()
   ledRainbow(bright)
+  Lamp(true)
 })
 
 $('.button.ambient').on('click', function () {
   var bright = $('#br').val()
   ledAmbient(bright)
+  Lamp(true)
 })
 
 $('.button.rider').on('click', function () {
   var bright = $('#br').val()
   ledRider(bright)
+  Lamp(true)
 })
+
+// On / Off Button default to 'Ambient'
+$('#onOff').click(function () {
+  var bright = $('#br').val()
+  ledAmbient(bright)
+
+  OnOnOffClick()
+});
+
+function Lamp(on = true) {
+  if (on) {
+    $('#onOff').css('transform', 'scale(1.2)')
+    $('#onOff').children('svg').css('color', 'yellow')
+  } else {
+    $('#onOff').css('transform', 'scale(1)')
+    $('#onOff').children('svg').css('color', '#707070')
+  }
+}
+
+function OnOnOffClick() {
+  lights_on = !lights_on
+  if (!lights_on) ledOff();
+  Lamp(lights_on);
+}
+
 // End Button handlers
 
 // Begin LED functions
