@@ -150,7 +150,7 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
     strip.render(pixelData)
     break;
     case 'rainbow':
-      loop = setInterval(() => { ledRainbow(10) }, 0)
+      loop = setInterval(() => { ledRainbow() }, 0)
     break;
   }
 }
@@ -175,31 +175,31 @@ function ledColor(bright = config.led.brightness, color) {
 
 function wheel (pos) {
   if (pos < 85) {
-    return '0x'+(255-pos*3).toString(16)+(pos*3).toString(16)+'00'
+    return '0x'+(255-pos*3).toString(16).padStart(2,0)+(pos*3).toString(16).padStart(2,0)+'00'
   } else if (pos < 170) {
     pos -= 85
-    return '0x'+'00'+(255-pos*3).toString(16)+(pos*3).toString(16)
+    return '0x'+'00'+(255-pos*3).toString(16).padStart(2,0)+(pos*3).toString(16).padStart(2,0)
   } else {
     pos -= 170
-    return '0x'+(pos*3).toString(16)+'00'+(255-pos*3).toString(16)
+    return '0x'+(pos*3).toString(16).padStart(2,0)+'00'+(255-pos*3).toString(16).padStart(2,0)
   }
 }
 
-function ledRainbow(iterations) {
-  for (var i = 0; i < 256*iterations; i++) {
+function ledRainbow() {
+  for (var i = 0; i < 256; i++) {
     for (var j = 0; j < NUM_LEDS; j++) {
       pixelData[j] = wheel(parseInt(j*256 / NUM_LEDS + i) & 255)
     }
     strip.render(pixelData)
   }
-  sleep(50)
+
 }
 
 function rgbToHex(r, g, b) {
-  r = parseInt(r).toString(16)
-  g = parseInt(g).toString(16)
-  b = parseInt(b).toString(16)
-  return color = '0x'+r+g+b
+  r = parseInt(r).toString(16).padStart(2,0)
+  g = parseInt(g).toString(16).padStart(2,0)
+  b = parseInt(b).toString(16).padStart(2,0)
+  return '0x'+r+g+b
 }
 
 function SendToEveryone(data) {
