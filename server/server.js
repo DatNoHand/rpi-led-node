@@ -127,8 +127,6 @@ wss.on('connection', function(ws, req) {
 
 function ledAmount(bright = conifg.led.brightness, color, amount) {
   strip.setBrightness(parseInt(bright))
-  console.log(color)
-
   clear()
 
   if (amount < 2) amount = 2;
@@ -138,6 +136,7 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
   strip.render(pixelData)
 }
 
+// Zeroes out LEDs color data, but doesn't render it | Preparation for new pattern
 function clear() {
   for (var i = 0; i < config.led.num; i++)  {
     pixelData[i] = '0x000000'
