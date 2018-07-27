@@ -1,41 +1,27 @@
 var ws = new WebSocket('ws://'+window.location.host)
 var lights_on = false;
 var color = '0xff0000'
-// var arr = JSON.parse(JSON.stringify(
-//   {
-//     type: 'setup',
-//     on: true,
-//     lastUsed: []
-//   }))
 
 // TODO: _2 Make Color Buttons work (#ez #zufaul)
 
 // Server Messages
-// setBg(['00ff00', '0000ff', 'f0f0f0', '8f00ff'])
-
 ws.onmessage = function(e) {
   var msg = JSON.parse(e.data);
 
   switch(msg.type) {
     case 'status':
       lights_on = msg.on
+      Lamp(lights_on)
     break;
     case 'setup':
       lights_on = msg.on
       $('#br').attr('max', msg.max)
-      setBg(msg.colors)
+      setBg(msg.lastUsed)
     break;
   }
 }
 
 // Button handlers
-
-$('.button.fancy').on('click', function () {
-  var bright = $('#br').val()
-  ledFancy(bright)
-  Lamp(true)
-})
-
 $('.button.rainbow').on('click', function () {
   var bright = $('#br').val()
   ledRainbow(bright)
@@ -43,15 +29,19 @@ $('.button.rainbow').on('click', function () {
 })
 
 $('.button.amount').on('click', function () {
+  let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
-  send()
+  ledAmount(bright, color, amount)
+})
+
+$('div.color.infinite.wobble').on('click', function () {
+  color = '0x' + $(this).attr('data-color')
 })
 
 // On / Off Button default to 'Ambient'
 $('#onOff').click(function () {
   var bright = $('#br').val()
   ledAmbient(bright)
-
   OnOnOffClick()
 });
 

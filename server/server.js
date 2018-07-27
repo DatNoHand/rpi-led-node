@@ -36,6 +36,9 @@ var wss = new WebSocketServer({ server: httpServer });
 var loop
 var on = false
 var lastUsed = []
+for (var i = 0; i < 16; i++) {
+  lastUsed.push('ff0000');
+}
 
 console.log('Listening on '+port);
 
@@ -74,13 +77,12 @@ app.post('/api', function(req, res) {
 wss.on('connection', function(ws, req) {
   // TODO: Send Light Status and last used Colors
 
-  send(ws, {type: 'setup', on: on, colors: lastUsed})
-  // ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
+  send(ws, {type: 'setup', on: on, lastUsed: lastUsed, max: config.led.max_brightness})
 
   ws.on('message', (msg) => {
     try {
       var msg = JSON.parse(msg);
-    } catch   (e){
+    } catch(e){
       ws.send('{"type": "err", "msg": "ERR_SYNTAX"}');
       ws.terminate();
     }
@@ -106,12 +108,14 @@ wss.on('connection', function(ws, req) {
       break;
       case 'amount':
         ledAmount(msg.bright, msg.amount)
+        // TODO: send new lastused to clients
       break;
       case 'special':
         clearInterval(loop)
         ledSpecial(msg.bright, msg.mode, msg.arg)
       break;
     }
+    send(ws, {type: 'status', on: on})
   });
 });
 
@@ -176,6 +180,10 @@ function ledColor(bright = config.led.brightness, color) {
     pixelData[i] = color
   }
   strip.render(pixelData)
+
+  // Add new color to first of lastused, and trim to 16 length
+  lastUsed.unshift(color.slice(2,8))
+  lastUsed = lastUsed.slice(0,15)
 }
 
 function wheel (pos) {
