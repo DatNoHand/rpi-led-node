@@ -107,7 +107,7 @@ wss.on('connection', function(ws, req) {
         ledColorMan(msg.bright, msg.r, msg.g, msg.b)
       break;
       case 'amount':
-        ledAmount(msg.bright, msg.amount)
+        ledAmount(msg.bright, msg.color, msg.amount)
         // TODO: send new lastused to clients
       break;
       case 'special':
