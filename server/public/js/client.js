@@ -67,8 +67,6 @@ function setBg(colors) {
     let g = c.slice(2, 4)
     let b = c.slice(4, 6)
 
-    console.log(r+g+b)
-
     current.css({'background-color': r+g+b})
     current.attr('data-color', r+g+b)
   }
