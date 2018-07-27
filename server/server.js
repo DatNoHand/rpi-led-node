@@ -129,12 +129,19 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
   strip.setBrightness(parseInt(bright))
   console.log(color)
 
+  clear()
+
   if (amount < 2) amount = 2;
   for (var i = 0; i < config.led.num; i+=(amount-1))  {
     pixelData[i] = color
   }
-
   strip.render(pixelData)
+}
+
+function clear() {
+  for (var i = 0; i < config.led.num; i++)  {
+    pixelData[i] = '0x000000'
+  }
 }
 
 function change() {
