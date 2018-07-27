@@ -54,12 +54,9 @@ function setBg(colors) {
   $('div.color.infinite.wobble').each(() => { amount++ })
 
   // For Each entry in colors array from the Server
-  let index = 0
-  colors.forEach(function(e) {
+  for (var i = 0; i < amount; i++) {
     // If the server sent more than we can use return
-    if (index > amount-1) return
-
-    let current = $('div.color.infinite.wobble').eq(index)
+    let current = $('div.color.infinite.wobble').eq(i)
     let c = e
     if (c == undefined) return;
 
@@ -67,12 +64,10 @@ function setBg(colors) {
     let g = c.slice(2, 4)
     let b = c.slice(4, 6)
 
+    console.log(r+g+b)
+
     current.css({'background-color': r+g+b})
     current.attr('data-color', r+g+b)
-    index++
-  })
-
-  for (index = 0; index <= amount; index++) {
   }
 }
 
