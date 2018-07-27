@@ -11,6 +11,7 @@ ws.onmessage = function(e) {
   switch(msg.type) {
     case 'status':
       lights_on = (msg.on == 'true') ? true : false
+      console.log(lights_on)
       Lamp(lights_on)
     break;
     case 'setup':
@@ -86,7 +87,6 @@ function Lamp(on = true) {
 }
 
 function OnOnOffClick() {
-  lights_on = !lights_on
   if (!lights_on) ledOff();
   Lamp(lights_on);
 }
