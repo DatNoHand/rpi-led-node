@@ -56,8 +56,8 @@ function setBg(colors) {
   // For Each entry in colors array from the Server
   for (var i = 0; i < amount; i++) {
     // If the server sent more than we can use return
+    let c = client[i]
     let current = $('div.color.infinite.wobble').eq(i)
-    let c = e
     if (c == undefined) return;
 
     let r = c.slice(0, 2)
