@@ -10,7 +10,7 @@ ws.onmessage = function(e) {
 
   switch(msg.type) {
     case 'status':
-      lights_on = msg.on == 'true'
+      lights_on = msg.on
       Lamp(lights_on)
     break;
     case 'setup':
