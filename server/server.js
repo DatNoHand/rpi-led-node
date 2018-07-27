@@ -131,6 +131,12 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
   for (var i = 0; i < config.led.num; i+=(amount-1))  {
     pixelData[i] = color
   }
+
+  let fav_col = color.splice(2,8)
+  console.log(fav_col)
+  favorites.unshift(fav_col)
+  favorites = favorites.slice(0,15)
+
   strip.render(pixelData)
   on = true
 }
@@ -186,10 +192,6 @@ function ledColor(bright = config.led.brightness, color) {
     pixelData[i] = color
   }
   strip.render(pixelData)
-
-  // Add new color to first of favorites, and trim to 16 length
-  favorites.unshift(color.slice(2,8))
-  favorites = favorites.slice(0,15)
 }
 
 function wheel (pos) {

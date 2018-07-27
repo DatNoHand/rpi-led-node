@@ -19,6 +19,9 @@ ws.onmessage = function(e) {
       $('#br').attr('max', msg.max)
       setBg(msg.favorites)
     break;
+    case 'new_fav':
+      setBg(msg.favorites)
+    break;
   }
 }
 
