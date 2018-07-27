@@ -35,7 +35,7 @@ var wss = new WebSocketServer({ server: httpServer });
 // Global Vars
 var loop
 var on = false
-var favorites = ['ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00',]
+var favorites = ['ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00']
 
 console.log('Listening on '+port);
 

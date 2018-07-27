@@ -57,7 +57,7 @@ function setBg(colors) {
   let index = 0
   colors.forEach(function(e) {
     // If the server sent more than we can use return
-    if (index > amount) return
+    if (index > amount+1) return
 
     let current = $('div.color.infinite.wobble').eq(index)
     let c = e
