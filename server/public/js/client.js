@@ -10,7 +10,7 @@ ws.onmessage = function(e) {
 
   switch(msg.type) {
     case 'status':
-      lights_on = msg.on
+      lights_on = (msg.on == 'true') ? true : false
       Lamp(lights_on)
     break;
     case 'setup':
@@ -41,7 +41,7 @@ $('div.color.infinite.wobble').on('click', function () {
 // On / Off Button default to 'Ambient'
 $('#onOff').click(function () {
   var bright = $('#br').val()
-  ledAmbient(bright)
+  ledAmount(bright, '0x0000ff', 5)
   OnOnOffClick()
 });
 
