@@ -17,7 +17,7 @@ ws.onmessage = function(e) {
       lights_on = msg.on
       Lamp(lights_on)
       $('#br').attr('max', msg.max)
-      setBg(msg.lastUsed)
+      setBg(msg.favorites)
     break;
   }
 }
