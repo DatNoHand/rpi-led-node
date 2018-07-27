@@ -132,7 +132,8 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
     pixelData[i] = color
   }
 
-  favorites.unshift(color.slice(2,8))
+  if (color[0] != color.slice(2,8))
+    favorites.unshift(color.slice(2,8))
   favorites = favorites.slice(0,15)
   SendToEveryone({type: 'new_fav', favorites: favorites})
 
