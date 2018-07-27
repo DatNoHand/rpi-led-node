@@ -3,7 +3,6 @@ self.addEventListener('install', function(event) {
     caches.open('mysite-static-v3').then(function(cache) {
       return cache.addAll([
         '../img/lightbulb-regular.svg',
-        '../js/app.js',
         '../layout/style.css',
         '../layout/animate.css',
         '../layout/normalize.css',
