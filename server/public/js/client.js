@@ -50,6 +50,10 @@ $('#onOff').click(function () {
   OnOnOffClick()
 });
 
+$('input.button.colorpicker').on('change', function (e) {
+  color = '0x'+$(this).val().slice(1,7)
+})
+
 // Set BG Color of the color buttons, based on what the server sent
 function setBg(colors) {
   // Get the amount of color buttons that we have
