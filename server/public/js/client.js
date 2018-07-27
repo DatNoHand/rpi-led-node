@@ -88,8 +88,7 @@ function Lamp(on = true) {
 }
 
 function OnOnOffClick() {
-  if (!lights_on) ledOff();
-  Lamp(lights_on);
+  if (lights_on) ledOff();
 }
 
 // End Button handlers
