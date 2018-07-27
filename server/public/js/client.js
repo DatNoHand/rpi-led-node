@@ -41,7 +41,8 @@ $('div.color.infinite.wobble').on('click', function () {
 // On / Off Button default to 'Ambient'
 $('#onOff').click(function () {
   var bright = $('#br').val()
-  ledAmount(bright, '0x0000ff', 5)
+  if (!lights_on)
+    ledAmount(bright, '0x0000ff', 5)
   OnOnOffClick()
 });
 
@@ -55,7 +56,7 @@ function setBg(colors) {
   let index = 0
   colors.forEach(function(e) {
     // If the server sent more than we can use return
-    if (index > amount-1) return
+    if (index > amount) return
 
     let current = $('div.color.infinite.wobble').eq(index)
     let c = e
