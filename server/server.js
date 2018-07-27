@@ -115,6 +115,7 @@ wss.on('connection', function(ws, req) {
         ledSpecial(msg.bright, msg.mode, msg.arg)
       break;
     }
+
     send(ws, {type: 'status', on: on})
   });
 });
@@ -134,6 +135,7 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
     pixelData[i] = color
   }
   strip.render(pixelData)
+  on = true
 }
 
 // Zeroes out LEDs color data, but doesn't render it | Preparation for new pattern
