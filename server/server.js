@@ -132,7 +132,8 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
     pixelData[i] = color
   }
 
-  favorites = favorites.unshift(color.slice(2,8)).slice(0,15)
+  favorites.unshift(color.slice(2,8))
+  favorites = favorites.slice(0,15)
   SendToEveryone({type: 'new_fav', favorites: favorites})
 
   strip.render(pixelData)
