@@ -127,8 +127,9 @@ wss.on('connection', function(ws, req) {
 
 function ledAmount(bright = conifg.led.brightness, color, amount) {
   strip.setBrightness(parseInt(bright))
+  console.log(color)
 
-  if (amount < 2) return;
+  if (amount < 2) amount = 2;
   for (var i = 0; i < config.led.num; i+=(amount-1))  {
     pixelData[i] = color
   }

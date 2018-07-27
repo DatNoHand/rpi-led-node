@@ -66,8 +66,6 @@ function setBg(colors) {
     let b = c.slice(4, 6)
 
     current.css({'background-color': r+g+b})
-
-
     index++
   })
 
