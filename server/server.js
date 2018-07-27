@@ -35,10 +35,7 @@ var wss = new WebSocketServer({ server: httpServer });
 // Global Vars
 var loop
 var on = false
-var lastUsed = []
-for (var i = 0; i < 16; i++) {
-  lastUsed.push('ff0000');
-}
+var favorites = ['ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00', 'ff0000', 'ff6600', 'ffaa00', 'ffff00',]
 
 console.log('Listening on '+port);
 
@@ -77,7 +74,7 @@ app.post('/api', function(req, res) {
 wss.on('connection', function(ws, req) {
   // TODO: Send Light Status and last used Colors
 
-  send(ws, {type: 'setup', on: on, lastUsed: lastUsed, max: config.led.max_brightness})
+  send(ws, {type: 'setup', on: on, favorites: favorites, max: config.led.max_brightness})
 
   ws.on('message', (msg) => {
     try {
@@ -108,7 +105,7 @@ wss.on('connection', function(ws, req) {
       break;
       case 'amount':
         ledAmount(msg.bright, msg.color, msg.amount)
-        // TODO: send new lastused to clients
+        // TODO: send new favorites to clients
       break;
       case 'special':
         clearInterval(loop)
@@ -116,7 +113,7 @@ wss.on('connection', function(ws, req) {
       break;
     }
 
-    send(ws, {type: 'status', on: on})
+    SendToEveryone(JSON.stringify({type: 'status', on: on}))
   });
 });
 
@@ -190,9 +187,9 @@ function ledColor(bright = config.led.brightness, color) {
   }
   strip.render(pixelData)
 
-  // Add new color to first of lastused, and trim to 16 length
-  lastUsed.unshift(color.slice(2,8))
-  lastUsed = lastUsed.slice(0,15)
+  // Add new color to first of favorites, and trim to 16 length
+  favorites.unshift(color.slice(2,8))
+  favorites = favorites.slice(0,15)
 }
 
 function wheel (pos) {
