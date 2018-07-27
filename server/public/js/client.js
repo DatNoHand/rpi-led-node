@@ -41,7 +41,8 @@ $('div.color.infinite.wobble').on('click', function () {
 // On / Off Button default to 'Ambient'
 $('#onOff').click(function () {
   var bright = $('#br').val()
-  ledAmount(bright, '0x0000ff', 5)
+  if (!lights_on)
+    ledAmount(bright, '0x0000ff', 5)
   OnOnOffClick()
 });
 
