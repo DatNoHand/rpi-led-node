@@ -113,7 +113,7 @@ wss.on('connection', function(ws, req) {
       break;
     }
 
-    SendToEveryone(JSON.stringify({type: 'status', on: on}))
+    SendToEveryone({type: 'status', on: on})
   });
 });
 
