@@ -3,6 +3,7 @@ body {
   max-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: 'Montserrat', sans-serif;
 }
 
 h2 {
@@ -37,12 +38,17 @@ p {
 .center svg {
   width: 100px;
   height: auto;
+  margin-top: 60px;
   color: #707070;
   transition: .5s;
+  cursor: pointer;
 }
 
 #onOff {
   transition: .5s;
+  background-color: #ACFFB9;
+  border: none;
+  outline: none;
 }
 
 .color {
@@ -54,6 +60,7 @@ p {
   -webkit-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
   -moz-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
   box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
+  cursor: pointer;
 }
 
 .effect {
@@ -62,6 +69,11 @@ p {
   border: 1px solid #707070;
   border-radius: 8px;
   margin: 2px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #ACFFB9;
+  outline: none;
+
 }
 
 .effect:first-of-type {
@@ -89,12 +101,13 @@ p {
 }
 
 .slidecontainer {
-    width: 100%;
+    width: 300px;
+    margin: auto;
 }
 
 .slider {
     -webkit-appearance: none;
-    width: 100%;
+    width: 300px;
     height: 1px;
     background: #707070;
     outline: none;
@@ -122,6 +135,12 @@ p {
     -webkit-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
     -moz-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
     box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: -o-grab;
+    cursor: -ms-grab;
+    cursor: grab;
+    transition: 1s;
 }
 
 .slider::-moz-range-thumb {
@@ -133,10 +152,29 @@ p {
     -webkit-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
     -moz-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
     box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: -o-grab;
+    cursor: -ms-grab;
+    cursor: grab;
+    transition: 1s;
 }
+
+.slider::-webkit-slider-thumb:active {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: -o-grabbing;
+    cursor: -ms-grabbing;
+    cursor: grabbing;
+    transform: scale(1.5) ;
+    transition: 1s;
+}
+
+
 
 .colorpicker {
   margin: auto;
+  margin-top: 60px;
 }
 
 .effectpicker {
