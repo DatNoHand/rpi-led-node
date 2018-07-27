@@ -143,6 +143,10 @@ p {
   margin: auto;
 }
 
+div.color.infinite.wobble {
+  background-color: attr(data-r)
+}
+
 #rot1 {
   background-color: #FF0000;
 }

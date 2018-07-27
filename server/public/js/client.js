@@ -1,36 +1,34 @@
 var ws = new WebSocket('ws://'+window.location.host)
 var lights_on = false;
+var color = '0xff0000'
+// var arr = JSON.parse(JSON.stringify(
+//   {
+//     type: 'setup',
+//     on: true,
+//     lastUsed: []
+//   }))
 
-ws.onmessage = (msg) => {
-  if (msg.type == 'status' && msg.txt != 'ok')
-    alert(msg.txt)
-}
-
-// TODO: _1 Control with GET
 // TODO: _2 Make Color Buttons work (#ez #zufaul)
 
-// Button handlers
+// Server Messages
+// setBg(['00ff00', '0000ff', 'f0f0f0', '8f00ff'])
 
-// TODO: _2
-/*
-$('button.color').on('click', function () {
-  var color = $(this).data('color')
-  var bright = $('#br').val()
+ws.onmessage = function(e) {
+  var msg = JSON.parse(e.data);
 
-  switch (color) {
-    case 'red':
-      color = '0xff0000'
-    break
-    case 'green':
-      color = '0x00ff00'
-    break
-    case 'blue':
-      color = '0x0000ff'
-    break
+  switch(msg.type) {
+    case 'status':
+      lights_on = msg.on
+    break;
+    case 'setup':
+      lights_on = msg.on
+      $('#br').attr('max', msg.max)
+      setBg(msg.colors)
+    break;
   }
-  ledColor(bright, color)
-})
-*/
+}
+
+// Button handlers
 
 $('.button.fancy').on('click', function () {
   var bright = $('#br').val()
@@ -44,16 +42,9 @@ $('.button.rainbow').on('click', function () {
   Lamp(true)
 })
 
-$('.button.ambient').on('click', function () {
-  var bright = $('#br').val()
-  ledAmbient(bright)
-  Lamp(true)
-})
-
-$('.button.rider').on('click', function () {
-  var bright = $('#br').val()
-  ledRider(bright)
-  Lamp(true)
+$('.button.amount').on('click', function () {
+  let amount = $(this).attr('data-amount')
+  send()
 })
 
 // On / Off Button default to 'Ambient'
@@ -63,6 +54,36 @@ $('#onOff').click(function () {
 
   OnOnOffClick()
 });
+
+// Set BG Color of the color buttons, based on what the server sent
+function setBg(colors) {
+  // Get the amount of color buttons that we have
+  let amount = 0
+  $('div.color.infinite.wobble').each(() => { amount++ })
+
+  // For Each entry in colors array from the Server
+  let index = 0
+  colors.forEach(function(e) {
+    // If the server sent more than we can use return
+    if (index > amount-1) return
+
+    let current = $('div.color.infinite.wobble').eq(index)
+    let c = e
+    if (c == undefined) return;
+
+    let r = c.slice(0, 2)
+    let g = c.slice(2, 4)
+    let b = c.slice(4, 6)
+
+    current.css({'background-color': r+g+b})
+
+
+    index++
+  })
+
+  for (index = 0; index <= amount; index++) {
+  }
+}
 
 function Lamp(on = true) {
   if (on) {
@@ -81,8 +102,15 @@ function OnOnOffClick() {
 }
 
 // End Button handlers
+// ----------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
 // Begin LED functions
+
+function ledAmount(bright, color = '0x0000ff', amount = 2) {
+  send({type: 'amount', bright: bright, color: color, amount: amount})
+}
+
 function ledOff() {
   send({type: 'off'})
 }
@@ -91,26 +119,27 @@ function ledRainbow(bright) {
   send({type: 'special', bright: bright, mode: 'rainbow'})
 }
 
-function ledRider(bright) {
-  send({type: 'special', bright: bright, mode: 'rider'})
-}
 
-function ledAmbient(bright) {
-  send({type: 'special', bright: bright, mode: 'ambient'})
-}
+// function ledColor(bright, color) {
+//   send({type: 'color', bright: bright, color: color})
+// }
+//
+// function ledColorMan(bright, r, g, b) {
+//   send({type: 'color_man', bright: bright, r: r, g: g, b: b})
+// }
 
-function ledFancy(bright) {
-  send({type: 'special', bright: bright, mode: 'fancy'})
-}
-
-function ledColor(bright, color) {
-  send({type: 'color', bright: bright, color: color})
-}
-
-function ledColorMan(bright, r, g, b) {
-  send({type: 'color_man', bright: bright, r: r, g: g, b: b})
-}
 // End LED functions
+// ----------------------------------------------------------------------
+function setColor(r, g, b) {
+  color = rgbToHex(r, g, b);
+}
+
+function rgbToHex(r, g, b) {
+  r = parseInt(r).toString(16).padStart(2,0)
+  g = parseInt(g).toString(16).padStart(2,0)
+  b = parseInt(b).toString(16).padStart(2,0)
+  return '0x'+r+g+b
+}
 
 function send(msg) {
   ws.send(JSON.stringify(msg))

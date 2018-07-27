@@ -1,5 +1,4 @@
 <html>
-<head>
 <title>LED's</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,7 +14,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-<link rel="manifest" href="favicon/site.webmanifest">
+<link rel="manifest" href="manifest.json">
 <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#acffb9">
 <meta name="msapplication-TileColor" content="#acffb9">
 <meta name="theme-color" content="#acffb9">
@@ -23,42 +22,62 @@
 <link rel="stylesheet" type="text/css" href="layout/normalize.css">
 <link rel="stylesheet" type="text/css" href="layout/style.css">
 <link rel="stylesheet" type="text/css" href="layout/animate.css">
-</head>
+
 <body>
-<div class="center">
-  <div id="onOff" style="margin:auto;"><svg aria-hidden="true" data-prefix="far" data-icon="lightbulb" class="svg-inline--fa fa-lightbulb fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M272 428v28c0 10.449-6.68 19.334-16 22.629V488c0 13.255-10.745 24-24 24h-80c-13.255 0-24-10.745-24-24v-9.371c-9.32-3.295-16-12.18-16-22.629v-28c0-6.627 5.373-12 12-12h136c6.627 0 12 5.373 12 12zM128 176c0-35.29 28.71-64 64-64 8.837 0 16-7.164 16-16s-7.163-16-16-16c-52.935 0-96 43.065-96 96 0 8.836 7.164 16 16 16s16-7.164 16-16zm64-128c70.734 0 128 57.254 128 128 0 77.602-37.383 60.477-80.98 160h-94.04C101.318 236.33 64 253.869 64 176c0-70.735 57.254-128 128-128m0-48C94.805 0 16 78.803 16 176c0 101.731 51.697 91.541 90.516 192.674 3.55 9.249 12.47 15.326 22.376 15.326h126.215c9.906 0 18.826-6.078 22.376-15.326C316.303 267.541 368 277.731 368 176 368 78.803 289.195 0 192 0z"></path></svg></div>
-</div>
-<div class="center" style="flex-direction:column;">
-  <h2>Brightness</h2>
-  <div class="slidecontainer">
-  <input type="range" min="1" max="255" value="40" class="slider" id="br">
-</div>
-</div>
-
-<div class=center>
-  <div class="colorpicker">
-    <div class="quatro">
-  <div id="rot1" class="color animated infinite wobble"></div><div id="rot2" class="color animated infinite wobble"></div><div id="rot3" class="color animated infinite wobble"></div><div id="rot4" class="color animated infinite wobble"></div>
-</div>
-<div class="quatro">
-  <div id="gruen1" class="color animated infinite wobble"></div><div id="gruen2" class="color animated infinite wobble"></div><div id="gruen3" class="color animated infinite wobble"></div><div id="gruen4" class="color animated infinite wobble"></div>
-</div>
-<div class="quatro">
-  <div id="blau1" class="color animated infinite wobble"></div><div id="blau2" class="color animated infinite wobble"></div><div id="blau3" class="color animated infinite wobble"></div><div id="blau4" class="color animated infinite wobble"></div>
-</div>
+  <div class="center">
+    <div id="onOff" style="margin:auto">
+      <svg aria-hidden="true" data-prefix="far" data-icon="lightbulb" class="svg-inline--fa fa-lightbulb fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+        <path fill="currentColor" d="M272 428v28c0 10.449-6.68 19.334-16 22.629V488c0 13.255-10.745 24-24 24h-80c-13.255 0-24-10.745-24-24v-9.371c-9.32-3.295-16-12.18-16-22.629v-28c0-6.627 5.373-12 12-12h136c6.627 0 12 5.373 12 12zM128 176c0-35.29 28.71-64 64-64 8.837 0 16-7.164 16-16s-7.163-16-16-16c-52.935 0-96 43.065-96 96 0 8.836 7.164 16 16 16s16-7.164 16-16zm64-128c70.734 0 128 57.254 128 128 0 77.602-37.383 60.477-80.98 160h-94.04C101.318 236.33 64 253.869 64 176c0-70.735 57.254-128 128-128m0-48C94.805 0 16 78.803 16 176c0 101.731 51.697 91.541 90.516 192.674 3.55 9.249 12.47 15.326 22.376 15.326h126.215c9.906 0 18.826-6.078 22.376-15.326C316.303 267.541 368 277.731 368 176 368 78.803 289.195 0 192 0z">
+        </path>
+      </svg>
+    </div>
   </div>
-</div>
-<div class="center">
-  <div class="colorpicker">
-  <div class="effect button rider"><p>Rider</p></div>
-  <div class="effect button rainbow"><p>Rainbow</p></div>
-  <div class="effect button ambient"><p>Ambient</p></div>
-</div>
-</div>
+  <div class="center" style="flex-direction:column;">
+    <h2>Brightness</h2>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="255" value="40" class="slider" id="br">
+    </div>
+  </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="js/app.js"></script>
-<script src="js/client.js"></script>
+  <div class=center>
+    <div class="colorpicker">
+      <div class="quatro">
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+      </div>
+      <div class="quatro">
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+      </div>
+      <div class="quatro">
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+      </div>
+      <div class="quatro">
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+        <div class="color infinite wobble" data-color='ff0000'></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="colorpicker">
+      <div class="effect amount button set" data-amount='1'><p>Alle LEDs</p></div>
+      <div class="effect amount button set" data-amount='5'><p>Jede 5. LED</p></div>
+      <div class="effect amount button set" data-amount='10'><p>Jede 10. LED</p></div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="js/client.js"></script>
 
 </body>
 </html>

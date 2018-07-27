@@ -34,6 +34,8 @@ var wss = new WebSocketServer({ server: httpServer });
 
 // Global Vars
 var loop
+var on = false
+var lastUsed = []
 
 console.log('Listening on '+port);
 
@@ -42,6 +44,7 @@ strip.setBrightness(config.led.brightness)
 
 // On ready, show (green) lights
 ledColor(config.led.brightness, config.led.ready_color)
+on = true
 
 app.post('/api', function(req, res) {
   var mode
@@ -69,6 +72,11 @@ app.post('/api', function(req, res) {
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
+  // TODO: Send Light Status and last used Colors
+
+  send(ws, {type: 'setup', on: on, colors: lastUsed})
+  // ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
+
   ws.on('message', (msg) => {
     try {
       var msg = JSON.parse(msg);
@@ -82,9 +90,7 @@ wss.on('connection', function(ws, req) {
       ws.terminate();
     }
 
-    ws.send(JSON.stringify({type: 'status', txt: 'ok'}))
-
-    ledOff()
+    change()
 
     switch (msg.type) {
       case 'off':
@@ -98,6 +104,9 @@ wss.on('connection', function(ws, req) {
         clearInterval(loop)
         ledColorMan(msg.bright, msg.r, msg.g, msg.b)
       break;
+      case 'amount':
+        ledAmount(msg.bright, msg.amount)
+      break;
       case 'special':
         clearInterval(loop)
         ledSpecial(msg.bright, msg.mode, msg.arg)
@@ -109,7 +118,23 @@ wss.on('connection', function(ws, req) {
 /** Functions
 * Unsorted (as of now)
 * Maybe moved to different file later
+* Maybe use classes later-later
 **/
+
+function ledAmount(bright = conifg.led.brightness, color, amount) {
+  strip.setBrightness(parseInt(bright))
+
+  if (amount < 2) return;
+  for (var i = 0; i < config.led.num; i+=(amount-1))  {
+    pixelData[i] = color
+  }
+
+  strip.render(pixelData)
+}
+
+function change() {
+  clearInterval(loop)
+}
 
 function sleep(ms) {
   return setTimeout(() => {}, ms);
@@ -117,37 +142,18 @@ function sleep(ms) {
 
 function ledOff() {
   clearInterval(loop);
-  
+
   for (var i = 0; i < config.led.num; i++)  {
     pixelData[i] = '0x000000'
   }
   strip.render(pixelData)
+  on = false;
 }
 
 function ledSpecial(bright = config.led.brightness, mode, arg) {
   strip.setBrightness(parseInt(bright))
 
   switch (mode) {
-    case 'fancy':
-    for (var i = 0; i < config.led.num; i++) {
-      pixelData[i] = config.mode.fancy.color
-    }
-    strip.render(pixelData);
-
-    loop = setInterval(() => {
-      sleep(config.mode.fancy.delay)
-      strip.setBrightness(0)
-      sleep(config.mode.fancy.delay)
-      strip.setBrightness(parseInt(bright))
-    }, 1000 / 30);
-
-    break;
-    case 'ambient':
-    for (var i = 0; i < config.led.num; i+=5)  {
-      pixelData[i] = config.mode.ambient.color
-    }
-    strip.render(pixelData)
-    break;
     case 'rainbow':
       loop = setInterval(() => { ledRainbow() }, 0)
     break;
@@ -191,7 +197,6 @@ function ledRainbow() {
     }
     strip.render(pixelData)
   }
-
 }
 
 function rgbToHex(r, g, b) {
@@ -199,6 +204,10 @@ function rgbToHex(r, g, b) {
   g = parseInt(g).toString(16).padStart(2,0)
   b = parseInt(b).toString(16).padStart(2,0)
   return '0x'+r+g+b
+}
+
+function send(ws, msg) {
+  ws.send(JSON.stringify(msg))
 }
 
 function SendToEveryone(data) {
