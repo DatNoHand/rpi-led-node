@@ -13,7 +13,7 @@ ws.onmessage = function(e) {
   switch(msg.type) {
     case 'status':
       lights_on = msg.on
-      lamp_color = '#'+(msg.color).slice(2,8)
+      lamp_color = '#' + msg.color
       Lamp(lights_on)
       $('#br').attr('max', msg.max)
 

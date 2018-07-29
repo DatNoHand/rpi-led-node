@@ -35,6 +35,7 @@ var wss = new WebSocketServer({ server: httpServer });
 // Global Vars
 var loop
 var on = false
+var strip_color
 var favorites = [
   'FF0000', 'FF6600', 'FFAA00', 'FFFF00', '00FF00', '00FC9E',
   '00FFF6', '0099FF', '0000FF', '9A00FF', 'FF00F7', 'FF0077'
@@ -68,7 +69,7 @@ app.post('/api', function(req, res) {
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
 
-  SendToEveryone({type: 'status', on: on, color: msg.color, max: config.led.max_brightness, favorites: favorites})
+  SendToEveryone({type: 'status', on: on, color: , max: config.led.max_brightness, favorites: favorites})
 
   ws.on('message', (msg) => {
     try {
@@ -110,6 +111,7 @@ wss.on('connection', function(ws, req) {
 
 function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   strip.setBrightness(parseInt(bright))
+  strip_color = color
   color = '0x' + color
   amount = parseInt(amount)
   clear()
