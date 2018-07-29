@@ -1,5 +1,9 @@
+:root {
+  --main-bg-color: #1f1f1f;
+  --second-bg-color: #3f89ff;
+}
 body {
-  background-color: #2b2b2b;
+  background-color: var(--main-mg-color);
   max-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -39,14 +43,14 @@ p {
   width: 100px;
   height: auto;
   margin-top: 60px;
-  color: #707070;
+  color: var(--main-mg-color);
   transition: .5s;
   cursor: pointer;
 }
 
 #onOff {
   transition: .5s;
-  background-color: #ACFFB9;
+  background-color: var(--main-mg-color);
   border: none;
   outline: none;
 }
