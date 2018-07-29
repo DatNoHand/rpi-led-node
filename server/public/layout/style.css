@@ -2,13 +2,14 @@
   --main-bg-color: #1f1f1f;
   --second-bg-color: #1e75ff;
 }
+
 body {
   background-color: var(--main-bg-color);
   max-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: 'Montserrat', sans-serif;
-  color: var(second-bg-color);
+  color: #1e75ff;
 }
 
 h2 {
