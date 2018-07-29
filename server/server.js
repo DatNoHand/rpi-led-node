@@ -77,7 +77,7 @@ app.post('/api', function(req, res) {
 wss.on('connection', function(ws, req) {
   // TODO: Send Light Status and last used Colors
 
-  send(ws, {type: 'setup', on: on, favorites: favorites, max: config.led.max_brightness})
+  send(ws, {type: 'setup', on: on, favorites: favorites, max: config.led.max_brightness, color: config.led.ready_color})
 
   ws.on('message', (msg) => {
     try {
@@ -116,7 +116,7 @@ wss.on('connection', function(ws, req) {
       break;
     }
 
-    SendToEveryone({type: 'status', on: on})
+    SendToEveryone({type: 'status', on: on, color: msg.color})
   });
 });
 
