@@ -3,7 +3,7 @@
   --second-bg-color: #3f89ff;
 }
 body {
-  background-color: var(--main-mg-color);
+  background-color: var(--main-bg-color);
   max-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -43,14 +43,14 @@ p {
   width: 100px;
   height: auto;
   margin-top: 60px;
-  color: var(--main-mg-color);
+  color: var(--main-bg-color);
   transition: .5s;
   cursor: pointer;
 }
 
 #onOff {
   transition: .5s;
-  background-color: var(--main-mg-color);
+  background-color: var(--main-bg-color);
   border: none;
   outline: none;
 }
@@ -75,7 +75,7 @@ p {
   margin: 2px;
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
-  background-color: var(--main-mg-color);
+  background-color: var(--main-bg-color);
   outline: none;
 
 }
