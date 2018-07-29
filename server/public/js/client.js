@@ -15,15 +15,8 @@ ws.onmessage = function(e) {
       lights_on = msg.on
       lamp_color = '#'+(msg.color).slice(2,8)
       Lamp(lights_on)
-    break;
-    case 'setup':
-      lights_on = msg.on
-      lamp_color = '#'+(msg.color).slice(2,8)
-      Lamp(lights_on)
       $('#br').attr('max', msg.max)
-      setBg(msg.favorites)
-    break;
-    case 'new_fav':
+
       setBg(msg.favorites)
     break;
   }
@@ -43,7 +36,7 @@ $('.button.amount').on('click', function () {
 })
 
 $('div.color.infinite.wobble').on('click', function () {
-  color = '0x' + $(this).attr('data-color')
+  color = $(this).attr('data-color')
 })
 
 // On / Off Button default to 'Ambient'
@@ -55,7 +48,7 @@ $('#onOff').click(function () {
 });
 
 $('input.button.colorpicker').on('change', function (e) {
-  color = '0x'+$(this).val().slice(1,7)
+  color = $(this).val().slice(1,7)
 })
 
 // Set BG Color of the color buttons, based on what the server sent
@@ -100,7 +93,7 @@ function OnOnOffClick() {
 // ----------------------------------------------------------------------
 // Begin LED functions
 
-function ledAmount(bright, color = '0x0000ff', amount = 2) {
+function ledAmount(bright, color = '0000ff', amount = 2) {
   send({type: 'amount', bright: bright, color: color, amount: amount})
 }
 
@@ -109,7 +102,7 @@ function ledOff() {
 }
 
 function ledRainbow(bright) {
-  send({type: 'special', bright: bright, mode: 'rainbow'})
+  send({type: 'special', bright: bright, mode: 'rainbow', arg: {speed: 50}})
 }
 
 

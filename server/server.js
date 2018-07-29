@@ -46,7 +46,7 @@ strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
 
 // On ready, show (green) lights
-ledColor(config.led.brightness, config.led.ready_color)
+ledAmount(config.led.brightness, config.led.ready_color)
 on = true
 
 app.post('/api', function(req, res) {
@@ -55,14 +55,6 @@ app.post('/api', function(req, res) {
   switch (req.body.func) {
     case 'off':
       ledOff()
-    break;
-    case 'color':
-      clearInterval(loop)
-      ledColor(req.body.bright, req.body.color)
-    break;
-    case 'color_man':
-      clearInterval(loop)
-      ledColorMan(req.body.bright, req.body.r, req.body.g, req.body.b)
     break;
     case 'special':
       clearInterval(loop)
@@ -75,9 +67,8 @@ app.post('/api', function(req, res) {
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
-  // TODO: Send Light Status and last used Colors
 
-  send(ws, {type: 'setup', on: on, favorites: favorites, max: config.led.max_brightness, color: config.led.ready_color})
+  SendToEveryone({type: 'status', on: on, color: msg.color, max: config.led.max_brightness, favorites: favorites})
 
   ws.on('message', (msg) => {
     try {
@@ -98,17 +89,8 @@ wss.on('connection', function(ws, req) {
       case 'off':
         ledOff()
       break;
-      case 'color':
-        clearInterval(loop)
-        ledColor(msg.bright, msg.color)
-      break;
-      case 'color_man':
-        clearInterval(loop)
-        ledColorMan(msg.bright, msg.r, msg.g, msg.b)
-      break;
       case 'amount':
         ledAmount(msg.bright, msg.color, msg.amount)
-        // TODO: send new favorites to clients
       break;
       case 'special':
         clearInterval(loop)
@@ -116,7 +98,7 @@ wss.on('connection', function(ws, req) {
       break;
     }
 
-    SendToEveryone({type: 'status', on: on, color: msg.color})
+    SendToEveryone({type: 'status', on: on, color: msg.color, max: config.led.max_brightness, favorites: favorites})
   });
 });
 
@@ -128,6 +110,7 @@ wss.on('connection', function(ws, req) {
 
 function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   strip.setBrightness(parseInt(bright))
+  color = '0x' + color
   amount = parseInt(amount)
   clear()
 
@@ -142,7 +125,6 @@ function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   if (!favorites.includes(color))
     favorites.unshift(color)
   favorites = favorites.slice(0,15)
-  SendToEveryone({type: 'new_fav', favorites: favorites})
 
   strip.render(pixelData)
   on = true
@@ -157,18 +139,12 @@ function clear() {
 
 function change() {
   clearInterval(loop)
-}
-
-function sleep(ms) {
-  return setTimeout(() => {}, ms);
+  clear()
 }
 
 function ledOff() {
   clearInterval(loop);
-
-  for (var i = 0; i < config.led.num; i++)  {
-    pixelData[i] = '0x000000'
-  }
+  clear()
   strip.render(pixelData)
   on = false;
 }
@@ -178,27 +154,9 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 
   switch (mode) {
     case 'rainbow':
-      loop = setInterval(() => { ledRainbow() }, 0)
+      loop = setInterval(() => { ledRainbow() }, arg.speed)
     break;
   }
-}
-
-function ledColorMan(bright = config.led.brightness, r, g, b) {
-  strip.setBrightness(parseInt(bright))
-  color = rgbToHex(r, g, b)
-  for (i = 0; i < config.led.num; i++) {
-    pixelData[i] = color
-  }
-  strip.render(pixelData)
-}
-
-function ledColor(bright = config.led.brightness, color) {
-  strip.setBrightness(parseInt(bright))
-
-  for (i = 0; i < config.led.num; i++) {
-    pixelData[i] = color
-  }
-  strip.render(pixelData)
 }
 
 function wheel (pos) {
@@ -220,13 +178,6 @@ function ledRainbow() {
     }
     strip.render(pixelData)
   }
-}
-
-function rgbToHex(r, g, b) {
-  r = parseInt(r).toString(16).padStart(2,0)
-  g = parseInt(g).toString(16).padStart(2,0)
-  b = parseInt(b).toString(16).padStart(2,0)
-  return '0x'+r+g+b
 }
 
 function send(ws, msg) {
