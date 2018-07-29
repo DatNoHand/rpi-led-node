@@ -69,7 +69,7 @@ app.post('/api', function(req, res) {
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
 
-  SendToEveryone({type: 'status', on: on, color: , max: config.led.max_brightness, favorites: favorites})
+  SendToEveryone({type: 'status', on: on, color: strip_color, max: config.led.max_brightness, favorites: favorites})
 
   ws.on('message', (msg) => {
     try {
