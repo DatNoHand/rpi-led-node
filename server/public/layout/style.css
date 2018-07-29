@@ -75,7 +75,7 @@ p {
   margin: 2px;
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
-  background-color: #ACFFB9;
+  background-color: var(--main-mg-color);
   outline: none;
 
 }
