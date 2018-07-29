@@ -21,5 +21,5 @@ config.mode.rider.color = '0xff0000'
 // LED config
 config.led.brightness = 30
 config.led.max_brightness = 150
-config.led.ready_color = '00ff00'
+config.led.ready_color = '00FF00'
 config.led.num = 923

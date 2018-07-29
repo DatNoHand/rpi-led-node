@@ -111,7 +111,6 @@ wss.on('connection', function(ws, req) {
 
 function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   strip.setBrightness(parseInt(bright))
-  strip_color = color
   color = '0x' + color
   amount = parseInt(amount)
   clear()
@@ -123,6 +122,7 @@ function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   }
 
   color = color.slice(2,8)
+  strip_color = color
 
   if (!favorites.includes(color))
     favorites.unshift(color)
