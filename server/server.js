@@ -123,14 +123,17 @@ wss.on('connection', function(ws, req) {
 * Maybe use classes later-later
 **/
 
-function ledAmount(bright = conifg.led.brightness, color, amount) {
+function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   strip.setBrightness(parseInt(bright))
+  amount = parseInt(amount)
   clear()
 
   if (amount < 1) amount = 1;
+
   for (var i = 0; i < config.led.num; i+=amount)  {
     pixelData[i] = color
   }
+
   color = color.slice(2,8)
 
   if (!favorites.includes(color))
