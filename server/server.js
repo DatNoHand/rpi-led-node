@@ -127,13 +127,14 @@ function ledAmount(bright = conifg.led.brightness, color, amount) {
   strip.setBrightness(parseInt(bright))
   clear()
 
-  if (amount < 2) amount = 2;
-  for (var i = 0; i < config.led.num; i+=(amount-1))  {
+  if (amount < 1) amount = 1;
+  for (var i = 0; i < config.led.num; i+=amount)  {
     pixelData[i] = color
   }
+  color = color.slice(2,8)
 
-  if (favorites[0] != color.slice(2,8))
-    favorites.unshift(color.slice(2,8))
+  if (!favorites.includes(color))
+    favorites.unshift(color)
   favorites = favorites.slice(0,15)
   SendToEveryone({type: 'new_fav', favorites: favorites})
 
