@@ -75,10 +75,6 @@ $('div.color.infinite.wobble').on('contextmenu', function (e) {
   e.preventDefault()
 })
 
-$('div.color.infinite.wobble').on('taphold', function () {
-  $('input.button.colpicker').click();
-})
-
 // On / Off Button default to 'Ambient'
 $('#onOff').click(function () {
   var bright = $('#br').val()
