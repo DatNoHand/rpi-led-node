@@ -12,7 +12,8 @@ ws.onmessage = function(e) {
     case 'status':
       lights_on = msg.on
       led_color = '#' + msg.color
-
+      
+      $('body').css({color: led_color})
       Lamp(lights_on)
       $('#br').attr('max', msg.max)
 
