@@ -31,6 +31,7 @@ function Start() {
         led_color = '#' + msg.color
 
         $('body').css({color: led_color})
+        $('input.button.colpicker').val(led_color)
         Lamp(lights_on)
         $('#br').attr('max', msg.max)
 
