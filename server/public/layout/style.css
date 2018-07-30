@@ -69,6 +69,18 @@ p {
   cursor: pointer;
 }
 
+.col {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #707070;
+  border-radius: 8px;
+  margin: 5px;
+  -webkit-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
+  -moz-box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
+  box-shadow: 6px 15px 20px 2px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+
 .effect {
   width: 90px;
   height: 50px;

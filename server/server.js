@@ -36,11 +36,18 @@ var wss = new WebSocketServer({ server: httpServer });
 var loop
 var on = false
 var strip_color
+var strip_walls = config.walls.push(NUM_LEDS)
+var strip_walls_active
 var favorites = [
   'FF0000', 'FF6600', 'FFAA00', 'FFFF00', '00FF00', '00FC9E',
   '00FFF6', '0099FF', '0000FF', '9A00FF', 'FF00F7', 'FF0077'
 ]
 
+for (let i = 0; i < strip_walls.length; i++) {
+  strip_walls_active.push([ 0, '000000'])
+}
+
+console.log(strip_walls)
 console.log('Listening on '+port);
 
 strip.init(NUM_LEDS)
@@ -50,26 +57,12 @@ strip.setBrightness(config.led.brightness)
 ledAmount(config.led.brightness, config.led.ready_color)
 on = true
 
-app.post('/api', function(req, res) {
-  var mode
-
-  switch (req.body.func) {
-    case 'off':
-      ledOff()
-    break;
-    case 'special':
-      clearInterval(loop)
-      ledSpecial(req.body.bright, req.body.mode, req.body.arg)
-    break;
-  }
-  res.send(req.body)
-})
-
+// Removed: API
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
 
-  SendToEveryone({type: 'status', on: on, color: strip_color, max: config.led.max_brightness, favorites: favorites})
+  SendToEveryone({type: 'status', on: on, color: strip_color, max: config.led.max_brightness, favorites: favorites, walls_active: strip_walls_active })
 
   ws.on('message', (msg) => {
     try {
@@ -99,7 +92,7 @@ wss.on('connection', function(ws, req) {
       break;
     }
 
-    SendToEveryone({type: 'status', on: on, color: msg.color, max: config.led.max_brightness, favorites: favorites})
+    SendToEveryone({type: 'status', on: on, color: strip_color, max: config.led.max_brightness, favorites: favorites, walls_active: strip_walls_active })
   });
 });
 

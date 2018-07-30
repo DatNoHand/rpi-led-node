@@ -1,6 +1,7 @@
 var ws
 var lights_on = false;
 var color
+var walls = []
 var led_color
 var lamp_off_color = '#707070'
 var tries = 0
@@ -29,10 +30,11 @@ function Start() {
       case 'status':
         lights_on = msg.on
         led_color = '#' + msg.color
+        walls = msg.walls_active
 
-        $('body').css({color: led_color})
-        $('input.button.colpicker').val(led_color)
         Lamp(lights_on)
+        UpdateColors()
+
         $('#br').attr('max', msg.max)
 
         setBg(msg.favorites)
@@ -52,12 +54,21 @@ $('.button.rainbow').on('click', function () {
 $('.button.amount').on('click', function () {
   let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
-  ledAmount(bright, color, amount)
+  ledAmount(bright, color, amount, wall)
+})
+
+$('.button.wall').on('click', function () {
+  wall = $(this).attr('data-wall')
+  if ($(this).attr('data-active') === null) {
+    $(this).attr('data-active', 1)
+  } else {
+    $(this).attr('data-active', 0)
+  }
 })
 
 // Longpress to show colorpicker
 var timer
-$('div.color.infinite.wobble').on('mousedown touchstart', function (e) {
+$('div.color.animate.infinite.wobble').on('mousedown touchstart', function (e) {
   timer = setTimeout(() => {
     $('input.button.colpicker').click();
   }, 400)
@@ -66,11 +77,11 @@ $('div.color.infinite.wobble').on('mousedown touchstart', function (e) {
   clearTimeout(timer)
 })
 
-$('div.color.infinite.wobble').on('click', function () {
+$('div.color.animate.infinite.wobble').on('click', function () {
   color = $(this).attr('data-color')
 })
 
-$('div.color.infinite.wobble').on('contextmenu', function (e) {
+$('div.color.animate.infinite.wobble').on('contextmenu', function (e) {
   $('input.button.colpicker').click();
   e.preventDefault()
 })
@@ -87,17 +98,33 @@ $('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
 
+function UpdateColors() {
+  $('body').css({color: led_color})
+  $('input.button.colpicker').val(led_color)
+
+  for (let i = 0; i < walls.length; i++) {
+    let wall = $('div.col.animate.infinite.wobble').eq(i)
+    if ((wall != null) && (walls[i] != null)) {
+      if (walls[i][0] == 1) {
+        wall.css({'background-color', walls[i][1]})
+      } else {
+        wall.css({'background-color', lamp_off_color})        
+      }
+    }
+  }
+}
+
 // Set BG Color of the color buttons, based on what the server sent
 function setBg(colors) {
   // Get the amount of color buttons that we have
   let amount = 0
-  $('div.color.infinite.wobble').each(() => { amount++ })
+  $('div.color.animate.infinite.wobble').each(() => { amount++ })
 
   // For Each entry in colors array from the Server
   for (var i = 0; i < amount; i++) {
     // If the server sent more than we can use return
     let c = colors[i]
-    let current = $('div.color.infinite.wobble').eq(i)
+    let current = $('div.color.animate.infinite.wobble').eq(i)
     if (c == undefined) return;
 
     let r = c.slice(0, 2)
