@@ -11,12 +11,14 @@ function Start() {
   ws = new WebSocket('ws://'+window.location.host)
 
   ws.onclose = function() {
+    ws = null
     setTimeout(() => { Start() }, delay);
   }
 
   ws.onerror = function(err) {
     ws.close()
-    window.location.href = window.location
+    ws = null
+    setTimeout(() => { Start() }, delay);
   };
 
   // Server Messages
