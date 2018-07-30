@@ -1,10 +1,9 @@
 var ws = new WebSocket('ws://'+window.location.host)
 var lights_on = false;
-var color = '0x000000'
-var lamp_color = '#000000'
+var color
+var led_color
 var lamp_off_color = '#707070'
-
-// TODO: _2 Make Color Buttons work (#ez #zufaul)
+var last_clicked
 
 // Server Messages
 ws.onmessage = function(e) {
@@ -13,7 +12,7 @@ ws.onmessage = function(e) {
   switch(msg.type) {
     case 'status':
       lights_on = msg.on
-      lamp_color = '#' + msg.color
+      led_color = '#' + msg.color
       Lamp(lights_on)
       $('#br').attr('max', msg.max)
 
@@ -36,7 +35,16 @@ $('.button.amount').on('click', function () {
 })
 
 $('div.color.infinite.wobble').on('click', function () {
-  color = $(this).attr('data-color')
+    color = $(this).attr('data-color')
+    led_color = '#' + color
+
+    $('body').css({color: led_color})
+    
+    $(this).css({border: '1px solid ' + led_color})
+    if (last_clicked != null) last_clicked.css({border: ''})
+
+    last_clicked = $(this)
+  }
 })
 
 // On / Off Button default to 'Ambient'
@@ -76,7 +84,7 @@ function setBg(colors) {
 function Lamp(on = true) {
   if (on) {
     $('#onOff').css('transform', 'scale(1.2)')
-    $('#onOff').children('svg').css('color', lamp_color)
+    $('#onOff').children('svg').css('color', led_color)
   } else {
     $('#onOff').css('transform', 'scale(1)')
     $('#onOff').children('svg').css('color', lamp_off_color)

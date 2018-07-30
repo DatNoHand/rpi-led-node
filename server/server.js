@@ -124,8 +124,8 @@ function ledAmount(bright = conifg.led.brightness, color, amount = 1) {
   color = color.slice(2,8)
   strip_color = color
 
-  if (!favorites.includes(color))
-    favorites.unshift(color)
+  if (!favorites.includes(color.toUpperCase()))
+    favorites.unshift(color.toUpperCase())
   favorites = favorites.slice(0,15)
 
   strip.render(pixelData)
