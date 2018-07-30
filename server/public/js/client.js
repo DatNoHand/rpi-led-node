@@ -39,6 +39,7 @@ $('.button.amount').on('click', function () {
 
 $('div.color.infinite.wobble').on('click', function () {
   color = $(this).attr('data-color')
+  clicked = $(this)
 })
 
 // On / Off Button default to 'Ambient'
@@ -51,12 +52,11 @@ $('#onOff').click(function () {
 
 $('input.button.colorpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
-  clicked = $(this)
 })
 
 function UpdateColors() {
   $('body').css({color: led_color})
-  
+
   if (clicked != null) clicked.css({border: '1.5px solid white'})
   if (last_clicked != null) last_clicked.css({border: ''})
 
