@@ -4,6 +4,7 @@ var color
 var led_color
 var lamp_off_color = '#707070'
 var last_clicked
+var clicked
 
 // Server Messages
 ws.onmessage = function(e) {
@@ -50,15 +51,16 @@ $('#onOff').click(function () {
 
 $('input.button.colorpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
+  clicked = $(this)
 })
 
 function UpdateColors() {
   $('body').css({color: led_color})
 
-  $(this).css({border: '1.5px solid white'})
+  clicked.css({border: '1.5px solid white'})
   if (last_clicked != null) last_clicked.css({border: ''})
 
-  last_clicked = $(this)
+  last_clicked = clicked
 }
 
 // Set BG Color of the color buttons, based on what the server sent
