@@ -3,11 +3,12 @@ var lights_on = false;
 var color
 var led_color
 var lamp_off_color = '#707070'
-var delay = 1000
+var tries = 0
 
 Start()
 
 function Start() {
+  if (tries > 10) window.location.href = window.location
   ws = new WebSocket('ws://'+window.location.host)
 
   ws.onclose = function() {
@@ -38,7 +39,7 @@ function Start() {
     }
   }
 
-  delay += 1000
+  tries++
 }
 
 // Button handlers
