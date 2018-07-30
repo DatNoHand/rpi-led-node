@@ -56,8 +56,8 @@ $('input.button.colorpicker').on('change', function (e) {
 
 function UpdateColors() {
   $('body').css({color: led_color})
-
-  clicked.css({border: '1.5px solid white'})
+  
+  if (clicked != null) clicked.css({border: '1.5px solid white'})
   if (last_clicked != null) last_clicked.css({border: ''})
 
   last_clicked = clicked
