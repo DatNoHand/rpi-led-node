@@ -16,7 +16,6 @@ function Start() {
   }
 
   ws.onerror = function(err) {
-    ws.close()
     ws = null
     setTimeout(() => { Start() }, delay);
   };
@@ -133,5 +132,5 @@ function rgbToHex(r, g, b) {
 }
 
 function send(msg) {
-  if (ws.readyState) ws.send(JSON.stringify(msg))
+  if (ws.readyState && (ws != null)) ws.send(JSON.stringify(msg))
 }
