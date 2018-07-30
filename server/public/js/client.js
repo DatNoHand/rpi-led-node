@@ -13,12 +13,12 @@ function Start() {
 
   ws.onclose = function() {
     ws = null
-    setTimeout(() => { Start() }, delay);
+    setTimeout(() => { Start() }, 1000);
   }
 
   ws.onerror = function(err) {
     ws = null
-    setTimeout(() => { Start() }, delay);
+    setTimeout(() => { Start() }, 1000);
   };
 
   // Server Messages
@@ -54,11 +54,27 @@ $('.button.amount').on('click', function () {
   ledAmount(bright, color, amount)
 })
 
+// Longpress to show colorpicker
+var timer
+$('div.color.infinite.wobble').on('mousedown touchstart', function (e) {
+  timer = setTimeout(() => {
+    $('input.button.colpicker').click();
+  }, 400)
+  e.preventDefault()
+}).on('mouseup mouseleave touchend', () => {
+  clearTimeout(timer)
+})
+
 $('div.color.infinite.wobble').on('click', function () {
   color = $(this).attr('data-color')
 })
 
-$('div.color.infinite.wobble').on('contextmenu', function () {
+$('div.color.infinite.wobble').on('contextmenu', function (e) {
+  $('input.button.colpicker').click();
+  e.preventDefault()
+})
+
+$('div.color.infinite.wobble').on('taphold', function () {
   $('input.button.colpicker').click();
 })
 
