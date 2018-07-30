@@ -35,16 +35,15 @@ $('.button.amount').on('click', function () {
 })
 
 $('div.color.infinite.wobble').on('click', function () {
-    color = $(this).attr('data-color')
-    led_color = '#' + color
+  color = $(this).attr('data-color')
+  led_color = '#' + color
 
-    $('body').css({color: led_color})
-    
-    $(this).css({border: '1px solid ' + led_color})
-    if (last_clicked != null) last_clicked.css({border: ''})
+  $('body').css({color: led_color})
 
-    last_clicked = $(this)
-  }
+  $(this).css({border: '1px solid ' + led_color})
+  if (last_clicked != null) last_clicked.css({border: ''})
+
+  last_clicked = $(this)
 })
 
 // On / Off Button default to 'Ambient'
