@@ -1,6 +1,6 @@
 :root {
   --main-bg-color: #212121;
-  --second-bg-color: #1e75ff;
+  --second-bg-color: #707070;
 }
 
 body {
@@ -10,7 +10,7 @@ body {
   flex-direction: column;
   font-family: 'Montserrat', sans-serif;
   transition: .5s;
-  color: #ffffff;
+  color: #;
 }
 
 h2 {
