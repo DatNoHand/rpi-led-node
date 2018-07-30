@@ -9,7 +9,8 @@ body {
   display: flex;
   flex-direction: column;
   font-family: 'Montserrat', sans-serif;
-  color: #1e75ff;
+  transition: .5s;
+  color: #ffffff;
 }
 
 h2 {

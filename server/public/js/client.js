@@ -13,6 +13,8 @@ ws.onmessage = function(e) {
     case 'status':
       lights_on = msg.on
       led_color = '#' + msg.color
+      UpdateColors()
+
       Lamp(lights_on)
       $('#br').attr('max', msg.max)
 
@@ -36,14 +38,6 @@ $('.button.amount').on('click', function () {
 
 $('div.color.infinite.wobble').on('click', function () {
   color = $(this).attr('data-color')
-  led_color = '#' + color
-
-  $('body').css({color: led_color})
-
-  $(this).css({border: '1px solid ' + led_color})
-  if (last_clicked != null) last_clicked.css({border: ''})
-
-  last_clicked = $(this)
 })
 
 // On / Off Button default to 'Ambient'
@@ -57,6 +51,15 @@ $('#onOff').click(function () {
 $('input.button.colorpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
+
+function UpdateColors() {
+  $('body').css({color: led_color})
+
+  $(this).css({border: '1.5px solid white'})
+  if (last_clicked != null) last_clicked.css({border: ''})
+
+  last_clicked = $(this)
+}
 
 // Set BG Color of the color buttons, based on what the server sent
 function setBg(colors) {
