@@ -59,6 +59,14 @@ $('div.color.infinite.wobble').on('click', function () {
   color = $(this).attr('data-color')
 })
 
+$('div.color.infinite.wobble').on('dblclick', function () {
+  $('input.button.colorpicker').click();
+})
+
+$('div.color.infinite.wobble').on('taphold', function () {
+  $('input.button.colorpicker').click();
+})
+
 // On / Off Button default to 'Ambient'
 $('#onOff').click(function () {
   var bright = $('#br').val()
