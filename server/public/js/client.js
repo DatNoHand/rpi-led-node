@@ -38,7 +38,6 @@ function Start() {
       break;
     }
   }
-
   tries++
 }
 
@@ -59,12 +58,8 @@ $('div.color.infinite.wobble').on('click', function () {
   color = $(this).attr('data-color')
 })
 
-$('div.color.infinite.wobble').on('dblclick', function () {
-  $('input.button.colorpicker').click();
-})
-
-$('div.color.infinite.wobble').on('taphold', function () {
-  $('input.button.colorpicker').click();
+$('div.color.infinite.wobble').on('contextmenu', function () {
+  $('input.button.colpicker').click();
 })
 
 // On / Off Button default to 'Ambient'
@@ -75,7 +70,7 @@ $('#onOff').click(function () {
   OnOnOffClick()
 });
 
-$('input.button.colorpicker').on('change', function (e) {
+$('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
 
