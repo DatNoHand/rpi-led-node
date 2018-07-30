@@ -1,25 +1,43 @@
-var ws = new WebSocket('ws://'+window.location.host)
+var ws
 var lights_on = false;
 var color
 var led_color
 var lamp_off_color = '#707070'
+var delay = 1000
 
-// Server Messages
-ws.onmessage = function(e) {
-  var msg = JSON.parse(e.data);
+Start()
 
-  switch(msg.type) {
-    case 'status':
-      lights_on = msg.on
-      led_color = '#' + msg.color
-      
-      $('body').css({color: led_color})
-      Lamp(lights_on)
-      $('#br').attr('max', msg.max)
+function Start() {
+  ws = new WebSocket('ws://'+window.location.host)
 
-      setBg(msg.favorites)
-    break;
+  ws.onclose = function() {
+    setTimeout(() => { Start() }, delay);
   }
+
+  ws.onerror = function(err) {
+    ws.close()
+    window.location.href = window.location
+  };
+
+  // Server Messages
+  ws.onmessage = function(e) {
+    var msg = JSON.parse(e.data);
+
+    switch(msg.type) {
+      case 'status':
+        lights_on = msg.on
+        led_color = '#' + msg.color
+
+        $('body').css({color: led_color})
+        Lamp(lights_on)
+        $('#br').attr('max', msg.max)
+
+        setBg(msg.favorites)
+      break;
+    }
+  }
+
+  delay += 1000
 }
 
 // Button handlers
@@ -105,21 +123,6 @@ function ledRainbow(bright) {
   send({type: 'special', bright: bright, mode: 'rainbow', arg: {speed: 50}})
 }
 
-
-// function ledColor(bright, color) {
-//   send({type: 'color', bright: bright, color: color})
-// }
-//
-// function ledColorMan(bright, r, g, b) {
-//   send({type: 'color_man', bright: bright, r: r, g: g, b: b})
-// }
-
-// End LED functions
-// ----------------------------------------------------------------------
-function setColor(r, g, b) {
-  color = rgbToHex(r, g, b);
-}
-
 function rgbToHex(r, g, b) {
   r = parseInt(r).toString(16).padStart(2,0)
   g = parseInt(g).toString(16).padStart(2,0)
@@ -128,5 +131,5 @@ function rgbToHex(r, g, b) {
 }
 
 function send(msg) {
-  ws.send(JSON.stringify(msg))
+  if (ws.readyState) ws.send(JSON.stringify(msg))
 }
