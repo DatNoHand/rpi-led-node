@@ -64,7 +64,7 @@ strip.setBrightness(config.led.brightness)
 
 // On ready, show (green) lights
 // Set all walls to on
-SetStrip([[1, 'ff0000', 1], [1, '00ff00', 1], [1, '0000ff', 1], [1, 'b6cc18', 1]])
+SetStrip(0, config.led.ready_color, 5)
 RenderLedData()
 
 on = true
@@ -74,7 +74,7 @@ on = true
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
 
-  // SendToEveryone({type: 'status', on: on, max: config.led.max_brightness, favorites: favorites, color: , wall_data: strip_wall_data })
+  SendToEveryone({type: 'status', on: on, max: config.led.max_brightness, favorites: favorites, color: color, wall_data: strip_wall_data })
 
   ws.on('message', (msg) => {
     try {
@@ -89,24 +89,21 @@ wss.on('connection', function(ws, req) {
       ws.terminate();
     }
 
-    change()
-
     switch (msg.type) {
       case 'off':
-        ledOff()
+        SetStrip(0, 0, 0, false)
+        RenderLedData()
       break;
-      case 'amount':
-        console.log(msg.walls)
-        SetStrip(msg.walls)
-        ledAmount(msg.bright, msg.amount)
+      case 'led':
+        SetStrip(msg.wall_data)
+        RenderLedData()
       break;
       case 'special':
         clearInterval(loop)
         ledSpecial(msg.bright, msg.mode, msg.arg)
       break;
     }
-
-    // SendToEveryone({type: 'status', on: on, max: config.led.max_brightness, favorites: favorites, walls_active: strip_walls_active })
+    SendToEveryone({type: 'status', on: on, max: config.led.max_brightness, favorites: favorites, color: color, wall_data: strip_wall_data })
   });
 });
 
@@ -127,21 +124,34 @@ function RenderLedData() {
   strip.render(pixelData)
 }
 
-function SetLedData(_led, _on = 1, _color) {
-  if (_on == 0) _color = strip_led_data[_led][1]
+function SetLedData(_led, _on = true, _color) {
+  if (!_on) _color = strip_led_data[_led][1]
   strip_led_data[_led] = [ _on, _color]
 }
 
-// Format: SetStrip( array _walls, string _color, int _amount)
-// Format: array _walls = wall [ bool on, string color, int amount ]
-function SetStrip(_walls = 0, _color = 'ff0000', _amount = 1) {
+// Format: SetStrip( array _walls, string _color, int _amount, bool _on)
+// Format: array _walls = wall [ bool on, string color, int amount]
+function SetStrip(_walls = false, _color = 'ff0000', _amount = 1, _on = true) {
   // If nothing or 0 was passed as the first arg
-  // Set the whole strip to red / _color
-  if (_walls == 0) {
-    for (var i = 0; i < NUM_LEDS; i+=parseInt(_amount)) {
-      color = _color
-      SetLedData(i, 1, _color)
+  // Set the whole strip to _color
+  if (!_walls) {
+    if (!_on) {
+      for (var i = 0; i < NUM_LEDS; i++) {
+        SetLedData(i, false)
+      }
+      on = false
+      return
     }
+
+    for (var i = 0; i < strip_walls.length; i++) {
+      strip_wall_data[i] = [ true, _color, _amount ]
+    }
+
+    for (var i = 0; i < NUM_LEDS; i+=parseInt(_amount)) {
+      SetLedData(i, true, _color)
+    }
+
+    color = _color
   } else {
     var led = 0
     var led2 = 0
@@ -149,22 +159,23 @@ function SetStrip(_walls = 0, _color = 'ff0000', _amount = 1) {
     for (var i = 0; i < strip_walls.length; i++) {
       // Foreach LED / wall
       // First black out all LEDs
-      for (var led = strip_walls[i]; led < strip_walls[i]; led++) {
-        SetLedData(led, 0)
+      for (led; led < strip_walls[i]; led++) {
+        SetLedData(led, false)
       }
-
-      let amount = (_walls[i][2] < 1) ? 1 : _walls[i][2]
+      var amount = (_walls[i][2] < 1) ? 1 : _walls[i][2]
+      // If the wall is disabled
       // Then show only used LEDs
       for (led2; led2 < strip_walls[i]; led2+=parseInt(amount)) {
-        // If a wall is disabled,
-        if (_walls[i][0] == 0) {
+        if (!_walls[i][0]) {
           SetLedData(led2, false, _walls[i][1])
         } else {
           SetLedData(led2, true, _walls[i][1])
         }
       }
     }
+    on = true
     color = _walls[0][1]
+    strip_wall_data = _walls
   }
 }
 

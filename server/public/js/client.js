@@ -30,11 +30,12 @@ function Start() {
       case 'status':
         lights_on = msg.on
         led_color = '#' + msg.color
-        wall_data = msg.walls_active
-        console.log(walls)
+        color = msg.color
+        wall_data = msg.wall_data
+        $('div.colorreference').css({'background-color': color})
 
         Lamp(lights_on)
-        UpdateColors()
+        UpdateWalls()
 
         $('#br').attr('max', msg.max)
 
@@ -55,10 +56,12 @@ $('.button.rainbow').on('click', function () {
 $('.button.amount').on('click', function () {
   let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
-  ledAmount(bright, color, amount, walls)
+  SetLed(bright, amount)
 })
 
-$('div.col.animate.infinite.wobble.wall').on('click', function () {
+
+// On Wall button click
+$('div.wall').on('click', function () {
   // Set Background color of clicked element
   var col_reference = $('div.colorreference')
   var index = $(this).attr('data-wall') - 1
@@ -73,10 +76,12 @@ $('div.col.animate.infinite.wobble.wall').on('click', function () {
   }
 
   if ($(this).attr('data-active') == 1) {
-    walls[index][0] = 1
-    walls[index][1] = color
+    wall_data[index][0] = true
+    wall_data[index][1] = color
+  } else {
+    wall_data[index][0] = false
   }
-
+  console.log(wall_data)
 })
 
 // Longpress to show colorpicker
@@ -103,7 +108,7 @@ $('div.color.animate.infinite.wobble').on('contextmenu', function (e) {
 $('#onOff').click(function () {
   var bright = $('#br').val()
   if (!lights_on)
-    ledAmount(bright, color, 5, 0)
+    SetLed(bright, 5)
   OnOnOffClick()
 });
 
@@ -111,15 +116,13 @@ $('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
 
-function UpdateColors() {
-  $('body').css({color: led_color})
-  $('input.button.colpicker').val(led_color)
+function UpdateWalls() {
+  for (let i = 0; i < wall_data.length; i++) {
+    var wall = $('div.wall').eq(i)
 
-  for (let i = 0; i < walls.length; i++) {
-    var wall = $('div.col.animate.infinite.wobble.wall').eq((i+1))
-    if ((wall != null) && (walls[i] != null)) {
-      if (walls[i][0] == 1) {
-        wall.css({'background-color': walls[i][1] })
+    if ((wall != null) && (wall_data[i] != null)) {
+      if (wall_data[i][0] == 1) {
+        wall.css({'background-color': wall_data[i][1] })
         wall.attr('data-active', 1)
       } else {
         wall.css({'background-color': '#212121'})
@@ -131,6 +134,9 @@ function UpdateColors() {
 
 // Set BG Color of the color buttons, based on what the server sent
 function setBg(colors) {
+  $('body').css({color: led_color})
+  $('input.button.colpicker').val(led_color)
+
   // Get the amount of color buttons that we have
   let amount = 0
   $('div.color.animate.infinite.wobble').each(() => { amount++ })
@@ -162,7 +168,7 @@ function Lamp(on = true) {
 }
 
 function OnOnOffClick() {
-  if (lights_on) ledOff();
+  if (lights_on) SendOff();
 }
 
 // End Button handlers
@@ -171,12 +177,22 @@ function OnOnOffClick() {
 // ----------------------------------------------------------------------
 // Begin LED functions
 
-function ledAmount(bright, color = '0000ff', amount = 2) {
-  send({type: 'amount', bright: bright, color: color, amount: amount, walls: walls})
+function SetLed(bright, amount, _on = true) {
+  if (!_on) {
+    for (let i = 0; i < wall_data; i++) {
+      wall_data[i][0] = _on
+    }
+  } else {
+    // wall_data: [ bool on, string color, int amount]
+    for (let i = 0; i < wall_data.length; i++) {
+      wall_data[i][2] = amount
+    }
+  }
+  send({type: 'led', bright: bright, wall_data: wall_data})
 }
 
-function ledOff() {
-  send({type: 'off', walls: walls})
+function SendOff() {
+  send({type: 'off'})
 }
 
 function ledRainbow(bright) {
