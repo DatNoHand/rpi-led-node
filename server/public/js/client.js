@@ -1,7 +1,7 @@
 var ws
 var lights_on = false;
 var color
-var walls = []
+var wall_data = []
 var led_color
 var lamp_off_color = '#707070'
 var tries = 0
@@ -30,7 +30,8 @@ function Start() {
       case 'status':
         lights_on = msg.on
         led_color = '#' + msg.color
-        walls = msg.walls_active
+        wall_data = msg.walls_active
+        console.log(walls)
 
         Lamp(lights_on)
         UpdateColors()
@@ -54,26 +55,38 @@ $('.button.rainbow').on('click', function () {
 $('.button.amount').on('click', function () {
   let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
-  ledAmount(bright, color, amount, wall)
+  ledAmount(bright, color, amount, walls)
 })
 
-$('.button.wall').on('click', function () {
-  wall = $(this).attr('data-wall')
-  if ($(this).attr('data-active') === null) {
+$('div.col.animate.infinite.wobble.wall').on('click', function () {
+  // Set Background color of clicked element
+  var col_reference = $('div.colorreference')
+  var index = $(this).attr('data-wall') - 1
+  col_reference.css({'background-color': color})
+
+  if (($(this).attr('data-active') == undefined) || ($(this).css('background-color') != col_reference.css('background-color'))) {
     $(this).attr('data-active', 1)
+    $(this).css({'background-color': color})
   } else {
     $(this).attr('data-active', 0)
+    $(this).css({'background-color': '#212121'})
   }
+
+  if ($(this).attr('data-active') == 1) {
+    walls[index][0] = 1
+    walls[index][1] = color
+  }
+
 })
 
 // Longpress to show colorpicker
 var timer
-$('div.color.animate.infinite.wobble').on('mousedown touchstart', function (e) {
+$('div.color.animate.infinite.wobble').on('mousedown', function (e) {
   timer = setTimeout(() => {
     $('input.button.colpicker').click();
   }, 400)
   e.preventDefault()
-}).on('mouseup mouseleave touchend', () => {
+}).on('mouseup mouseleave', () => {
   clearTimeout(timer)
 })
 
@@ -90,7 +103,7 @@ $('div.color.animate.infinite.wobble').on('contextmenu', function (e) {
 $('#onOff').click(function () {
   var bright = $('#br').val()
   if (!lights_on)
-    ledAmount(bright, color, 5)
+    ledAmount(bright, color, 5, 0)
   OnOnOffClick()
 });
 
@@ -103,12 +116,14 @@ function UpdateColors() {
   $('input.button.colpicker').val(led_color)
 
   for (let i = 0; i < walls.length; i++) {
-    let wall = $('div.col.animate.infinite.wobble').eq(i)
+    var wall = $('div.col.animate.infinite.wobble.wall').eq((i+1))
     if ((wall != null) && (walls[i] != null)) {
       if (walls[i][0] == 1) {
-        wall.css({'background-color', walls[i][1]})
+        wall.css({'background-color': walls[i][1] })
+        wall.attr('data-active', 1)
       } else {
-        wall.css({'background-color', lamp_off_color})        
+        wall.css({'background-color': '#212121'})
+        wall.attr('data-active', 0)
       }
     }
   }
@@ -157,11 +172,11 @@ function OnOnOffClick() {
 // Begin LED functions
 
 function ledAmount(bright, color = '0000ff', amount = 2) {
-  send({type: 'amount', bright: bright, color: color, amount: amount})
+  send({type: 'amount', bright: bright, color: color, amount: amount, walls: walls})
 }
 
 function ledOff() {
-  send({type: 'off'})
+  send({type: 'off', walls: walls})
 }
 
 function ledRainbow(bright) {

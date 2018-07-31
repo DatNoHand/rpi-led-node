@@ -8,7 +8,7 @@ config.mode.ambient = {}
 config.mode.rider = {}
 
 // WebSocket config
-config.port = 80
+config.port = 420
 config.name = 'LED Controller'
 
 
@@ -19,8 +19,7 @@ config.led.ready_color = '00FF00'
 config.led.num = 923
 
 // Walls config
-config.walls = [
-  [ 280 ],
-  [ 650 ],
-  [ 790 ],
-]
+config.walls = [ 218, 463, 681]
+
+// Ignore
+config.walls.push(config.led.num)
