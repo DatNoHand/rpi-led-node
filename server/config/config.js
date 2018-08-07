@@ -1,11 +1,7 @@
 var config = module.exports = {};
 
-config.wss = {}
 config.led = {}
 config.walls = []
-config.mode = {}
-config.mode.ambient = {}
-config.mode.rider = {}
 
 // WebSocket config
 config.port = 420
