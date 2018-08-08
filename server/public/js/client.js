@@ -5,8 +5,10 @@ var wall_data = []
 var led_color
 var lamp_off_color = '#707070'
 var tries = 0
+var live = false
 
 Start()
+Draw()
 
 function Start() {
   if (tries > 10) window.location.href = window.location
@@ -14,13 +16,10 @@ function Start() {
 
   ws.onclose = function() {
     ws = null
-    setTimeout(() => { Start() }, 1000);
+    if (live) {
+      setTimeout(() => { Start() }, 1000);
+    }
   }
-
-  ws.onerror = function(err) {
-    ws = null
-    setTimeout(() => { Start() }, 1000);
-  };
 
   // Server Messages
   ws.onmessage = function(e) {
@@ -43,10 +42,23 @@ function Start() {
       break;
     }
   }
+
   tries++
 }
 
+function Draw() {
+  // Draw wall buttons depending on how many are set in server/config/config.js
+  for (let i = 0; i < wall_data.length; i++) {
+    $('div.colorpicker').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
+  }
+  $('div.colorpicker').append("<div class='hidden colorreference' hidden></div>")
+}
+
 // Button handlers
+$('#br').on('input', function () {
+  SendBrightness($(this).val())
+})
+
 $('.button.rainbow').on('click', function () {
   var bright = $('#br').val()
   ledRainbow(bright)
@@ -81,7 +93,6 @@ $('div.wall').on('click', function () {
   } else {
     wall_data[index][0] = false
   }
-  console.log(wall_data)
 })
 
 // Longpress to show colorpicker
@@ -188,7 +199,12 @@ function SetLed(bright, amount, _on = true) {
       wall_data[i][2] = amount
     }
   }
-  send({type: 'led', bright: bright, wall_data: wall_data})
+  SendBrightness(bright)
+  send({type: 'led', wall_data: wall_data})
+}
+
+function SendBrightness(bright) {
+  send({type: 'brightness', bright: bright})
 }
 
 function SendOff() {
@@ -196,7 +212,8 @@ function SendOff() {
 }
 
 function ledRainbow(bright) {
-  send({type: 'special', bright: bright, mode: 'rainbow', arg: {speed: 50}})
+  SendBrightness(bright)
+  send({type: 'special', mode: 'rainbow', arg: {speed: 50}})
 }
 
 function rgbToHex(r, g, b) {

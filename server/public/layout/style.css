@@ -24,6 +24,9 @@ p {
   margin: auto;
 }
 
+.hidden {
+  display: none;
+}
 
 .colorpicker {
  display: flex;

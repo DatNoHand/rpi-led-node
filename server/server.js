@@ -95,12 +95,17 @@ wss.on('connection', function(ws, req) {
         RenderLedData()
       break;
       case 'led':
+        SetBrightness(msg.bright)
         SetStrip(msg.wall_data)
         RenderLedData()
       break;
       case 'special':
         clearInterval(loop)
+        SetBrightness(msg.bright)
         ledSpecial(msg.bright, msg.mode, msg.arg)
+      break;
+      case 'brightness':
+        SetBrightness(msg.bright)
       break;
     }
     SendToEveryone({type: 'status', on: on, max: config.led.max_brightness, favorites: favorites, color: color, wall_data: strip_wall_data })
@@ -112,6 +117,10 @@ wss.on('connection', function(ws, req) {
 * Maybe moved to different file later
 * Maybe use classes later-later
 **/
+
+function SetBrightness(brightness = config.led.brightness) {
+  strip.setBrightness((brightness > config.led.max_brightness) ? config.led.max_brightness : brightness)
+}
 
 function RenderLedData() {
   for (var i = 0; i < NUM_LEDS; i++) {
