@@ -8,7 +8,10 @@ var tries = 0
 var live = true
 var drawn = false
 
+// DrawPage('main')
+
 Start()
+Draw()
 
 function Start() {
   if (tries > 10) window.location.href = window.location
@@ -56,6 +59,29 @@ function Draw() {
   $('div.colorpicker.wallholder').append("<div class='hidden colorreference' hidden></div>")
 
   drawn = true
+}
+
+// [ string Filename to Load]
+function DrawPage(_name) {
+  let data = false
+  let req_url = window.location + 'pages/' + _name + '.tbd'
+
+  // Empty the 'fake' body element to make room for the new page
+  $('div.b').empty()
+
+  // Check if the requested page exists
+  $.ajax({
+    url: req_url,
+    async: false,
+    success: function (data) {
+      console.log(data)
+    }
+  })
+
+  // if (data) {
+  //   alert('page exists!')
+  // }
+
 }
 
 // Button handlers
