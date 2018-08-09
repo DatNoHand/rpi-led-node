@@ -5,7 +5,9 @@ var wall_data = []
 var led_color
 var lamp_off_color = '#707070'
 var tries = 0
-var live = true
+var live = false
+
+DrawPage('main')
 
 Start()
 Draw()
@@ -46,8 +48,27 @@ function Start() {
   tries++
 }
 
-function DrawChoose() {
-  $('body').empty()
+// [ string Filename to Load]
+function DrawPage(_name) {
+  let data = false
+  let req_url = window.location + 'pages/' + _name + '.tbd'
+
+  // Empty the 'fake' body element to make room for the new page
+  $('div.b').empty()
+
+  // Check if the requested page exists
+  $.ajax({
+    url: req_url,
+    async: false,
+    success: function (data) {
+      console.log(data)
+    }
+  })
+
+  // if (data) {
+  //   alert('page exists!')
+  // }
+
 }
 
 function Draw() {
@@ -134,11 +155,6 @@ $('#onOff').click(function () {
 $('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
-
-// Loads the Preset with the set ID
-function LoadPreset(_preset_id) {
-
-}
 
 function UpdateWalls() {
   for (let i = 0; i < wall_data.length; i++) {
