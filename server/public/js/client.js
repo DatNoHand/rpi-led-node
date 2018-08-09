@@ -6,9 +6,9 @@ var led_color
 var lamp_off_color = '#707070'
 var tries = 0
 var live = true
+var drawn = false
 
 Start()
-Draw()
 
 function Start() {
   if (tries > 10) window.location.href = window.location
@@ -27,12 +27,13 @@ function Start() {
 
     switch(msg.type) {
       case 'status':
+        wall_data = msg.wall_data
         lights_on = msg.on
         led_color = '#' + msg.color
         color = msg.color
-        wall_data = msg.wall_data
         $('div.colorreference').css({'background-color': color})
 
+	Draw()
         Lamp(lights_on)
         UpdateWalls()
 
@@ -46,16 +47,15 @@ function Start() {
   tries++
 }
 
-function DrawChoose() {
-  $('body').empty()
-}
-
 function Draw() {
+  if (drawn) return
   // Draw wall buttons depending on how many are set in server/config/config.js
   for (let i = 0; i < wall_data.length; i++) {
-    $('div.colorpicker').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
+    $('div.colorpicker.wallholder').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
   }
-  $('div.colorpicker').append("<div class='hidden colorreference' hidden></div>")
+  $('div.colorpicker.wallholder').append("<div class='hidden colorreference' hidden></div>")
+
+  drawn = true
 }
 
 // Button handlers
@@ -81,7 +81,7 @@ $('.button.preset').on('click', function () {
 
 
 // On Wall button click
-$('div.wall').on('click', function () {
+$('body').on('click', 'div.wall', function () {
   // Set Background color of clicked element
   var col_reference = $('div.colorreference')
   var index = $(this).attr('data-wall') - 1
@@ -135,10 +135,7 @@ $('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
 
-// Loads the Preset with the set ID
-function LoadPreset(_preset_id) {
 
-}
 
 function UpdateWalls() {
   for (let i = 0; i < wall_data.length; i++) {

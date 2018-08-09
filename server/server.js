@@ -118,8 +118,13 @@ wss.on('connection', function(ws, req) {
 * Maybe use classes later-later
 **/
 
-function SetBrightness(brightness = config.led.brightness) {
-  strip.setBrightness((brightness > config.led.max_brightness) ? config.led.max_brightness : brightness)
+function SetBrightness(_brightness = config.led.brightness) {
+  if (_brightness > config.led.max_brightness) {
+    _brightness = config.led.max_brightness
+  }
+
+  _brightness = parseInt(_brightness)
+  strip.setBrightness(_brightness)
 }
 
 function RenderLedData() {
