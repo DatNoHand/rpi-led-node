@@ -5,7 +5,7 @@ var wall_data = []
 var led_color
 var lamp_off_color = '#707070'
 var tries = 0
-var live = false
+var live = true
 
 Start()
 Draw()
@@ -46,6 +46,10 @@ function Start() {
   tries++
 }
 
+function DrawChoose() {
+  $('body').empty()
+}
+
 function Draw() {
   // Draw wall buttons depending on how many are set in server/config/config.js
   for (let i = 0; i < wall_data.length; i++) {
@@ -69,6 +73,10 @@ $('.button.amount').on('click', function () {
   let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
   SetLed(bright, amount)
+})
+
+$('.button.preset').on('click', function () {
+  LoadPreset($(this).attr('data-preset'))
 })
 
 
@@ -126,6 +134,11 @@ $('#onOff').click(function () {
 $('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
+
+// Loads the Preset with the set ID
+function LoadPreset(_preset_id) {
+
+}
 
 function UpdateWalls() {
   for (let i = 0; i < wall_data.length; i++) {
