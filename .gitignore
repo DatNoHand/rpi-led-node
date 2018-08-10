@@ -1,3 +1,4 @@
 .git/
 package_lock*
 server/config*
+node_modules/
