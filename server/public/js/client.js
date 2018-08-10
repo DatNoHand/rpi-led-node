@@ -113,7 +113,7 @@ function DrawWall() {
 }
 
 // Button handlers
-$('div.b').on('change', '#br', function () {
+$('div.b').on('input', '#br', function () {
   SendBrightness($(this).val())
 })
 
