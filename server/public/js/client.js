@@ -8,8 +8,10 @@ var tries = 0
 var live = false
 var drawn = false
 
-DrawPage('main')
-Start()
+let ok = DrawPage('main')
+if (ok) {
+  Start()
+} else { setTimeout(() => { Start() }), 20}
 
 function Start() {
   if (tries > 10) reload()
@@ -86,12 +88,13 @@ function DrawPage(_name) {
   $('div.b').empty()
 
   // Check if the requested page exists
-  $.ajax({
+  return $.ajax({
     url: req_url,
     success: (data) => {
       // If the page exists, draw it into <div class='b'>
       let lines = new Text(data)
       Draw(data)
+      return true
     }
   })
 }
