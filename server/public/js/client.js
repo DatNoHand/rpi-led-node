@@ -5,22 +5,22 @@ var wall_data = []
 var led_color
 var lamp_off_color = '#707070'
 var tries = 0
-var live = true
+var live = false
 var drawn = false
 
-// DrawPage('main')
-
+DrawPage('main')
 Start()
-Draw()
 
 function Start() {
-  if (tries > 10) window.location.href = window.location
+  if (tries > 10) reload()
   ws = new WebSocket('ws://'+window.location.host)
 
   ws.onclose = function() {
     ws = null
     if (live) {
       setTimeout(() => { Start() }, 1000);
+    } else {
+      reload()
     }
   }
 
@@ -30,13 +30,13 @@ function Start() {
 
     switch(msg.type) {
       case 'status':
-        wall_data = msg.wall_data
         lights_on = msg.on
         led_color = '#' + msg.color
         color = msg.color
+        wall_data = msg.wall_data
         $('div.colorreference').css({'background-color': color})
 
-	Draw()
+        if (!drawn) DrawWall()
         Lamp(lights_on)
         UpdateWalls()
 
@@ -50,18 +50,34 @@ function Start() {
   tries++
 }
 
-function Draw() {
-  if (drawn) return
-  // Draw wall buttons depending on how many are set in server/config/config.js
-  for (let i = 0; i < wall_data.length; i++) {
-    $('div.colorpicker.wallholder').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
-  }
-  $('div.colorpicker.wallholder').append("<div class='hidden colorreference' hidden></div>")
-
-  drawn = true
+/** Reloads the current page */
+function reload() {
+  window.location.href = window.location
 }
 
-// [ string Filename to Load]
+/**
+ * @param {string} _text - The string to work with
+ */
+function Text(_text) {
+  this.lines = _text.split('\n')
+  this.lineCount = _text.split('\n').length
+
+/**
+ * Run the function for each line in the passed text
+ * @callback doForEachLine
+ * @param {doForEachLine} cb - Callback function to run for each line
+ */
+  this.foreach = (cb) => {
+    for (let i = 0; i < this.lineCount; i++) {
+      cb(this.lines[i])
+    }
+  }
+}
+
+/**
+ * Loads _name.tbd from server/public/pages/ and draws it
+ * @param {string} _name - Filename to load, without extension
+ */
 function DrawPage(_name) {
   let data = false
   let req_url = window.location + 'pages/' + _name + '.tbd'
@@ -72,16 +88,30 @@ function DrawPage(_name) {
   // Check if the requested page exists
   $.ajax({
     url: req_url,
-    async: false,
-    success: function (data) {
-      console.log(data)
+    success: (data) => {
+      // If the page exists, draw it into <div class='b'>
+      let lines = new Text(data)
+      lines.foreach(Draw)
     }
   })
+}
 
-  // if (data) {
-  //   alert('page exists!')
-  // }
+/**
+ * Appends html to a div
+ * @param {string} _html - The string to append must be HTML
+ */
+function Draw(html) {
+  $('div.b').append(html)
+}
 
+function DrawWall() {
+  // Draw wall buttons depending on how many are set in server/config/config.js
+  for (let i = 0; i < wall_data.length; i++) {
+    $('div.colorpicker :eq(1)').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
+  }
+  $('div.colorpicker').append("<div class='hidden colorreference' hidden></div>")
+
+  drawn = true
 }
 
 // Button handlers
@@ -107,7 +137,7 @@ $('.button.preset').on('click', function () {
 
 
 // On Wall button click
-$('body').on('click', 'div.wall', function () {
+$('div.wall').on('click', function () {
   // Set Background color of clicked element
   var col_reference = $('div.colorreference')
   var index = $(this).attr('data-wall') - 1
@@ -160,8 +190,6 @@ $('#onOff').click(function () {
 $('input.button.colpicker').on('change', function (e) {
   color = $(this).val().slice(1,7)
 })
-
-
 
 function UpdateWalls() {
   for (let i = 0; i < wall_data.length; i++) {

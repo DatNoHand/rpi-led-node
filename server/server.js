@@ -36,7 +36,11 @@ var wss = new WebSocketServer({ server: httpServer });
 var loop
 var on = false
 var strip_walls = config.walls
+/**
+ * @typedef {Array} wall_data
+ * @type {boolean, string} */
 var strip_led_data = []
+/** @type {boolean, string, int} */
 var strip_wall_data = []
 var color
 var favorites = [
@@ -46,14 +50,10 @@ var favorites = [
 
 // Initialize the LED data to 0
 for (let i = 0; i < NUM_LEDS; i++) {
-  // Format;
-  // [ bool on, string color ]
   strip_led_data.push([ 0, '000000'])
 }
 // Initialize the wall data to 0
 for (let i = 0; i < strip_walls.length; i++) {
-  // Format:
-  // [ bool on, string color, int amount ]
   strip_wall_data.push([ 0, '000000', 0])
 }
 
@@ -62,8 +62,8 @@ console.log('Listening on '+port);
 strip.init(NUM_LEDS)
 strip.setBrightness(config.led.brightness)
 
+// Turn all walls on
 // On ready, show (green) lights
-// Set all walls to on
 SetStrip(0, config.led.ready_color, 5)
 RenderLedData()
 
@@ -114,19 +114,21 @@ wss.on('connection', function(ws, req) {
 
 /** Functions
 * Unsorted (as of now)
-* Maybe moved to different file later
+* Maybe move to a different file later
 * Maybe use classes later-later
 **/
 
+/**
+ * Sets the brightness of the Strip
+ * @param {int|string} _brightness - The Brightness to set which can be an int or
+ * string which contains numbers
+ */
 function SetBrightness(_brightness = config.led.brightness) {
-  if (_brightness > config.led.max_brightness) {
-    _brightness = config.led.max_brightness
-  }
-
-  _brightness = parseInt(_brightness)
-  strip.setBrightness(_brightness)
+  if (_brightness > config.led.max_brightness) _brightness = config.led.max_brightness
+  strip.setBrightness(parseInt(_brightness))
 }
 
+/** Renders whatever is in strip_led_data */
 function RenderLedData() {
   for (var i = 0; i < NUM_LEDS; i++) {
     if (strip_led_data[i][0] == 0) {
@@ -138,17 +140,31 @@ function RenderLedData() {
   strip.render(pixelData)
 }
 
+/**
+ * Sets strip_led_data for the given LED
+ * @param {int} _led - The LED index
+ * @param {boolean} [_on = true] - If the LED is on
+ * @param {string} _color - The color to set the LED to // Format: RRGGBB (00-FF)
+ */
 function SetLedData(_led, _on = true, _color) {
   if (!_on) _color = strip_led_data[_led][1]
+  if (_color.length != 6) _color = 'ff0000'
   strip_led_data[_led] = [ _on, _color]
 }
 
-// Format: SetStrip( array _walls, string _color, int _amount, bool _on)
-// Format: array _walls = wall [ bool on, string color, int amount]
+/**
+ * Sets the LEDs to the data given
+ * @param {Boolean|wall_data} [_walls=false] - If this is false or 0
+  *                                            sets all LEDs else expect wall_data
+ * @param {String}  [_color='ff0000']        - The color that will be set if the first arg is 0
+ * @param {Number}  [_amount=1]              - The amount of spaces
+ * @param {Boolean} [_on=true]               - If the strip will be on or not
+ */
 function SetStrip(_walls = false, _color = 'ff0000', _amount = 1, _on = true) {
   // If nothing or 0 was passed as the first arg
   // Set the whole strip to _color
   if (!_walls) {
+    // If the Strip is turned off
     if (!_on) {
       for (var i = 0; i < NUM_LEDS; i++) {
         SetLedData(i, false)
@@ -193,13 +209,6 @@ function SetStrip(_walls = false, _color = 'ff0000', _amount = 1, _on = true) {
   }
 }
 
-function ledOff() {
-  clearInterval(loop);
-  clear()
-  strip.render(pixelData)
-  on = false;
-}
-
 function ledSpecial(bright = config.led.brightness, mode, arg) {
   strip.setBrightness(parseInt(bright))
 
@@ -231,22 +240,36 @@ function ledRainbow() {
   }
 }
 
-function send(ws, msg) {
-  ws.send(JSON.stringify(msg))
+/**
+ * Sends the passed data to the origin
+ * @param  {Object} _ws   - The origin socket
+ * @param  {Object} _data - Should be in JSON
+ */
+function Send(_ws, _msg) {
+  _ws.send(JSON.stringify(_msg))
 }
 
-function SendToEveryone(data) {
+/**
+ * Sends the passed data to every client
+ * @param {Object} _data - Object should be in JSON format
+ */
+function SendToEveryone(_data) {
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
+      client.send(JSON.stringify(_data));
     }
   });
 }
 
-function SendToEveryoneButOrigin(data, ws) {
+/**
+ * Sends the passed data to every client but not back to origin
+ * @param {Object} _data - Object should be in JSON format
+ * @param {Object} _ws   - Is needed to know which was the origin
+ */
+function SendToEveryoneButOrigin(_data, _ws) {
   wss.clients.forEach(function each(client) {
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
+    if (client !== _ws && client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(_data));
     }
   });
 }
