@@ -117,7 +117,7 @@ $('div.b').on('change', '#br', function () {
   SendBrightness($(this).val())
 })
 
-$('div.b').on('click', '.button.amount' function () {
+$('div.b').on('click', '.button.amount', function () {
   let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
   SetLed(bright, amount)
