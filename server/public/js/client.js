@@ -110,9 +110,9 @@ function Draw(html) {
 function DrawWall() {
   // Draw wall buttons depending on how many are set in server/config/config.js
   for (let i = 0; i < wall_data.length; i++) {
-    $('div.colorpicker :eq(1)').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
+    $('div.wallholder').append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
   }
-  $('div.colorpicker').append("<div class='hidden colorreference' hidden></div>")
+  $('div.wallholder').append("<div class='hidden colorreference' hidden></div>")
 
   drawn = true
 }
