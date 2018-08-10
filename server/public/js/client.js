@@ -90,7 +90,7 @@ function DrawPage(_name) {
     success: (data) => {
       // If the page exists, draw it into <div class='b'>
       Draw(data)
-    },
+    }
   })
 }
 
