@@ -84,18 +84,15 @@ function DrawPage(_name) {
   let data = false
   let req_url = window.location + 'pages/' + _name + '.tbd'
 
-  // Empty the 'fake' body element to make room for the new page
-  $('div.b').empty()
-
   // Check if the requested page exists
   return $.ajax({
     url: req_url,
     success: (data) => {
       // If the page exists, draw it into <div class='b'>
-      let lines = new Text(data)
       Draw(data)
       return true
     }
+    error: () => { return false }
   })
 }
 
@@ -118,29 +115,23 @@ function DrawWall() {
 }
 
 // Button handlers
-$('#br').on('input', function () {
+$('div.b').on('change', '#br', function () {
   SendBrightness($(this).val())
 })
 
-$('.button.rainbow').on('click', function () {
-  var bright = $('#br').val()
-  ledRainbow(bright)
-  Lamp(true)
-})
-
-$('.button.amount').on('click', function () {
+$('div.b').on('click', '.button.amount' function () {
   let bright = $('#br').val()
   let amount = $(this).attr('data-amount')
   SetLed(bright, amount)
 })
 
-$('.button.preset').on('click', function () {
+$('div.b').on('click', '.button.preset', function () {
   LoadPreset($(this).attr('data-preset'))
 })
 
 
 // On Wall button click
-$('div.wall').on('click', function () {
+$('div.b').on('click', 'div.wall', function () {
   // Set Background color of clicked element
   var col_reference = $('div.colorreference')
   var index = $(this).attr('data-wall') - 1
@@ -164,33 +155,33 @@ $('div.wall').on('click', function () {
 
 // Longpress to show colorpicker
 var timer
-$('div.color.animate.infinite.wobble').on('mousedown', function (e) {
+$('div.b').on('mousedown', '.color', function (e) {
   timer = setTimeout(() => {
-    $('input.button.colpicker').click();
+    $('.button.colpicker').click();
   }, 400)
   e.preventDefault()
 }).on('mouseup mouseleave', () => {
   clearTimeout(timer)
 })
 
-$('div.color.animate.infinite.wobble').on('click', function () {
+$('div.b').on('click', '.color' function () {
   color = $(this).attr('data-color')
 })
 
-$('div.color.animate.infinite.wobble').on('contextmenu', function (e) {
+$('div.b').on('contextmenu', '.color', function (e) {
   $('input.button.colpicker').click();
   e.preventDefault()
 })
 
 // On / Off Button default to 'Ambient'
-$('#onOff').click(function () {
+$('div.b').on('click', '#onOff', function () {
   var bright = $('#br').val()
   if (!lights_on)
     SetLed(bright, 5)
   OnOnOffClick()
 });
 
-$('input.button.colpicker').on('change', function (e) {
+$('div.b').on('click', '.button.colpicker', function (e) {
   color = $(this).val().slice(1,7)
 })
 
