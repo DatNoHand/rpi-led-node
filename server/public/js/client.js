@@ -162,7 +162,7 @@ $('div.b').on('mousedown', '.color', function (e) {
   clearTimeout(timer)
 })
 
-$('div.b').on('click', '.color' function () {
+$('div.b').on('click', '.color', function () {
   color = $(this).attr('data-color')
 })
 
