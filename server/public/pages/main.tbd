@@ -41,7 +41,9 @@
 	</div>
 </div>
 
-<div class="center wallholder"></div>
+<div class="center wallholder">
+  <div class="colorpicker"></div>
+</div>
 
 <div class="center">
 	<div class="colorpicker">
