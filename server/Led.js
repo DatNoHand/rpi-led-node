@@ -71,7 +71,7 @@ ledlib.setAllLeds = (_color, _amount = 1, _on = true) => {
 		ledlib.setLed(i, _color, _on)
 	}
 	for (let i = 0; i < ledlib.walls.length; i++) {
-		ledlib.wall_data[i] = [ true, _color, _amount ]
+		ledlib.wall_data[i] = [ _on, _color, _amount ]
 	}
 	return ledlib.color = _color
 }
