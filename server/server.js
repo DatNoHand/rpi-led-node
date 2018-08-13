@@ -12,7 +12,8 @@ var WebSocketServer = require('ws').Server;
 
 // Other Modules
 var fs = require('fs');
-var strip = require('rpi-ws281x-native');
+// var strip = require('rpi-ws281x-native');
+var LedLib = require('./Led')
 
 // HTTPS Server for WSS
 var http = require('http');
@@ -20,7 +21,6 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded());
 app.use(express.static(__dirname + '/public'));
 
 var port = config.port;
@@ -34,38 +34,20 @@ var wss = new WebSocketServer({ server: httpServer });
 
 // Global Vars
 var loop
-var on = false
-var strip_walls = config.walls
-/**
- * @typedef {Array} wall_data
- * @type {boolean, string} */
-var strip_led_data = []
-/** @type {boolean, string, int} */
-var strip_wall_data = []
-var color
 var favorites = [
   'FF0000', 'FF6600', 'FFAA00', 'FFFF00', '00FF00', '00FC9E',
   '00FFF6', '0099FF', '0000FF', '9A00FF', 'FF00F7', 'FF0077'
 ]
 
-// Initialize the LED data to 0
-for (let i = 0; i < NUM_LEDS; i++) {
-  strip_led_data.push([ 0, '000000'])
-}
-// Initialize the wall data to 0
-for (let i = 0; i < strip_walls.length; i++) {
-  strip_wall_data.push([ 0, '000000', 0])
-}
+LedLib.init(NUM_LEDS, config.walls, config.led.max_brightness, config.led.brightness)
 
 console.log('Listening on '+port);
 
-strip.init(NUM_LEDS)
-strip.setBrightness(config.led.brightness)
-
 // Turn all walls on
 // On ready, show (green) lights
-SetStrip(0, config.led.ready_color, 5)
+LedLib.setWholeStrip(config.led.ready_color, 5)
 RenderLedData()
+
 
 on = true
 
@@ -96,6 +78,7 @@ wss.on('connection', function(ws, req) {
       break;
       case 'led':
         SetBrightness(msg.bright)
+        /** @typedef {Array} wall_data */
         SetStrip(msg.wall_data)
         RenderLedData()
       break;
@@ -204,6 +187,7 @@ function SetStrip(_walls = false, _color = 'ff0000', _amount = 1, _on = true) {
       }
     }
     on = true
+    // Set the UI color to the color of the first wall
     color = _walls[0][1]
     strip_wall_data = _walls
   }
@@ -221,13 +205,13 @@ function ledSpecial(bright = config.led.brightness, mode, arg) {
 
 function wheel (pos) {
   if (pos < 85) {
-    return '0x'+(255-pos*3).toString(16).padStart(2,0)+(pos*3).toString(16).padStart(2,0)+'00'
+    return '0x'+toHex(255-pos*3)+toHex(pos*3)+'00'
   } else if (pos < 170) {
     pos -= 85
-    return '0x'+'00'+(255-pos*3).toString(16).padStart(2,0)+(pos*3).toString(16).padStart(2,0)
+    return '0x'+'00'+toHex(255-pos*3)+toHex(pos*3)
   } else {
     pos -= 170
-    return '0x'+(pos*3).toString(16).padStart(2,0)+'00'+(255-pos*3).toString(16).padStart(2,0)
+    return '0x'+toHex(pos*3)+'00'+toHex(255-pos*3)
   }
 }
 
@@ -239,6 +223,14 @@ function ledRainbow() {
     strip.render(pixelData)
   }
 }
+
+function toHex(num) {
+  return num.toString(16).padStart(2,0)
+}
+
+// **************************************************
+// ************* WebSocket functions ****************
+// **************************************************
 
 /**
  * Sends the passed data to the origin

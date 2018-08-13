@@ -15,7 +15,7 @@ config.led.ready_color = '00FF00'
 config.led.num = 923
 
 // Walls config
-config.walls = [ 218, 463, 681]
+config.walls = [ 218, 463, 681 ]
 
 // Ignore
 config.walls.push(config.led.num)
