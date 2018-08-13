@@ -29,6 +29,7 @@ function Start() {
   // Server Messages
   ws.onmessage = function(e) {
     var msg = JSON.parse(e.data);
+    console.log(msg)
 
     switch(msg.type) {
       case 'status':
@@ -256,6 +257,7 @@ function SetLed(bright, amount, _on = true) {
     }
   }
   SendBrightness(bright)
+  console.log(wall_data)
   send({type: 'led', wall_data: wall_data})
 }
 
