@@ -73,7 +73,6 @@ wss.on('connection', function(ws, req) {
         LedLib.render()
       break;
       case 'led':
-        LedLib.setBrightness(msg.bright)
         /** @typedef {Array} wall_data */
         LedLib.setStripAdvanced(msg.wall_data)
         LedLib.render()
