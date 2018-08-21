@@ -14,7 +14,8 @@
     "nodemon": "^1.18.3"
   },
   "scripts": {
-    "test": "NONE"
+    "test": "NONE",
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
