@@ -1,6 +1,10 @@
 /**
- * A Webpage to interact with a rpi-led-node server
- * @module rpi-led-webclient
+ * @file A Webpage to interact with a rpi-led-node server
+ * @version 3.0.1
+ *
+ * @module client/rpi-led-webclient
+ * 
+ * @author Gabriel Selinschek <gabriel@selinschek.com>
  */
 
 var ws

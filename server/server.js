@@ -1,9 +1,11 @@
 /**
- * @file LED Controller wit ws + express
+ * @file LED Controller with ws + express
  * @version 3.0.1
- * 
+ *
  * @requires server/rpi-led-library.js:rpi-led-library
- * @author Gabriel Selinschek (Da1N0Hand)
+ * @requires NPM:rpi-ws218x-native
+ *
+ * @author Gabriel Selinschek <gabriel@selinschek.com>
  */
 
 // Config Vars
@@ -75,7 +77,7 @@ wss.on('connection', function(ws, req) {
         LedLib.render()
       break;
       case 'led':
-        /** @typedef {Array} wall_data */
+        /** @type {wall_data} */
         LedLib.setStripArray(msg.wall_data)
         LedLib.render()
       break;
@@ -92,12 +94,6 @@ wss.on('connection', function(ws, req) {
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   });
 });
-
-/** Functions
-* Unsorted (as of now)
-* Maybe move to a different file later
-* Maybe use classes later-later
-**/
 
 function wheel (pos) {
   if (pos < 85) {
