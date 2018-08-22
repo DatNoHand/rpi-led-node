@@ -1,7 +1,10 @@
 /**
-* LED Controller wit ws + express
-* @author Gabriel Selinschek
-**/
+ * @file LED Controller wit ws + express
+ * @version 3.0.1
+ * 
+ * @requires server/rpi-led-library.js:rpi-led-library
+ * @author Gabriel Selinschek (Da1N0Hand)
+ */
 
 // Config Vars
 var config = require('./config/config.js')
@@ -12,7 +15,7 @@ var WebSocketServer = require('ws').Server;
 
 // Other Modules
 var fs = require('fs');
-var LedLib = require('./rpi-led-wrapper')
+var LedLib = require('./rpi-led-library')
 
 // HTTPS Server for WSS
 var http = require('http');

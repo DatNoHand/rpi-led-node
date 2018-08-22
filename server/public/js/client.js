@@ -1,3 +1,8 @@
+/**
+ * A Webpage to interact with a rpi-led-node server
+ * @module rpi-led-webclient
+ */
+
 var ws
 var lights_on = false;
 var color
@@ -9,6 +14,7 @@ var live = false
 var drawn = false
 
 let ok = DrawPage('main')
+
 if (ok) {
   Start()
 } else { setTimeout(() => { Start() }), 20}
