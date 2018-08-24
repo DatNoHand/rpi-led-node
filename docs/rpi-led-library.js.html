@@ -40,19 +40,19 @@ var strip = require('rpi-ws281x-native');
 
 /**
  * After require, this must me the first function called
- * @param			{Config} 						_config		Config object
+ * @param		{Config} 						_config					Config object
  *
- * @property	{Integer}						num_leds				Amount of LEDs
- * @property	{Array.&lt;Integer>}		walls						Stores boundaries for walls
- * @property	{Array.&lt;Led>}				led_data				Stores the LED data
- * @property	{Array.&lt;wall_data>}	wall_data				Stores wall_data for the webinterface
- * @property	{String}						color						The last used color
- * @property	{Array.&lt;String>}		favorites				The last used 15 colors
- * @property	{Integer}						brightness			The current brightness
- * @property	{Integer}						max_brightness	The maximum brightness allowed
- * @property	{Array.&lt;Integer>}		pixel_data			The pixeldata to render
+ * @prop		{Integer}						num_leds				Amount of LEDs
+ * @prop		{Array.&lt;Integer>}		walls						Stores boundaries for walls
+ * @prop		{Array.&lt;Led>}				led_data				Stores the LED data
+ * @prop		{Array.&lt;wall_data>}	wall_data				Stores wall_data for the webinterface
+ * @prop		{String}						color						The last used color
+ * @prop		{Array.&lt;String>}		favorites				The last used 15 colors
+ * @prop		{Integer}						brightness			The current brightness
+ * @prop		{Integer}						max_brightness	The maximum brightness allowed
+ * @prop		{Array.&lt;Integer>}		pixel_data			The pixeldata to render
  *
- * @return {Boolean}				True if successful
+ * @returns	{Boolean}														True if successful
  */
 
 exports.init = (_config) => {
@@ -98,7 +98,7 @@ exports.setBrightness = (_br, _override = false) => {
  * @param {string}  [_color='ff0000'] The color to set nth LED to
  * @param {Boolean} [_on=true] 				If the LED is turned on
  *
- * @return {Led|Boolean} The modified LED object or false if failed
+ * @returns {Led|Boolean} The modified LED object or false if failed
  */
 exports.setLed = (_index, _color = 'ff0000', _on = true) => {
 	// If we try to modify an LED that doesn't exist, return false
@@ -122,7 +122,7 @@ exports.setLed = (_index, _color = 'ff0000', _on = true) => {
  * @param		{String}  _color      The color string to use (RRGGBB)
  * @param		{Integer}  [_amount=1] The amount of LEDs to skip
  * @param 	{Boolean} [_on=true]  Turn the strip on or off
- * @return	{String}					  	The color that the LEDs were set to
+ * @returns	{String}					  	The color that the LEDs were set to
  */
 exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 	if (_amount &lt; 1) _amount = 1
@@ -139,7 +139,7 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 
 /**
  * Renders the current led_data
- * @return {Boolean} True if successful
+ * @returns {Boolean} True if successful
  */
 exports.render = () => {
 	for (let i = 0; i &lt; exports.num_leds; i++) {
@@ -185,15 +185,15 @@ exports.setStripArray = (_data) => {
  *
  * @param    {String} [_color = 'ff0000'] The color to initialize the LED to
  *
- * @property {Boolean} on The status of the LED
- * @property {String} color The color the LED is set to
+ * @prop {Boolean} on The status of the LED
+ * @prop {String} color The color the LED is set to
  */
 function Led(_color = 'ff0000') {
 	this.on = false
 	this.color = _color
 	/**
 	 * Toggles the LED
-	 * @return {Boolean} The new state of the LED
+	 * @returns {Boolean} The new state of the LED
 	 */
 	this.toggle = () => {
 		this.on = !this.on
@@ -202,7 +202,7 @@ function Led(_color = 'ff0000') {
 	/**
 	 * Sets the state to arg1
 	 * @param {Boolean} _on The boolean
-	 * @return {Boolean} The new state
+	 * @returns {Boolean} The new state
 	 */
 	this.setState = (_on) => {
 		this.on = _on
@@ -210,7 +210,7 @@ function Led(_color = 'ff0000') {
 	}
 	/** Sets the color of the LED
 	 * @param		{?String} _color The color to set or NULL
-	 * @return	{String} 				The new color or if _color === null returns color
+	 * @returns	{String} 				The new color or if _color === null returns color
 	 */
 	this.setColor = (_color) => {
 		if (_color.length !== 6) return _color
@@ -220,10 +220,47 @@ function Led(_color = 'ff0000') {
 }
 
 /**
- * @typedef {Array} wall_data
- * @property {Boolean} on 	  If the LED is on
- * @property {String} color   The color to set the LED to
- * @property {Integer} amount The amount of LEDs to skip
+ * @typedef	{Array}				wall_data
+ * @prop		{Boolean}			on							If the LED is on
+ * @prop		{String}			color						The color to set the LED to
+ * @prop		{Integer}			amount					The amount of LEDs to skip
+ */
+/**
+ * @memberof server/rpi-led-library
+ * @name	num_leds
+ * @type	{Integer}
+ */
+/**
+ * @name	walls
+ * @type	{Array.&lt;Integer>}
+ */
+/**
+ * @name	led_data
+ * @type	{Array.&lt;Led>}
+ */
+/**
+ * @name	wall_data
+ * @type	{Array.&lt;wall_data>}
+ */
+/**
+ * @name	color
+ * @type	{String}
+ */
+/**
+ * @name	favorites
+ * @type	{Array.&lt;String>}
+ */
+/**
+ * @name	brightness
+ * @type	{Integer}
+ */
+/**
+ * @name	max_brightness
+ * @type	{Integer}
+ */
+/**
+ * @name	pixel_data
+ * @type	{Array.&lt;Integer>}
  */
 </code></pre>
         </article>
@@ -235,13 +272,13 @@ function Led(_color = 'ff0000') {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client_rpi-led-webclient.html">client/rpi-led-webclient</a></li><li><a href="module-server_rpi-led-library.html">server/rpi-led-library</a></li></ul><h3>Classes</h3><ul><li><a href="module-server_rpi-led-library.Led.html">Led</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Send">Send</a></li><li><a href="global.html#SendToEveryone">SendToEveryone</a></li><li><a href="global.html#SendToEveryoneButOrigin">SendToEveryoneButOrigin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client_rpi-led-webclient.html">client/rpi-led-webclient</a></li><li><a href="module-server_config.html">server/config</a></li><li><a href="module-server_rpi-led-library.html">server/rpi-led-library</a></li></ul><h3>Classes</h3><ul><li><a href="module-server_rpi-led-library.Led.html">Led</a></li></ul><h3>Global</h3><ul><li><a href="global.html#brightness">brightness</a></li><li><a href="global.html#color">color</a></li><li><a href="global.html#favorites">favorites</a></li><li><a href="global.html#led_data">led_data</a></li><li><a href="global.html#max_brightness">max_brightness</a></li><li><a href="global.html#pixel_data">pixel_data</a></li><li><a href="global.html#Send">Send</a></li><li><a href="global.html#SendToEveryone">SendToEveryone</a></li><li><a href="global.html#SendToEveryoneButOrigin">SendToEveryoneButOrigin</a></li><li><a href="global.html#walls">walls</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Aug 22 2018 16:49:28 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 23 2018 10:52:40 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>

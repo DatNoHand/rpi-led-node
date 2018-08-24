@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: public/js/classes/Preset.js</title>
+    <title>JSDoc: Source: config/config.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: public/js/classes/Preset.js</h1>
+    <h1 class="page-title">Source: config/config.js</h1>
 
     
 
@@ -26,53 +26,53 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// Preset.js
-// **********
+            <pre class="prettyprint source linenums"><code>/**
+ * @file	Stores configuration data
+ * @version 3.0.1
+ *
+ * @module server/config
+ *
+ * @author Gabriel Selinschek &lt;gabriel@selinschek.com>
+ */
 
-module.exports = {
+/**
+ * Parent Object of {@link config_led}
+ * @type {Object}
+ */
+exports.led = {}
+exports.walls = []
 
-}
+// WebSocket config
+exports.port = 420
+exports.name = 'LED Controller'
 
-function Preset() {
-	// **************************************************
-	// ******************** Private *********************
+// LED config
+exports.led.brightness = 30
+exports.led.max_brightness = 150
+exports.led.ready_color = '00FF00'
+exports.led.num = 923
 
-	var num_walls = 0
+// Walls exports
+exports.walls = [ 218, 463, 681 ]
 
-	this.save = (_slug) => {
-		// If the preset exists already
-		if (Preset.presets.includes(_slug)) {
+// Ignore
+exports.walls.push(exports.led.num)
 
-		}
-	}
-
-	// ***************** End of Private *****************
-	// **************************************************
-
-
-	// **************************************************
-	// ******************** Public **********************
-
-	Preset.presets = []
-
-	/** Deletes a preset */
-	Preset.Delete = (_slug) => {
-
-	}
-
-	/** Saves / Creates a preset */
-	Preset.Save = (_slug, _data) => {
-		// If it exists
-		if (Preset.presets.includes(_slug)) {
-			// Overwrite
-			Preset.presets
-		}
-	}
-
-	Preset.Load = (_slug) => {
-
-	}
-}
+// ====================	JSDoc typedef	====================
+/**
+ * @typedef {Object}					Config
+ * @prop		{config_led}			led						Stores configuration about LEDs
+ * @prop		{Array.&lt;Integer>}	walls					Stores segment data
+ * @prop		{Integer}					port					Which port the application will use
+ * @prop		{String}					name					The name of the app
+ */
+/**
+ * @typedef	{Object}				config_led
+ * @prop		{Integer}				brightness			The default brightness
+ * @prop		{Integer}				max_brightness	The max allowed brightness (can be overridden)
+ * @prop		{String}				ready_color			The default color the LEDs will have after a reboot
+ * @prop		{Integer}				num							The number of LEDs you have
+ */
 </code></pre>
         </article>
     </section>

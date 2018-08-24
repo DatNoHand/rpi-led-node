@@ -12,19 +12,19 @@ var strip = require('rpi-ws281x-native');
 
 /**
  * After require, this must me the first function called
- * @param			{Config} 						_config		Config object
+ * @param		{Config} 						_config					Config object
  *
- * @property	{Integer}						num_leds				Amount of LEDs
- * @property	{Array.<Integer>}		walls						Stores boundaries for walls
- * @property	{Array.<Led>}				led_data				Stores the LED data
- * @property	{Array.<wall_data>}	wall_data				Stores wall_data for the webinterface
- * @property	{String}						color						The last used color
- * @property	{Array.<String>}		favorites				The last used 15 colors
- * @property	{Integer}						brightness			The current brightness
- * @property	{Integer}						max_brightness	The maximum brightness allowed
- * @property	{Array.<Integer>}		pixel_data			The pixeldata to render
+ * @prop		{Integer}						num_leds				Amount of LEDs
+ * @prop		{Array.<Integer>}		walls						Stores boundaries for walls
+ * @prop		{Array.<Led>}				led_data				Stores the LED data
+ * @prop		{Array.<wall_data>}	wall_data				Stores wall_data for the webinterface
+ * @prop		{String}						color						The last used color
+ * @prop		{Array.<String>}		favorites				The last used 15 colors
+ * @prop		{Integer}						brightness			The current brightness
+ * @prop		{Integer}						max_brightness	The maximum brightness allowed
+ * @prop		{Array.<Integer>}		pixel_data			The pixeldata to render
  *
- * @return {Boolean}				True if successful
+ * @returns	{Boolean}														True if successful
  */
 
 exports.init = (_config) => {
@@ -70,7 +70,7 @@ exports.setBrightness = (_br, _override = false) => {
  * @param {string}  [_color='ff0000'] The color to set nth LED to
  * @param {Boolean} [_on=true] 				If the LED is turned on
  *
- * @return {Led|Boolean} The modified LED object or false if failed
+ * @returns {Led|Boolean} The modified LED object or false if failed
  */
 exports.setLed = (_index, _color = 'ff0000', _on = true) => {
 	// If we try to modify an LED that doesn't exist, return false
@@ -94,7 +94,7 @@ exports.setLed = (_index, _color = 'ff0000', _on = true) => {
  * @param		{String}  _color      The color string to use (RRGGBB)
  * @param		{Integer}  [_amount=1] The amount of LEDs to skip
  * @param 	{Boolean} [_on=true]  Turn the strip on or off
- * @return	{String}					  	The color that the LEDs were set to
+ * @returns	{String}					  	The color that the LEDs were set to
  */
 exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 	if (_amount < 1) _amount = 1
@@ -111,7 +111,7 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 
 /**
  * Renders the current led_data
- * @return {Boolean} True if successful
+ * @returns {Boolean} True if successful
  */
 exports.render = () => {
 	for (let i = 0; i < exports.num_leds; i++) {
@@ -157,15 +157,15 @@ exports.setStripArray = (_data) => {
  *
  * @param    {String} [_color = 'ff0000'] The color to initialize the LED to
  *
- * @property {Boolean} on The status of the LED
- * @property {String} color The color the LED is set to
+ * @prop {Boolean} on The status of the LED
+ * @prop {String} color The color the LED is set to
  */
 function Led(_color = 'ff0000') {
 	this.on = false
 	this.color = _color
 	/**
 	 * Toggles the LED
-	 * @return {Boolean} The new state of the LED
+	 * @returns {Boolean} The new state of the LED
 	 */
 	this.toggle = () => {
 		this.on = !this.on
@@ -174,7 +174,7 @@ function Led(_color = 'ff0000') {
 	/**
 	 * Sets the state to arg1
 	 * @param {Boolean} _on The boolean
-	 * @return {Boolean} The new state
+	 * @returns {Boolean} The new state
 	 */
 	this.setState = (_on) => {
 		this.on = _on
@@ -182,7 +182,7 @@ function Led(_color = 'ff0000') {
 	}
 	/** Sets the color of the LED
 	 * @param		{?String} _color The color to set or NULL
-	 * @return	{String} 				The new color or if _color === null returns color
+	 * @returns	{String} 				The new color or if _color === null returns color
 	 */
 	this.setColor = (_color) => {
 		if (_color.length !== 6) return _color
@@ -192,8 +192,45 @@ function Led(_color = 'ff0000') {
 }
 
 /**
- * @typedef {Array} wall_data
- * @property {Boolean} on 	  If the LED is on
- * @property {String} color   The color to set the LED to
- * @property {Integer} amount The amount of LEDs to skip
+ * @typedef	{Array}				wall_data
+ * @prop		{Boolean}			on							If the LED is on
+ * @prop		{String}			color						The color to set the LED to
+ * @prop		{Integer}			amount					The amount of LEDs to skip
+ */
+/**
+ * @memberof server/rpi-led-library
+ * @name	num_leds
+ * @type	{Integer}
+ */
+/**
+ * @name	walls
+ * @type	{Array.<Integer>}
+ */
+/**
+ * @name	led_data
+ * @type	{Array.<Led>}
+ */
+/**
+ * @name	wall_data
+ * @type	{Array.<wall_data>}
+ */
+/**
+ * @name	color
+ * @type	{String}
+ */
+/**
+ * @name	favorites
+ * @type	{Array.<String>}
+ */
+/**
+ * @name	brightness
+ * @type	{Integer}
+ */
+/**
+ * @name	max_brightness
+ * @type	{Integer}
+ */
+/**
+ * @name	pixel_data
+ * @type	{Array.<Integer>}
  */
