@@ -3,7 +3,7 @@
  * @version 3.0.1
  *
  * @module client/rpi-led-webclient
- * 
+ *
  * @author Gabriel Selinschek <gabriel@selinschek.com>
  */
 
@@ -17,11 +17,8 @@ var tries = 0
 var live = false
 var drawn = false
 
-let ok = DrawPage('main')
-
-if (ok) {
-  Start()
-} else { setTimeout(() => { Start() }), 20}
+DrawPage('main')
+Start()
 
 function Start() {
   if (tries > 10) reload()
@@ -39,6 +36,7 @@ function Start() {
   // Server Messages
   ws.onmessage = function(e) {
     var msg = JSON.parse(e.data);
+    console.log(msg);
 
     switch(msg.type) {
       case 'status':
@@ -95,11 +93,12 @@ function DrawPage(_name) {
   let req_url = window.location + 'pages/' + _name + '.tbd'
 
   // Check if the requested page exists
-  return $.ajax({
+  $.ajax({
     url: req_url,
     success: (data) => {
       // If the page exists, draw it into <div class='b'>
       Draw(data)
+      return true
     }
   })
 }
@@ -245,7 +244,7 @@ function Lamp(on = true) {
 }
 
 function OnOnOffClick() {
-  if (lights_on) SendOff();
+  if (lights_on) SendOff()
 }
 
 // End Button handlers
@@ -262,6 +261,7 @@ function SetLed(bright, amount, _on = true) {
   } else {
     // wall_data: [ bool on, string color, int amount]
     for (let i = 0; i < wall_data.length; i++) {
+      wall_data[i][0] = true
       wall_data[i][2] = amount
     }
   }

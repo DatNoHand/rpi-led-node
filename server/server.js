@@ -73,7 +73,7 @@ wss.on('connection', function(ws, req) {
 
     switch (msg.type) {
       case 'off':
-        LedLib.setAllLeds(0, 0, 0)
+        LedLib.off()
         LedLib.render()
       break;
       case 'led':

@@ -39,6 +39,7 @@ exports.init = (_config) => {
 	exports.brightness = _config.led.brightness
 	exports.max_brightness = _config.led.max_brightness
 	exports.pixel_data = new Uint32Array(exports.num_leds)
+	exports.on = false
 
 	// Generate new led objects
 	for (let i = 0; i < exports.num_leds; i++) {
@@ -79,7 +80,6 @@ exports.setLed = (_index, _color = 'ff0000', _on = true) => {
 	// If the color is longer than 6 chars, show red LED's for error
 	if (_color.length !== 6) _color = 'ff0000'
 
-	/** @type {Led} */
 	let led = exports.led_data[_index]
 
 	// If the LED was turned on, set the color also
@@ -97,16 +97,29 @@ exports.setLed = (_index, _color = 'ff0000', _on = true) => {
  * @returns	{String}					  	The color that the LEDs were set to
  */
 exports.setAllLeds = (_color, _amount = 1, _on = true) => {
-	if (_amount < 1) _amount = 1
+	if (_amount < 1) _amount = exports.wall_data[0][2]
 	for (var i = 0; i < exports.num_leds; i+=(parseInt(_amount))) {
 		exports.setLed(i, _color, _on)
 	}
 	// Set wall_data to send to the Webinterface
 	// No actual use for this in terms of setting LEDs
 	for (let i = 0; i < exports.walls.length; i++) {
-		exports.wall_data[i] = [ _on, _color, _amount ]
+		if (!_color) {
+			exports.wall_data[i] = [ false, exports.wall_data[i][1], _amount ]
+		} else {
+			exports.wall_data[i] = [ _on, _color, _amount ]
+		}
 	}
 	return _color
+}
+
+/**
+ * Turns off all LEDs but preserves color
+ * @since 3.0.1
+ */
+exports.off = () => {
+	exports.setAllLeds(false, 0, 0)
+	exports.on = false
 }
 
 /**
@@ -130,15 +143,16 @@ exports.render = () => {
  * @param {wall_data} _data The data to set the LEDs
  */
 exports.setStripArray = (_data) => {
-	// Clear data
-	exports.setAllLeds(0, 0, 0)
-
 	// Foreach wall
 	let index = 0
 	for (let i = 0; i < _data.length && i < exports.walls.length; i++) { // 0-4
-		for (index; index < exports.walls[i]; index+=parseInt(_data[i][2])) {
-			let r = exports.setLed(index, _data[i][1], _data[i][0])
-			if (r === false) break
+		for (index; index < exports.walls[i]; index++) {
+			// If index % amount == 0 we set the color
+			if (index % parseInt(_data[i][2]) == 0) {
+				exports.setLed(index, _data[i][1], _data[i][0])
+			} else { // else turn the led off ( looks weird if we don't )
+				exports.setLed(0, 0, 0)
+			}
 		}
 	}
 	exports.wall_data = _data
@@ -155,7 +169,7 @@ exports.setStripArray = (_data) => {
  *
  * @since 3.0.1
  *
- * @param    {String} [_color = 'ff0000'] The color to initialize the LED to
+ * @param	{String} [_color = 'ff0000'] The color to initialize the LED to
  *
  * @prop {Boolean} on The status of the LED
  * @prop {String} color The color the LED is set to
@@ -177,6 +191,7 @@ function Led(_color = 'ff0000') {
 	 * @returns {Boolean} The new state
 	 */
 	this.setState = (_on) => {
+		if (_on === 0) _on = false
 		this.on = _on
 		return this.on
 	}
@@ -185,7 +200,8 @@ function Led(_color = 'ff0000') {
 	 * @returns	{String} 				The new color or if _color === null returns color
 	 */
 	this.setColor = (_color) => {
-		if (_color.length !== 6) return _color
+		if (_color.length !== 6 || _color === undefined) return _color
+		exports.on = true;
 		this.color = exports.color = _color
 		return this.color
 	}
