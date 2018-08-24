@@ -1,10 +1,38 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: public/js/client.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: public/js/client.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @file A Webpage to interact with a rpi-led-node server
  * @version 3.0.1
  *
  * @module client/rpi-led-webclient
- *
- * @author Gabriel Selinschek <gabriel@selinschek.com>
+ * 
+ * @author Gabriel Selinschek &lt;gabriel@selinschek.com>
  */
 
 var ws
@@ -17,8 +45,11 @@ var tries = 0
 var live = false
 var drawn = false
 
-DrawPage('main')
-Start()
+let ok = DrawPage('main')
+
+if (ok) {
+  Start()
+} else { setTimeout(() => { Start() }), 20}
 
 function Start() {
   if (tries > 10) reload()
@@ -77,7 +108,7 @@ function Text(_text) {
  * @param {doForEachLine} cb - Callback function to run for each line
  */
   this.foreach = (cb) => {
-    for (let i = 0; i < this.lineCount; i++) {
+    for (let i = 0; i &lt; this.lineCount; i++) {
       cb(this.lines[i])
     }
   }
@@ -92,12 +123,11 @@ function DrawPage(_name) {
   let req_url = window.location + 'pages/' + _name + '.tbd'
 
   // Check if the requested page exists
-  $.ajax({
+  return $.ajax({
     url: req_url,
     success: (data) => {
-      // If the page exists, draw it into <div class='b'>
+      // If the page exists, draw it into &lt;div class='b'>
       Draw(data)
-      return true
     }
   })
 }
@@ -112,10 +142,10 @@ function Draw(html) {
 
 function DrawWall() {
   // Draw wall buttons depending on how many are set in server/config/config.js
-  for (let i = 0; i < wall_data.length; i++) {
-    $('div.wallholder').children().eq(0).append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
+  for (let i = 0; i &lt; wall_data.length; i++) {
+    $('div.wallholder').children().eq(0).append("&lt;div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'>&lt;/div>")
   }
-  $('div.wallholder').children().eq(0).append("<div class='hidden colorreference' hidden></div>")
+  $('div.wallholder').children().eq(0).append("&lt;div class='hidden colorreference' hidden>&lt;/div>")
 
   drawn = true
 }
@@ -192,10 +222,10 @@ $('div.b').on('click', '.button.colpicker', function (e) {
 })
 
 function UpdateWalls() {
-  for (let i = 0; i < wall_data.length; i++) {
+  for (let i = 0; i &lt; wall_data.length; i++) {
     var wall = $('div.wall').eq(i)
 
-    if ((wall != null) && (wall_data[i] != null)) {
+    if ((wall != null) &amp;&amp; (wall_data[i] != null)) {
       if (wall_data[i][0] == 1) {
         wall.css({'background-color': wall_data[i][1] })
         wall.attr('data-active', 1)
@@ -217,7 +247,7 @@ function setBg(colors) {
   $('div.color.animate.infinite.wobble').each(() => { amount++ })
 
   // For Each entry in colors array from the Server
-  for (var i = 0; i < amount; i++) {
+  for (var i = 0; i &lt; amount; i++) {
     // If the server sent more than we can use return
     let c = colors[i]
     let current = $('div.color.animate.infinite.wobble').eq(i)
@@ -243,7 +273,7 @@ function Lamp(on = true) {
 }
 
 function OnOnOffClick() {
-  if (lights_on) SendOff()
+  if (lights_on) SendOff();
 }
 
 // End Button handlers
@@ -254,13 +284,12 @@ function OnOnOffClick() {
 
 function SetLed(bright, amount, _on = true) {
   if (!_on) {
-    for (let i = 0; i < wall_data; i++) {
+    for (let i = 0; i &lt; wall_data; i++) {
       wall_data[i][0] = _on
     }
   } else {
     // wall_data: [ bool on, string color, int amount]
-    for (let i = 0; i < wall_data.length; i++) {
-      wall_data[i][0] = true
+    for (let i = 0; i &lt; wall_data.length; i++) {
       wall_data[i][2] = amount
     }
   }
@@ -289,5 +318,28 @@ function rgbToHex(r, g, b) {
 }
 
 function send(msg) {
-  if (ws.readyState && (ws != null)) ws.send(JSON.stringify(msg))
+  if (ws.readyState &amp;&amp; (ws != null)) ws.send(JSON.stringify(msg))
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client_rpi-led-webclient.html">client/rpi-led-webclient</a></li><li><a href="module-server_config.html">server/config</a></li><li><a href="module-server_rpi-led-library.html">server/rpi-led-library</a></li></ul><h3>Classes</h3><ul><li><a href="module-server_rpi-led-library.Led.html">Led</a></li></ul><h3>Global</h3><ul><li><a href="global.html#brightness">brightness</a></li><li><a href="global.html#color">color</a></li><li><a href="global.html#favorites">favorites</a></li><li><a href="global.html#led_data">led_data</a></li><li><a href="global.html#max_brightness">max_brightness</a></li><li><a href="global.html#pixel_data">pixel_data</a></li><li><a href="global.html#Send">Send</a></li><li><a href="global.html#SendToEveryone">SendToEveryone</a></li><li><a href="global.html#SendToEveryoneButOrigin">SendToEveryoneButOrigin</a></li><li><a href="global.html#walls">walls</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 23 2018 10:52:40 GMT+0200 (GMT+02:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
