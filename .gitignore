@@ -3,3 +3,4 @@ package_lock*
 server/config*
 node_modules/
 doc.sh
+start.sh
