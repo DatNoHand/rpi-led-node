@@ -27,11 +27,10 @@ So if you have a 20x20 square it would look like this:
 ``` config.walls = [ 20, 40, 60 ] ```
 
 ## Run
-Run the program with one of the following commands:
-
+Run the program with the following command:
+* npm run
+* OR
 * node server/server
-* nodejs server/server
-* nodemon server/server
 
 After everything has been initialized successfully all LEDs will turn green.
 > config.led.ready_color
