@@ -9,6 +9,7 @@
  */
 
 var strip = require('rpi-ws281x-native');
+var e = require('events');
 
 /**
  * After require, this must me the first function called
@@ -40,6 +41,7 @@ exports.init = (_config) => {
 	exports.max_brightness = _config.led.max_brightness
 	exports.pixel_data = new Uint32Array(exports.num_leds)
 	exports.on = false
+	exports.event = new e.EventEmitter();
 
 	// Generate new led objects
 	for (let i = 0; i < exports.num_leds; i++) {
@@ -103,7 +105,7 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 	}
 	// Set wall_data to send to the Webinterface
 	// No actual use for this in terms of setting LEDs
-	for (let i = 0; i < exports.walls.length; i++) {
+	for (let i = 0; i < exports.walls.length; i++) { // 0-3
 		if (!_color) {
 			exports.wall_data[i] = [ false, exports.wall_data[i][1], _amount ]
 		} else {
@@ -118,7 +120,7 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
  * @since 3.0.1
  */
 exports.off = () => {
-	exports.setAllLeds(false, 0, 0)
+	exports.setAllLeds(0, 0, 0)
 	exports.on = false
 }
 
@@ -128,13 +130,15 @@ exports.off = () => {
  */
 exports.render = () => {
 	for (let i = 0; i < exports.num_leds; i++) {
-		if (exports.led_data[i].on === false) {
+		if (!exports.led_data[i].on) {
 			exports.pixel_data[i] = '0x000000'
 		} else {
 			exports.pixel_data[i] = '0x' + exports.led_data[i].color
 		}
 	}
-	strip.render(exports.pixel_data)
+	strip.render(exports.pixel_data);
+	exports.event.emit('render');
+	
 	return true
 }
 
@@ -151,7 +155,7 @@ exports.setStripArray = (_data) => {
 			if (index % parseInt(_data[i][2]) == 0) {
 				exports.setLed(index, _data[i][1], _data[i][0])
 			} else { // else turn the led off ( looks weird if we don't )
-				exports.setLed(0, 0, 0)
+				exports.setLed(index, 0, 0)
 			}
 		}
 	}
@@ -191,7 +195,6 @@ function Led(_color = 'ff0000') {
 	 * @returns {Boolean} The new state
 	 */
 	this.setState = (_on) => {
-		if (_on === 0) _on = false
 		this.on = _on
 		return this.on
 	}
@@ -206,6 +209,43 @@ function Led(_color = 'ff0000') {
 		return this.color
 	}
 }
+
+function toHex(num) {
+  return num.toString(16).padStart(2,0)
+}
+
+/**
+ * Returns a color object, values must be 0-255
+ * @memberof module:server/rpi-led-library
+ *
+ * @class Led
+ * @constructor
+ *
+ * @since 3.1.0
+ *
+ * @param	{Integer} r	Red value
+ * @param	{Integer}	g value
+ * @param	{Integer} b	Blue value
+ *
+ * @prop	{Integer} r	Red value
+ * @prop	{Integer}	g value
+ * @prop	{Integer} b	Blue value
+ */
+function Color(r, g, b) {
+
+  this.r = toHex(r);
+  this.g = toHex(g);
+  this.b = toHex(b);
+
+	/**
+	 * Returns the color as String
+	 * @returns {String} Format: RRGGBB(hex)
+	 */
+  this.string = () => {
+    return this.r + this.g + this.b;
+  }
+}
+exports.Color = Color;
 
 /**
  * @typedef	{Array}				wall_data

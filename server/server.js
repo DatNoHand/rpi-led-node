@@ -17,7 +17,8 @@ var WebSocketServer = require('ws').Server;
 
 // Other Modules
 var fs = require('fs');
-var LedLib = require('./rpi-led-library')
+var LedLib = require('./rpi-led-library');
+var presetDBInstance = new PresetDb();
 
 // HTTPS Server for WSS
 var http = require('http');
@@ -35,7 +36,7 @@ httpServer.listen(config.port);
 var wss = new WebSocketServer({ server: httpServer });
 
 // Global Vars
-var loop
+var shouldLoop = true;
 var favorites = [
   'FF0000', 'FF6600', 'FFAA00', 'FFFF00', '00FF00', '00FC9E',
   '00FFF6', '0099FF', '0000FF', '9A00FF', 'FF00F7', 'FF0077'
@@ -49,6 +50,9 @@ console.log('Listening on '+port);
 // On ready, show (green) lights
 LedLib.setAllLeds(config.led.ready_color, 5)
 LedLib.render()
+
+presetDBInstance.add(new Preset('rainbow', l_rainbow));
+presetDBInstance.add(new Preset('rainbow_animated', l_rainbow_factory));
 
 
 // TODO: Add RESTful API
@@ -73,10 +77,12 @@ wss.on('connection', function(ws, req) {
 
     switch (msg.type) {
       case 'off':
+        shouldLoop = false;
         LedLib.off()
         LedLib.render()
       break;
       case 'led':
+        shouldLoop = false;
         /** @type {wall_data} */
         LedLib.setStripArray(msg.wall_data)
         LedLib.render()
@@ -90,34 +96,92 @@ wss.on('connection', function(ws, req) {
         if (msg.ov == undefined) msg.ov = false
         LedLib.setBrightness(msg.bright, msg.ov)
       break;
+      case 'preset':
+        shouldLoop = false;
+        presetDBInstance.run(msg.presetId, msg.data);
+      break;
     }
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   });
 });
 
-function wheel (pos) {
-  if (pos < 85) {
-    return '0x'+toHex(255-pos*3)+toHex(pos*3)+'00'
-  } else if (pos < 170) {
-    pos -= 85
-    return '0x'+'00'+toHex(255-pos*3)+toHex(pos*3)
-  } else {
-    pos -= 170
-    return '0x'+toHex(pos*3)+'00'+toHex(255-pos*3)
-  }
-}
+function PresetDb() {
+  this.presets = [];
 
-function ledRainbow() {
-  for (var i = 0; i < 256; i++) {
-    for (var j = 0; j < NUM_LEDS; j++) {
-      pixelData[j] = wheel(parseInt(j*256 / NUM_LEDS + i) & 255)
+  this.add = (preset) => {
+    if (typeof preset !== 'object') return undefined;
+    let id = this.presets.push(preset) - 1;
+    this.presets[id].id = id;
+  }
+
+  this.getPresetById = (id) => {
+    for (a of this.presets) {
+      if (a.id === id) {
+        return a;
+      }
     }
-    strip.render(pixelData)
+  }
+
+  this.run = (id, data) => {
+    let p = this.getPresetById(id);
+    let d = data === undefined ? p.data : data;
+
+    if (p !== undefined && typeof p.action === 'function') {
+      p.action(d);
+      return true;
+    }
+    if (p !== undefined && typeof p.action === 'object') {
+      // TODO:
+    }
   }
 }
 
-function toHex(num) {
-  return num.toString(16).padStart(2,0)
+function Preset(slug, action, data) {
+  this.id;
+  this.action = action;
+  this.data = data;
+
+  this.slug = slug;
+}
+
+function wheel(pos) {
+  let color;
+
+  if (pos < 85) {
+    return new LedLib.Color(pos * 3, 255 - pos * 3, 0);
+  }
+
+  if (pos < 170) {
+    pos -= 85
+    return new LedLib.Color(255 - pos * 3, 0, pos * 3);
+  }
+
+  pos -= 170
+  return new LedLib.Color(0, pos * 3, 255 - pos * 3);
+}
+
+async function l_rainbow_factory(delay = 50) {
+  let shift = 0;
+  shouldLoop = true;
+
+  while (shouldLoop) {
+    await l_rainbow(shift++);
+    await sleep(delay).catch((e) => {});
+  }
+
+}
+
+async function l_rainbow(shift = 0) {
+  for (let i = 0; i < LedLib.num_leds; i++) {
+    LedLib.setLed(i, wheel(parseInt((i+shift) * 256 / LedLib.num_leds) & 255).string());
+  }
+  LedLib.render();
+}
+
+function sleep(ms){
+  return new Promise((res, rej) => {
+    setTimeout(res,ms);
+  });
 }
 
 // **************************************************

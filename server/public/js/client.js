@@ -207,6 +207,10 @@ function UpdateWalls() {
   }
 }
 
+function preset(id, data) {
+  send({type: 'preset', presetId: id, data: data});
+}
+
 // Set BG Color of the color buttons, based on what the server sent
 function setBg(colors) {
   $('body').css({color: led_color})
