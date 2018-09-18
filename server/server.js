@@ -60,7 +60,8 @@ presetDBInstance.add(new Preset('rainbow_animated', l_rainbow_factory));
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
 
-  SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
+  SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data });
+  SendToEveryone({type: 'presets', presets: presetDBInstance.presets});
 
   ws.on('message', (msg) => {
     try {
@@ -123,6 +124,8 @@ function PresetDb() {
   }
 
   this.run = (id, data) => {
+    id = parseInt(id);
+    
     let p = this.getPresetById(id);
     if (p === undefined) return false;
     let d = data === undefined ? p.data : data;

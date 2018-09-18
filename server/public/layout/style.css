@@ -167,6 +167,10 @@ p {
     transition: 1s;
 }
 
+.button {
+  cursor: pointer;
+}
+
 .slider::-moz-range-thumb {
     width: 20px;
     height: 20px;

@@ -16,8 +16,9 @@ var lamp_off_color = '#707070'
 var tries = 0
 var live = false
 var drawn = false
+var presets;
 
-DrawPage('main')
+DrawPage('main');
 Start()
 
 function Start() {
@@ -38,6 +39,11 @@ function Start() {
     var msg = JSON.parse(e.data);
 
     switch(msg.type) {
+      case 'init':
+      break;
+      case 'presets':
+        presets = msg.presets;
+      break;
       case 'status':
         lights_on = msg.on
         led_color = '#' + msg.color
@@ -127,7 +133,7 @@ function DrawWall() {
 
 // Button handlers
 $('div.b').on('input', '#br', function () {
-  SendBrightness($(this).val())
+  SendBrightness($(this).val());
 })
 
 $('div.b').on('click', '.button.amount', function () {
@@ -137,9 +143,13 @@ $('div.b').on('click', '.button.amount', function () {
 })
 
 $('div.b').on('click', '.button.preset', function () {
-  LoadPreset($(this).attr('data-preset'))
-})
+  SendPreset($(this).attr('data-id'));
+  console.log($(this).attr('data-id'));
+});
 
+$('div.b').on('click', '.button.main', () => {
+  DrawPage('main');
+});
 
 // On Wall button click
 $('div.b').on('click', 'div.wall', function () {
@@ -165,7 +175,7 @@ $('div.b').on('click', 'div.wall', function () {
 })
 
 // Longpress to show colorpicker
-var timer
+var timer;
 $('div.b').on('mousedown', '.color', function (e) {
   timer = setTimeout(() => {
     $('.button.colpicker').click();
@@ -194,7 +204,7 @@ $('div.b').on('click', '#onOff', function () {
 
 $('div.b').on('click', '.button.colpicker', function (e) {
   color = $(this).val().slice(1,7)
-})
+});
 
 function UpdateWalls() {
   for (let i = 0; i < wall_data.length; i++) {
@@ -212,7 +222,7 @@ function UpdateWalls() {
   }
 }
 
-function preset(id, data) {
+function SendPreset(id, data) {
   send({type: 'preset', presetId: id, data: data});
 }
 
