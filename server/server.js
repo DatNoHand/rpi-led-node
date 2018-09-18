@@ -166,17 +166,21 @@ async function l_rainbow_factory(delay = 50) {
   shouldLoop = true;
 
   while (shouldLoop) {
-    await l_rainbow(shift++);
+    let color = await l_rainbow(shift++);
+    SendToEveryone({type: 'color', color: color});
     await sleep(delay).catch((e) => {});
   }
 
 }
 
 async function l_rainbow(shift = 0) {
+  let color;
   for (let i = 0; i < LedLib.num_leds; i++) {
-    LedLib.setLed(i, wheel(parseInt((i+shift) * 256 / LedLib.num_leds) & 255).string());
+    color = wheel(parseInt((i+shift) * 256 / LedLib.num_leds) & 255).string();
+    LedLib.setLed(i, color);
   }
   LedLib.render();
+  return color;
 }
 
 function sleep(ms){

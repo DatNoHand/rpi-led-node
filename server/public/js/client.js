@@ -53,6 +53,11 @@ function Start() {
 
         setBg(msg.favorites)
       break;
+      case 'color':
+        led_color = msg.color;
+        $('div.colorreference').css({'background-color': color});
+        Lamp(true);
+      break;
     }
   }
 
