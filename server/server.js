@@ -124,6 +124,7 @@ function PresetDb() {
 
   this.run = (id, data) => {
     let p = this.getPresetById(id);
+    if (p === undefined) return false;
     let d = data === undefined ? p.data : data;
 
     if (p !== undefined && typeof p.action === 'function') {
