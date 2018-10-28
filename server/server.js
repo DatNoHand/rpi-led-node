@@ -56,6 +56,7 @@ presetDBInstance.add(new Preset('rainbow_animated', l_rainbow_factory))
 presetDBInstance.add(new Preset('rainbow_fancy', l_rainbow_fancy))
 presetDBInstance.add(new Preset('bauen', l_bauen))
 presetDBInstance.add(new Preset('white', l_white))
+presetDBInstance.add(new Preset('Chillen', l_porno));
 
 
 // TODO: Add RESTful API
@@ -229,6 +230,17 @@ async function l_white() {
       case 2:
         LedLib.setLed(i, '0000ff')
         break;
+    }
+  }
+  LedLib.render()
+}
+
+async function l_porno() {
+  LedLib.off();
+
+  for (let i = 0; i < LedLib.num_leds; i++) {
+    if (i >= 180 && i <= 500) {
+      LedLib.setLed(i, 'ff0000')
     }
   }
   LedLib.render()
