@@ -51,13 +51,8 @@
 		<div class="effect amount button set" data-amount='5'><p>Jede 5. LED</p></div>
 		<div class="effect amount button set" data-amount='10'><p>Jede 10. LED</p></div>
 	</div>
-	<div class="colorpicker">
-		<!-- HACK:  -->
-		<button type="button" name="button" onclick="DrawPage('preset')">Presets</button>
-	</div>
 </div>
-<!-- <div class="center">
-	<div class="colorpicker">
-		<div class="effect preset button" style="width: 18em"><p>Presets</p></div>
-	</div>
-</div> -->
+<div class="center">
+	<!-- HACK:  -->
+	<button type="button" name="button" onclick="DrawPage('preset')">Presets</button>
+</div>

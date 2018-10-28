@@ -18,7 +18,6 @@ var live = false
 var drawn = false
 var presets;
 
-DrawPage('main');
 Start()
 
 function Start() {
@@ -40,24 +39,16 @@ function Start() {
 
     switch(msg.type) {
       case 'init':
+        wall_data = msg.wall_data
+        $('#br').attr('max', msg.max)
+
+        DrawPage('main', RequestStatus);
       break;
       case 'presets':
         presets = msg.presets;
       break;
       case 'status':
-        lights_on = msg.on
-        led_color = '#' + msg.color
-        color = msg.color
-        wall_data = msg.wall_data
-        $('div.colorreference').css({'background-color': color})
-
-        if (!drawn) DrawWall()
-        Lamp(lights_on)
-        UpdateWalls()
-
-        $('#br').attr('max', msg.max)
-
-        setBg(msg.favorites)
+        OnStatusMsg(msg);
       break;
       case 'color':
         led_color = msg.color;
@@ -68,6 +59,28 @@ function Start() {
   }
 
   tries++
+}
+
+function RequestStatus() {
+  send({type: 'REQ_STATUS'})
+}
+
+function OnStatusMsg(data) {
+  lights_on = data.on
+  led_color = '#' + data.color
+  color = data.color
+  wall_data = data.wall_data
+  $('div.colorreference').css({'background-color': color})
+
+  if (!drawn) DrawWall()
+  Lamp(lights_on)
+  UpdateWalls()
+
+  setBg(data.favorites)
+}
+
+function Setup() {
+
 }
 
 /** Reloads the current page */
@@ -98,7 +111,7 @@ function Text(_text) {
  * Loads _name.tbd from server/public/pages/ and draws it
  * @param {string} _name - Filename to load, without extension
  */
-function DrawPage(_name) {
+function DrawPage(_name, cb) {
   let data = false
   let req_url = window.location + 'pages/' + _name + '.tbd'
 
@@ -108,6 +121,7 @@ function DrawPage(_name) {
     success: (data) => {
       // If the page exists, draw it into <div class='b'>
       Draw(data)
+      cb();
       return true
     }
   })
@@ -123,12 +137,16 @@ function Draw(html) {
 
 function DrawWall() {
   // Draw wall buttons depending on how many are set in server/config/config.js
+  let success = false;
   for (let i = 0; i < wall_data.length; i++) {
     $('div.wallholder').children().eq(0).append("<div class='col animate infinite wobble wall' data-wall='"+(i+1)+"'></div>")
   }
   $('div.wallholder').children().eq(0).append("<div class='hidden colorreference' hidden></div>")
 
-  drawn = true
+  if ($('div.wallholder').children().eq(0).length === 0) {
+    success = false;
+  } else success = true
+  drawn = success
 }
 
 // Button handlers
@@ -144,7 +162,6 @@ $('div.b').on('click', '.button.amount', function () {
 
 $('div.b').on('click', '.button.preset', function () {
   SendPreset($(this).attr('data-id'));
-  console.log($(this).attr('data-id'));
 });
 
 $('div.b').on('click', '.button.main', () => {

@@ -1,0 +1,14 @@
+<div class="center">
+    <div class="presetHolder"></div>
+    <div class="main button">Go back</div>
+</div>
+
+<script type="text/javascript">
+  (function() {
+    'use strict';
+    let preset;
+    for (preset of presets) {
+      $('div.presetHolder').append('<div class="button preset" data-id="'+preset.id+'">' + preset.slug + '</div>');
+    }
+  }());
+</script>

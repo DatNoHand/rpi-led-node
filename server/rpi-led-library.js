@@ -8,8 +8,8 @@
  * @author Gabriel Selinschek <gabriel@selinschek.com>
  */
 
-var strip = require('rpi-ws281x-native');
-var e = require('events');
+var strip = require('rpi-ws281x-native')
+var e = require('events')
 
 /**
  * After require, this must me the first function called
@@ -41,7 +41,7 @@ exports.init = (_config) => {
 	exports.max_brightness = _config.led.max_brightness
 	exports.pixel_data = new Uint32Array(exports.num_leds)
 	exports.on = false
-	exports.event = new e.EventEmitter();
+	exports.event = new e.EventEmitter()
 
 	// Generate new led objects
 	for (let i = 0; i < exports.num_leds; i++) {
@@ -136,8 +136,8 @@ exports.render = () => {
 			exports.pixel_data[i] = '0x' + exports.led_data[i].color
 		}
 	}
-	strip.render(exports.pixel_data);
-	exports.event.emit('render');
+	strip.render(exports.pixel_data)
+	exports.event.emit('render')
 
 	return true
 }
@@ -161,6 +161,14 @@ exports.setStripArray = (_data) => {
 	}
 	exports.wall_data = _data
 	return exports.color = _data[0][1]
+}
+
+/**
+ * Sets the LEDs based on _data input
+ * @param {Array.<String>} _data Format: 0xRRGGBB(hex)
+ */
+exports.setStripAdvanced = (_data) => {
+	strip.render(_data)
 }
 
 /**
@@ -204,7 +212,7 @@ function Led(_color = 'ff0000') {
 	 */
 	this.setColor = (_color) => {
 		if (_color.length !== 6 || _color === undefined) return _color
-		exports.on = true;
+		exports.on = true
 		this.color = exports.color = _color
 		return this.color
 	}
@@ -233,19 +241,24 @@ function toHex(num) {
  */
 function Color(r, g, b) {
 
-  this.r = toHex(r);
-  this.g = toHex(g);
-  this.b = toHex(b);
+  this.r = toHex(r)
+  this.g = toHex(g)
+  this.b = toHex(b)
 
 	/**
 	 * Returns the color as String
 	 * @returns {String} Format: RRGGBB(hex)
 	 */
   this.string = () => {
-    return this.r + this.g + this.b;
+    return this.r + this.g + this.b
   }
 }
-exports.Color = Color;
+exports.Color = Color
+
+async function fadeToColor() {
+	// TODO:
+}
+exports.fadeToColor = fadeToColor
 
 /**
  * @typedef	{Array}				wall_data
