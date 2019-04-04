@@ -1,6 +1,6 @@
 /**
  * @file A Library to interact with rpi-ws281x-native
- * @version 4.0
+ * @version 4.0.0
  *
  * @module server/rpi-led-library
  * @requires NPM:rpi-ws281x-native
@@ -41,6 +41,7 @@ exports.Init = (_config) => {
 	exports.max_brightness = _config.led.max_brightness
 	exports.pixel_data = new Uint32Array(exports.LedCount)
 	exports.on = false
+	exports.lastBrightness = _config.led.max_brightness
 	exports.event = new e.EventEmitter()
 
 	// Generate new led objects
@@ -75,7 +76,7 @@ exports.SetLedColor = (index, color) => {
 }
 
 exports.SetLedState = (index, state) => {
-	if (index > exports.LedCount) return false
+	if (index > exports.LedCount) return "ERR_OVER_MAX_INDEX"
 	let on = (state == 'true' || state)
 	exports.led_data[index].SetState(on)
 }
@@ -91,7 +92,7 @@ exports.SetAllLeds = (_color, _amount = 1, _on = true) => {
 	for (var i = 0; i < exports.LedCount; i+=(parseInt(_amount))) {
 
 		// Returns false if the color is not properly formatted
-		if (!exports.SetLedColor(i, _color)) return false
+		if (!exports.SetLedColor(i, _color)) return "ERR_SYNTAX_COLOR"
 		exports.SetLedState(i, _on)
 	}
 	// Set wall_data to send to the Webinterface
@@ -103,16 +104,18 @@ exports.SetAllLeds = (_color, _amount = 1, _on = true) => {
 			exports.wall_data[i] = [ _on, _color, _amount ]
 		}
 	}
-	return true
+	return "success"
 }
 
+// Power is really just a brightness of 0
 exports.SetPower = (power) => {
-	console.log(power)
-	let bool = (power.toLowerCase() == 'true')
+	if (typeof power != 'string') return "ERR_NOT_A_STRING"
+	let bool = (power.toUpperCase() == 'TRUE')
 	if (bool) {
-		exports.SetBrightness(150)
+		exports.SetBrightness(exports.lastBrightness)
 		exports.on = true
 	} else {
+		exports.lastBrightness = exports.brightness
 		exports.SetBrightness(0)
 		exports.on = false
 	}

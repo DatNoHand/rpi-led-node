@@ -18,8 +18,8 @@ var WebSocketServer = require('ws').Server
 // Other Modules
 var fs = require('fs')
 var LedLib = require('./lib/rpi-led-library')
-var MessageHandler = require('./lib/ServerMessageHandler')
-var presetDBInstance = new PresetDb()
+var MessageHandler = require('./lib/MessageHandler')
+var PresetDB = require('./lib/PresetDB')
 
 // HTTPS Server for WSS
 var http = require('http')
@@ -27,21 +27,33 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
 
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(__dirname + '/public'))
 
-// TODO: Add RESTful API
-app.get('/users/:userId', (req, res) => {
-  return res.send(req.context.models.users[req.params.userId]);
-});
+
+let api = express.Router()
 
 app.get('/power/:power', (req, res) => {
-  res.send(JSON.stringify({
-    success: MessageHandler.handle("power",
-      JSON.stringify({ power: req.params.power })
-    )
-  }))
+  let status =  MessageHandler.Handle("power",
+                JSON.stringify({ power: req.params.power }))
+  res.send(JSON.stringify({ status: status }))
 })
+
+app.get('/brightness/:brightness', (req, res) => {
+  let status =  MessageHandler.Handle("set_brightness",
+                JSON.stringify({ brightness: req.params.brightness, override: req.query.ov }))
+  res.send(JSON.stringify({ status: status }))
+})
+
+app.get('/preset/render/:preset/:data', (req, res) => {
+  let status =  MessageHandler.Handle("render_preset",
+                JSON.stringify({ type: req.params.preset, data: decodeURI(req.params.data)}))
+  res.send(JSON.stringify({ status: status }))
+})
+
+app.use('/api', api)
+app.use(express.static(__dirname + '/public'))
+
 
 var port = config.port
 
@@ -59,6 +71,7 @@ var favorites = [
 
 LedLib.Init(config)
 MessageHandler.Init()
+PresetDB.Init()
 
 console.log('Listening on ' + port)
 
@@ -67,26 +80,26 @@ console.log('Listening on ' + port)
 LedLib.SetAllLeds(config.led.ready_color, 5)
 LedLib.Render()
 
-presetDBInstance.add(new Preset('rainbow', l_rainbow))
-presetDBInstance.add(new Preset('rainbow_animated', l_rainbow_factory))
-presetDBInstance.add(new Preset('rainbow_fancy', l_rainbow_fancy))
-presetDBInstance.add(new Preset('bauen', l_bauen))
-presetDBInstance.add(new Preset('white', l_white))
-presetDBInstance.add(new Preset('Chillen', l_porno));
+PresetDB.Add('rainbow', l_rainbow))
+PresetDB.Add('rainbow_animated', l_rainbow_factory))
+PresetDB.Add('rainbow_fancy', l_rainbow_fancy))
+PresetDB.Add('bauen', l_bauen))
+PresetDB.Add('white', l_white))
+PresetDB.Add('Chillen', l_porno));
 
-MessageHandler.register("power", OnPowerMessage)
-/*MessageHandler.register("SET_WALL", func)
-MessageHandler.register("SET_ALL_WALLS", func)
-MessageHandler.register("SET_PRESET", func)
-MessageHandler.register("SET_BRIGHTNESS", func)
-MessageHandler.register("STATUS", func)*/
+MessageHandler.Register("power", OnPowerMessage)
+/*MessageHandler.Register("SET_WALL", func)
+/*MessageHandler.Register("SET_ALL_WALLS", func)*/
+MessageHandler.Register("render_preset", OnRenderPresetMessage)
+MessageHandler.Register("set_brightness", OnBrightnessMessage)
+/*MessageHandler.Register("STATUS", func)*/
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
   Send(ws, {type: 'init', wall_data: LedLib.wall_data })
   setTimeout(() => {}, 50);
   Send(ws, {type: 'status', on: LedLib.on, max: LedLib.max_brightness, color: LedLib.color, wall_data: LedLib.wall_data })
-  Send(ws, {type: 'presets', presets: presetDBInstance.presets})
+  Send(ws, {type: 'presets', presets: PresetDB.presets})
 
   ws.on('message', (msg) => {
     try {
@@ -101,7 +114,7 @@ wss.on('connection', function(ws, req) {
       ws.terminate()
     }
 
-    MessageHandler.handle(msg.type, msg.argv)
+    MessageHandler.Handle(msg.type, msg.argv)
 
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   })
@@ -110,57 +123,32 @@ wss.on('connection', function(ws, req) {
 // ===== OnMessage functions =====
 
 function OnPowerMessage(argv) {
-  console.log(argv)
   LedLib.SetPower(argv.power)
   LedLib.Render()
 }
+
+function OnBrightnessMessage(argv) {
+  if (argv.override == undefined) argv.override = false
+
+  argv.override = (argv.override == 'true')
+  LedLib.SetBrightness(argv.brightness, argv.override)
+}
+
+function OnRenderPresetMessage(argv) {
+  shoudLoop = false
+  PresetDB.Run(argv.type, argv.data)
+}
+
+function OnRequestStatusMessage(argv) {
+  Send(ws,
+    {type: 'status', on: LedLib.on, max: LedLib.max_brightness, color: LedLib.color, wall_data: LedLib.wall_data })
+}
+
 
 // ===== OnMessage functions end =====
 
 
 
-
-function PresetDb() {
-  this.presets = []
-
-  this.add = (preset) => {
-    if (typeof preset !== 'object') return undefined
-    let id = this.presets.push(preset) - 1
-    this.presets[id].id = id
-  }
-
-  this.getPresetById = (id) => {
-    for (a of this.presets) {
-      if (a.id === id) {
-        return a
-      }
-    }
-  }
-
-  this.run = (id, data) => {
-    id = parseInt(id)
-
-    let p = this.getPresetById(id)
-    if (p === undefined) return false
-    let d = data === undefined ? p.data : data
-
-    if (p !== undefined && typeof p.action === 'function') {
-      p.action(d)
-      return true
-    }
-    if (p !== undefined && typeof p.action === 'object') {
-      // TODO:
-    }
-  }
-}
-
-function Preset(slug, action, data) {
-  this.id
-  this.action = action
-  this.data = data
-
-  this.slug = slug
-}
 
 function wheel(pos) {
   let color
