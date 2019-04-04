@@ -36,7 +36,7 @@ app.get('/users/:userId', (req, res) => {
 });
 
 app.get('/power/:power', (req, res) => {
-  MessageHandler.handle("POWER", req.params.power)
+  MessageHandler.handle("power", req.params.power)
 })
 
 var port = config.port

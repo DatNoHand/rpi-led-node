@@ -15,7 +15,7 @@ exports.init = () => {
     if (typeof type !== 'string' || typeof handler !== 'function')
       return false
 
-    let jsonString = JSON.stringify({ type: type, handler: handler})
+    let jsonString = JSON.stringify({ type: type.toUpperCase, handler: handler})
     exports.messages.push(jsonString);
     return true
   }
@@ -27,9 +27,7 @@ exports.init = () => {
       let msg = exports.messages[i]
       let msgObj = JSON.parse(msg)
 
-      console.log(msgObj.type + ' ' + type)
-      console.log(msgObj.type == type)
-      if (msgObj.type == type) {
+      if (msgObj.typetoUpperCase == typetoUpperCase) {
         console.log('Called ' + msgObj.type)
         msgObj.handler(JSON.parse(jsonString))
         return true
