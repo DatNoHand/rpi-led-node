@@ -37,7 +37,7 @@ app.get('/users/:userId', (req, res) => {
 
 app.get('/power/:power', (req, res) => {
   res.send(JSON.stringify({
-    success: MessageHandler.handle("power", req.params.power)
+    success: MessageHandler.handle("power", { power: req.params.power })
   }))
 })
 
