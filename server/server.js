@@ -46,6 +46,7 @@ api.get('/brightness/:brightness', (req, res) => {
 })
 
 api.get('/render/preset/:preset', (req, res) => {
+  console.log(req.query.data)
   let status =  MessageHandler.Handle("render_preset",
                 JSON.stringify({ type: req.params.preset, data: decodeURI(req.query.data)}))
   res.send(JSON.stringify({ status: status }))
