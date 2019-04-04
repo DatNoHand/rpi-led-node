@@ -17,6 +17,7 @@ exports.init = () => {
 
     let jsonString = JSON.stringify({ type: type.toUpperCase, handler: handler})
     exports.messages.push(jsonString);
+    console.log(jsonString)
     return true
   }
 
