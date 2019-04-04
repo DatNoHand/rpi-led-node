@@ -23,7 +23,7 @@ exports.init = () => {
   exports.handle = (type, jsonString) => {
     // Only allow valid JSON
     try { JSON.parse(jsonString) } catch (e) { return false }
-    for (let i = 0; i < messages.length; i++) {
+    for (let i = 0; i < exports.messages.length; i++) {
       let msg = exports.messages[i]
       let msgObj = JSON.parse(msg)
 
