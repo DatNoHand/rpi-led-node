@@ -21,8 +21,9 @@ exports.Add = (type, method) => {
 
 exports.Run = (type, argv) => {
   // Only allow valid JSON
-  console.log(argv)
-  try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
+  if (argv != null && argv != undefined)
+    try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
+
   for (let i = 0; i < exports.presets.length; i++) {
     let preset = exports.presets[i]
 
