@@ -45,11 +45,23 @@ api.get('/brightness/:brightness', (req, res) => {
   res.send(JSON.stringify({ status: status }))
 })
 
-api.get('/preset/render/:preset/:data', (req, res) => {
+api.get('/render/preset/:preset', (req, res) => {
   let status =  MessageHandler.Handle("render_preset",
-                JSON.stringify({ type: req.params.preset, data: decodeURI(req.params.data)}))
+                JSON.stringify({ type: req.params.preset, data: decodeURI(req.query.data)}))
   res.send(JSON.stringify({ status: status }))
 })
+
+api.get('/render/walls/:wall_data', (req, res) => {
+  let status =  MessageHandler.Handle("render_all_walls",
+                JSON.stringify({ type: req.params.preset, data: decodeURI(req.query.data)}))
+  res.send(JSON.stringify({ status: status }))
+})
+
+api.get('/status', (req, res) => {
+  let status =  MessageHandler.Handle("request_status", "{}")
+  res.send(JSON.stringify({ status: status }))
+})
+
 
 app.use('/api', api)
 app.use(express.static(__dirname + '/public'))
@@ -88,11 +100,11 @@ PresetDB.Add('White', l_white)
 PresetDB.Add('Chillen', l_porno);
 
 MessageHandler.Register("power", OnPowerMessage)
-/*MessageHandler.Register("SET_WALL", func)
-/*MessageHandler.Register("SET_ALL_WALLS", func)*/
+/*MessageHandler.Register("SET_WALL", func)*/
+MessageHandler.Register("render_all_walls", OnRenderAllWalls)
 MessageHandler.Register("render_preset", OnRenderPresetMessage)
 MessageHandler.Register("set_brightness", OnBrightnessMessage)
-/*MessageHandler.Register("STATUS", func)*/
+MessageHandler.Register("request_status", OnRequestStatusMessage)
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
@@ -114,7 +126,7 @@ wss.on('connection', function(ws, req) {
       ws.terminate()
     }
 
-    MessageHandler.Handle(msg.type, msg.argv)
+    MessageHandler.Handle(ws, msg.type, msg.argv)
 
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   })
@@ -122,12 +134,12 @@ wss.on('connection', function(ws, req) {
 
 // ===== OnMessage functions =====
 
-function OnPowerMessage(argv) {
+function OnPowerMessage(sender, argv) {
   LedLib.SetPower(argv.power)
   LedLib.Render()
 }
 
-function OnBrightnessMessage(argv) {
+function OnBrightnessMessage(sender, argv) {
   if (argv.override == undefined) argv.override = false
 
   argv.override = (argv.override == 'true')
@@ -135,14 +147,20 @@ function OnBrightnessMessage(argv) {
   return "success"
 }
 
-function OnRenderPresetMessage(argv) {
+function OnRenderPresetMessage(sender, argv) {
   shoudLoop = false
   PresetDB.Run(argv.type, argv.data)
 }
 
-function OnRequestStatusMessage(argv) {
-  Send(ws,
-    {type: 'status', on: LedLib.on, max: LedLib.max_brightness, color: LedLib.color, wall_data: LedLib.wall_data })
+function OnRequestStatusMessage(sender, argv) {
+  let status = {type: 'status', on: LedLib.on, max: LedLib.max_brightness, color: LedLib.color, wall_data: LedLib.wall_data })
+  Send(sender, status)
+
+  return status
+}
+
+function OnRenderAllWalls(sender, argv) {
+
 }
 
 
