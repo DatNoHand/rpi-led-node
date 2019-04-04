@@ -21,6 +21,7 @@ exports.Add = (type, method) => {
 
 exports.Run = (type, argv) => {
   // Only allow valid JSON
+  console.log(argv)
   if (argv != null && argv != undefined)
     try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
 
