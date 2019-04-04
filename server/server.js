@@ -36,7 +36,9 @@ app.get('/users/:userId', (req, res) => {
 });
 
 app.get('/power/:power', (req, res) => {
-  MessageHandler.handle("power", req.params.power)
+  res.send(JSON.stringify(
+    MessageHandler.handle("power", req.params.power)
+  ))
 })
 
 var port = config.port
