@@ -55,8 +55,8 @@ var favorites = [
   '00FFF6', '0099FF', '0000FF', '9A00FF', 'FF00F7', 'FF0077'
 ]
 
-LedLib.init(config)
-MessageHandler.init()
+LedLib.Init(config)
+MessageHandler.Init()
 
 console.log('Listening on ' + port)
 
