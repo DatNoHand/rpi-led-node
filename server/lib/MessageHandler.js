@@ -13,23 +13,23 @@ exports.Init = () => {
 
 exports.Register = (type, handler) => {
   if (typeof type !== 'string' || typeof handler !== 'function')
-  return false
+  return "ERR_SYNTAX"
 
   exports.messages.push({ type: type.toUpperCase(), handler: handler});
-  return true
+  return "success"
 }
 
 exports.Handle = (type, argv) => {
   // Only allow valid JSON
-  try { JSON.parse(argv) } catch (e) { return false }
+try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
   for (let i = 0; i < exports.messages.length; i++) {
     let msg = exports.messages[i]
 
     if (msg.type.toUpperCase() == type.toUpperCase()) {
       msg.handler(JSON.parse(argv))
-      return true
+      return "success"
     }
 
-    return false
+    return "ERR_NOTFOUND_PRESET"
   }
 }

@@ -132,6 +132,7 @@ function OnBrightnessMessage(argv) {
 
   argv.override = (argv.override == 'true')
   LedLib.SetBrightness(argv.brightness, argv.override)
+  return "success"
 }
 
 function OnRenderPresetMessage(argv) {
