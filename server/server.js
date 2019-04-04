@@ -137,6 +137,8 @@ wss.on('connection', function(ws, req) {
 function OnPowerMessage(sender, argv) {
   LedLib.SetPower(argv.power)
   LedLib.Render()
+
+  return "success"
 }
 
 function OnBrightnessMessage(sender, argv) {
@@ -150,6 +152,7 @@ function OnBrightnessMessage(sender, argv) {
 function OnRenderPresetMessage(sender, argv) {
   shoudLoop = false
   PresetDB.Run(argv.type, argv.data)
+  return "success"
 }
 
 function OnRequestStatusMessage(sender, argv) {

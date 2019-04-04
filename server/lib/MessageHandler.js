@@ -25,8 +25,7 @@ exports.Handle = (type, argv, sender = 'REST') => {
     for (let i = 0; i < exports.messages.length; i++) {
       let msg = exports.messages[i]
       if (msg.type.toUpperCase() == type.toUpperCase()) {
-        msg.handler(sender, JSON.parse(argv))
-        return "success"
+        return msg.handler(sender, JSON.parse(argv))
       }
     }
   return "ERR_NOTFOUND_HANDLER"
