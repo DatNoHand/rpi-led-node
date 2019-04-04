@@ -58,7 +58,7 @@ api.get('/render/walls/:wall_data', (req, res) => {
 })
 
 api.get('/status', (req, res) => {
-  let status =  MessageHandler.Handle("request_status", "{}")
+  let status =  MessageHandler.Handle("request_status", JSON.stringify({stub: 'stub'}))
   res.send(JSON.stringify({ status: status }))
 })
 
