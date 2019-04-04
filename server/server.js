@@ -36,9 +36,9 @@ app.get('/users/:userId', (req, res) => {
 });
 
 app.get('/power/:power', (req, res) => {
-  res.send(JSON.stringify(
-    MessageHandler.handle("power", req.params.power)
-  ))
+  res.send(JSON.stringify({
+    success: MessageHandler.handle("power", req.params.power)
+  }))
 })
 
 var port = config.port
@@ -108,11 +108,8 @@ wss.on('connection', function(ws, req) {
 // ===== OnMessage functions =====
 
 function OnPowerMessage(argv) {
-  // True if ON
-  if (argv.power) {
-    // TODO
-  } else
-    LedLib.off(true)
+  LedLib.SetPower(argv.power)
+  LedLib.render()
 }
 
 // ===== OnMessage functions end =====

@@ -1,6 +1,6 @@
 /**
  * @file A Library to interact with rpi-ws281x-native
- * @version 3.0.1
+ * @version 4.0
  *
  * @module server/rpi-led-library
  * @requires NPM:rpi-ws281x-native
@@ -119,11 +119,22 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
  * Turns off all LEDs but preserves color
  * @since 3.0.1
  * @param {Boolean} [_shouldRender = false]	If render() should be called
+ * @deprecated since 4.0, will be removed in 5.0
  */
 exports.off = (_shouldRender) => {
 	exports.setAllLeds(0, 0, 0)
 	exports.on = false
 	if (_shouldRender) exports.render()
+}
+
+exports.SetPower = (power) => {
+	let bool = (power == 'true');
+	if (bool) {
+		// TODO
+	} else {
+		exports.setAllLeds(0, 0, 0)
+		exports.on = false
+	}
 }
 
 /**
