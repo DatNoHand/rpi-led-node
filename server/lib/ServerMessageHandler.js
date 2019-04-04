@@ -28,6 +28,7 @@ exports.init = () => {
       let msgObj = JSON.parse(msg)
 
       console.log(msgObj.type + ' ' + type)
+      console.log(msgObj.type == type)
       if (msgObj.type == type) {
         console.log('Called ' + msgObj.type)
         msgObj.handler(JSON.parse(jsonString))
