@@ -72,11 +72,11 @@ presetDBInstance.add(new Preset('white', l_white))
 presetDBInstance.add(new Preset('Chillen', l_porno));
 
 MessageHandler.register("power", OnPowerMessage)
-MessageHandler.register("SET_WALL", func)
+/*MessageHandler.register("SET_WALL", func)
 MessageHandler.register("SET_ALL_WALLS", func)
 MessageHandler.register("SET_PRESET", func)
 MessageHandler.register("SET_BRIGHTNESS", func)
-MessageHandler.register("STATUS", func)
+MessageHandler.register("STATUS", func) */
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
