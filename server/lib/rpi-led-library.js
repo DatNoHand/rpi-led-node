@@ -130,7 +130,8 @@ exports.off = (_shouldRender) => {
 exports.SetPower = (power) => {
 	let bool = (power == 'true');
 	if (bool) {
-		// TODO
+		exports.setStripArray(exports.wall_data)
+		exports.on = true
 	} else {
 		exports.setAllLeds(0, 0, 0)
 		exports.on = false
