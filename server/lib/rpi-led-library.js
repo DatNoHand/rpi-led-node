@@ -107,7 +107,8 @@ exports.SetAllLeds = (_color, _amount = 1, _on = true) => {
 }
 
 exports.SetPower = (power) => {
-	let bool = (power == 'true')
+	console.log(power)
+	let bool = (power.toLowerCase() == 'true')
 	if (bool) {
 		exports.SetBrightness(150)
 		exports.on = true
