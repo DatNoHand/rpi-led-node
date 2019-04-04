@@ -126,7 +126,7 @@ wss.on('connection', function(ws, req) {
       ws.terminate()
     }
 
-    MessageHandler.Handle(ws, msg.type, msg.argv)
+    MessageHandler.Handle(msg.type, msg.argv, ws)
 
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   })

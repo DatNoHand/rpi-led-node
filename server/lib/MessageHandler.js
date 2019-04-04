@@ -19,7 +19,7 @@ exports.Register = (type, handler) => {
   return "success"
 }
 
-exports.Handle = (sender, type, argv) => {
+exports.Handle = (type, argv, sender = 'REST') => {
   // Only allow valid JSON
   try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
     for (let i = 0; i < exports.messages.length; i++) {
