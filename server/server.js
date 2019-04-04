@@ -99,9 +99,9 @@ wss.on('connection', function(ws, req) {
 
     function OnPowerMessage(argv) {
       // True if ON
-      if (argv.power)
+      if (argv.power) {
         // TODO
-      else
+      } else
         LedLib.off(true)
     }
 
