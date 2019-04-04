@@ -118,10 +118,12 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 /**
  * Turns off all LEDs but preserves color
  * @since 3.0.1
+ * @param {Boolean} [_shouldRender = false]	If render() should be called
  */
-exports.off = () => {
+exports.off = (_shouldRender) => {
 	exports.setAllLeds(0, 0, 0)
 	exports.on = false
+	if (_shouldRender) exports.render()
 }
 
 /**

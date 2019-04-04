@@ -17,7 +17,8 @@ var WebSocketServer = require('ws').Server
 
 // Other Modules
 var fs = require('fs')
-var LedLib = require('./rpi-led-library')
+var LedLib = require('./lib/rpi-led-library')
+var MessageHandler = require('./lib/ServerMessageHandler')
 var presetDBInstance = new PresetDb()
 
 // HTTPS Server for WSS
@@ -25,8 +26,19 @@ var http = require('http')
 var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(__dirname + '/public'))
+
+// TODO: Add RESTful API
+app.get('/users/:userId', (req, res) => {
+  return res.send(req.context.models.users[req.params.userId]);
+});
+
+app.get('/power/:power', (req, res) => {
+  console.log(req)
+  MessageHandler.handle("POWER", req.params.power)
+})
 
 var port = config.port
 
@@ -44,7 +56,7 @@ var favorites = [
 
 LedLib.init(config)
 
-console.log('Listening on '+port)
+console.log('Listening on ' + port)
 
 // Turn all walls on
 // On ready, show (green) lights
@@ -57,9 +69,6 @@ presetDBInstance.add(new Preset('rainbow_fancy', l_rainbow_fancy))
 presetDBInstance.add(new Preset('bauen', l_bauen))
 presetDBInstance.add(new Preset('white', l_white))
 presetDBInstance.add(new Preset('Chillen', l_porno));
-
-
-// TODO: Add RESTful API
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
@@ -80,6 +89,23 @@ wss.on('connection', function(ws, req) {
       Send(ws, {type: 'err', msg: 'ERR_SYNTAX'})
       ws.terminate()
     }
+
+    MessageHandler.register("power", OnPowerMessage)
+    MessageHandler.register("SET_WALL", func)
+    MessageHandler.register("SET_ALL_WALLS", func)
+    MessageHandler.register("SET_PRESET", func)
+    MessageHandler.register("SET_BRIGHTNESS", func)
+    MessageHandler.register("STATUS", func)
+
+    function OnPowerMessage(argv) {
+      // True if ON
+      if (argv.power)
+        // TODO
+      else
+        LedLib.off(true)
+    }
+
+    MessageHandler.handle(msg.type, msg.argv)
 
     switch (msg.type) {
       case 'off':

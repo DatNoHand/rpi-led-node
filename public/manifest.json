@@ -1,9 +1,0 @@
-{
-  "name": "LED's",
-  "short_name": "LED's",
-  "icons": [],
-  "start_url": "/index.html",
-  "display": "standalone",
-  "background_color": "#ACFFB9",
-  "theme_color": "#ACFFB9"
-}
