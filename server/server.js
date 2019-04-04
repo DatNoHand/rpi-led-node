@@ -151,8 +151,7 @@ function OnBrightnessMessage(sender, argv) {
 
 function OnRenderPresetMessage(sender, argv) {
   shoudLoop = false
-  PresetDB.Run(argv.type, argv.data)
-  return "success"
+  return PresetDB.Run(argv.type, argv.data)
 }
 
 function OnRequestStatusMessage(sender, argv) {
