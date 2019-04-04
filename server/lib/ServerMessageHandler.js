@@ -27,7 +27,7 @@ exports.init = () => {
       let msg = exports.messages[i]
       let msgObj = JSON.parse(msg)
 
-      if (msgObj.typetoUpperCase == typetoUpperCase) {
+      if (msgObj.type.toUpperCase == type.toUpperCase) {
         console.log('Called ' + msgObj.type)
         msgObj.handler(JSON.parse(jsonString))
         return true
