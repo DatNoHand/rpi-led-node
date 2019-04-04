@@ -8,7 +8,7 @@
  * @author Gabriel Selinschek <gabriel@selinschek.com>
  */
 
-exports.init = () => {
+exports.Init = () => {
   exports.messages = []
 
   exports.register = (type, handler) => {

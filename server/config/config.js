@@ -25,7 +25,7 @@ exports.led.ready_color = '00FF00'
 exports.led.num = 923
 
 // Walls exports
-exports.walls = [ 218, 369 ]
+exports.walls = [ 218, 412, 628 ]
 
 // Ignore
 exports.walls.push(exports.led.num)

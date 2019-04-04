@@ -55,7 +55,7 @@ var strip = require('rpi-ws281x-native');
  * @returns	{Boolean}														True if successful
  */
 
-exports.init = (_config) => {
+exports.Init = (_config) => {
 	exports.num_leds = _config.led.num
 	exports.walls = _config.walls
 	exports.led_data = []

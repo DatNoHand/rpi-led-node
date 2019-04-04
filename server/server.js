@@ -62,8 +62,8 @@ console.log('Listening on ' + port)
 
 // Turn all walls on
 // On ready, show (green) lights
-LedLib.setAllLeds(config.led.ready_color, 5)
-LedLib.render()
+LedLib.SetAllLeds(config.led.ready_color, 5)
+LedLib.Render()
 
 presetDBInstance.add(new Preset('rainbow', l_rainbow))
 presetDBInstance.add(new Preset('rainbow_animated', l_rainbow_factory))
@@ -113,6 +113,9 @@ function OnPowerMessage(argv) {
 }
 
 // ===== OnMessage functions end =====
+
+
+
 
 function PresetDb() {
   this.presets = []

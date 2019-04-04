@@ -28,8 +28,8 @@ var e = require('events')
  * @returns	{Boolean}														True if successful
  */
 
-exports.init = (_config) => {
-	exports.num_leds = _config.led.num
+exports.Init = (_config) => {
+	exports.LedCount = _config.led.num
 	exports.walls = _config.walls
 	exports.led_data = []
 	// wall_data is just a placeholder for the Webinterface
@@ -39,22 +39,22 @@ exports.init = (_config) => {
 	exports.favorites = []
 	exports.brightness = _config.led.brightness
 	exports.max_brightness = _config.led.max_brightness
-	exports.pixel_data = new Uint32Array(exports.num_leds)
+	exports.pixel_data = new Uint32Array(exports.LedCount)
 	exports.on = false
 	exports.event = new e.EventEmitter()
 
 	// Generate new led objects
-	for (let i = 0; i < exports.num_leds; i++) {
+	for (let i = 0; i < exports.LedCount; i++) {
 		exports.led_data.push(new Led())
 	}
 
 	// Initialize the wall data to 0
 	for (let i = 0; i < exports.walls.length; i++) {
-		exports.wall_data.push([ 0, '000000', 0 ])
+		exports.wall_data.push([ false, '000000', 0 ])
 	}
 
-	strip.init(exports.num_leds)
-	exports.setBrightness(_config.led.brightness, true)
+	strip.init(exports.LedCount)
+	exports.SetBrightness(_config.led.brightness, false)
 }
 
 /**
@@ -62,33 +62,22 @@ exports.init = (_config) => {
  * @param {Number}  _br               The brightness to set
  * @param {Boolean} [_override=false] If exports.max_brightness should be ignored
  */
-exports.setBrightness = (_br, _override = false) => {
+exports.SetBrightness = (_br, _override = false) => {
 	_br = parseInt( _override ? _br : (_br > exports.max_brightness) ? exports.max_brightness : _br )
 	strip.setBrightness(_br)
 }
 
-/**
- * Sets specific LED's data
- * @param {Integer}  _index					  The nth LED to modify
- * @param {string}  [_color='ff0000'] The color to set nth LED to
- * @param {Boolean} [_on=true] 				If the LED is turned on
- *
- * @returns {Led|Boolean} The modified LED object or false if failed
- */
-exports.setLed = (_index, _color = 'ff0000', _on = true) => {
-	// If we try to modify an LED that doesn't exist, return false
-	if (_index > exports.num_leds) return false
+exports.SetLedColor = (index, color) => {
+	if (index > exports.LedCount) return false
+	if (color.length != 6) color = 'ff0000'
 
-	// If the color is longer than 6 chars, show red LED's for error
-	if (_color.length !== 6) _color = 'ff0000'
+	return exports.led_data[index].SetColor(color)
+}
 
-	let led = exports.led_data[_index]
-
-	// If the LED was turned on, set the color also
-	// "saves" the previous color if turned off
-	if (led.setState(_on)) led.setColor(_color)
-
-	return _color
+exports.SetLedState = (index, state) => {
+	if (index > exports.LedCount) return false
+	let on = (state == 'true' || state)
+	exports.led_data[index].SetState(on)
 }
 
 /**
@@ -98,10 +87,12 @@ exports.setLed = (_index, _color = 'ff0000', _on = true) => {
  * @param 	{Boolean} [_on=true]  Turn the strip on or off
  * @returns	{String}					  	The color that the LEDs were set to
  */
-exports.setAllLeds = (_color, _amount = 1, _on = true) => {
-	if (_amount < 1) _amount = exports.wall_data[0][2]
-	for (var i = 0; i < exports.num_leds; i+=(parseInt(_amount))) {
-		exports.setLed(i, _color, _on)
+exports.SetAllLeds = (_color, _amount = 1, _on = true) => {
+	for (var i = 0; i < exports.LedCount; i+=(parseInt(_amount))) {
+
+		// Returns false if the color is not properly formatted
+		if (!exports.SetLedColor(i, _color)) return false
+		exports.SetLedState(i, _on)
 	}
 	// Set wall_data to send to the Webinterface
 	// No actual use for this in terms of setting LEDs
@@ -112,7 +103,7 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
 			exports.wall_data[i] = [ _on, _color, _amount ]
 		}
 	}
-	return _color
+	return true
 }
 
 /**
@@ -122,18 +113,18 @@ exports.setAllLeds = (_color, _amount = 1, _on = true) => {
  * @deprecated since 4.0, will be removed in 5.0
  */
 exports.off = (_shouldRender) => {
-	exports.setAllLeds(0, 0, 0)
+	exports.SetAllLeds(0, 0, 0)
 	exports.on = false
-	if (_shouldRender) exports.render()
+	if (_shouldRender) exports.Render()
 }
 
 exports.SetPower = (power) => {
-	let bool = (power == 'true');
+	let bool = (power == 'true')
 	if (bool) {
 		exports.setStripArray(exports.wall_data)
 		exports.on = true
 	} else {
-		exports.setAllLeds(0, 0, 0)
+		exports.SetAllLeds(0, 0, 1)
 		exports.on = false
 	}
 }
@@ -142,8 +133,8 @@ exports.SetPower = (power) => {
  * Renders the current led_data
  * @returns {Boolean} True if successful
  */
-exports.render = () => {
-	for (let i = 0; i < exports.num_leds; i++) {
+exports.Render = () => {
+	for (let i = 0; i < exports.LedCount; i++) {
 		if (!exports.led_data[i].on) {
 			exports.pixel_data[i] = '0x000000'
 		} else {
@@ -167,9 +158,9 @@ exports.setStripArray = (_data) => {
 		for (index; index < exports.walls[i]; index++) {
 			// If index % amount == 0 we set the color
 			if (index % parseInt(_data[i][2]) == 0) {
-				exports.setLed(index, _data[i][1], _data[i][0])
+				exports.SetLed(index, _data[i][1], _data[i][0])
 			} else { // else turn the led off ( looks weird if we don't )
-				exports.setLed(index, 0, 0)
+				exports.SetLed(index, 0, 0)
 			}
 		}
 	}
@@ -216,18 +207,23 @@ function Led(_color = 'ff0000') {
 	 * @param {Boolean} _on The boolean
 	 * @returns {Boolean} The new state
 	 */
-	this.setState = (_on) => {
-		this.on = _on
-		return this.on
+	this.SetState = (state) => {
+		this.on = state
+		return true
 	}
+
 	/** Sets the color of the LED
 	 * @param		{?String} _color The color to set or NULL
 	 * @returns	{String} 				The new color or if _color === null returns color
 	 */
-	this.setColor = (_color) => {
-		if (_color.length !== 6 || _color === undefined) return _color
+	this.SetColor = (_color = 'ff0000') => {
+		if (_color.length !== 6 || _color === undefined) return false
 		exports.on = true
 		this.color = exports.color = _color
+		return true
+	}
+
+	this.GetColor = () => {
 		return this.color
 	}
 }
