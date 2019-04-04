@@ -80,12 +80,12 @@ console.log('Listening on ' + port)
 LedLib.SetAllLeds(config.led.ready_color, 5)
 LedLib.Render()
 
-PresetDB.Add('rainbow', l_rainbow))
-PresetDB.Add('rainbow_animated', l_rainbow_factory))
-PresetDB.Add('rainbow_fancy', l_rainbow_fancy))
-PresetDB.Add('bauen', l_bauen))
-PresetDB.Add('white', l_white))
-PresetDB.Add('Chillen', l_porno));
+PresetDB.Add('Rainbow', l_rainbow)
+PresetDB.Add('Rainbow Animated', l_rainbow_factory)
+PresetDB.Add('Rainbow Fancy', l_rainbow_fancy)
+PresetDB.Add('Bauen', l_bauen)
+PresetDB.Add('White', l_white)
+PresetDB.Add('Chillen', l_porno);
 
 MessageHandler.Register("power", OnPowerMessage)
 /*MessageHandler.Register("SET_WALL", func)
