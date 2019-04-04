@@ -75,7 +75,7 @@ MessageHandler.register("power", OnPowerMessage)
 MessageHandler.register("SET_ALL_WALLS", func)
 MessageHandler.register("SET_PRESET", func)
 MessageHandler.register("SET_BRIGHTNESS", func)
-MessageHandler.register("STATUS", func) */
+MessageHandler.register("STATUS", func)*/
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
