@@ -55,6 +55,7 @@ var favorites = [
 ]
 
 LedLib.init(config)
+MessageHandler.init()
 
 console.log('Listening on ' + port)
 
@@ -69,6 +70,13 @@ presetDBInstance.add(new Preset('rainbow_fancy', l_rainbow_fancy))
 presetDBInstance.add(new Preset('bauen', l_bauen))
 presetDBInstance.add(new Preset('white', l_white))
 presetDBInstance.add(new Preset('Chillen', l_porno));
+
+MessageHandler.register("power", OnPowerMessage)
+MessageHandler.register("SET_WALL", func)
+MessageHandler.register("SET_ALL_WALLS", func)
+MessageHandler.register("SET_PRESET", func)
+MessageHandler.register("SET_BRIGHTNESS", func)
+MessageHandler.register("STATUS", func)
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
@@ -90,55 +98,23 @@ wss.on('connection', function(ws, req) {
       ws.terminate()
     }
 
-    MessageHandler.register("power", OnPowerMessage)
-    MessageHandler.register("SET_WALL", func)
-    MessageHandler.register("SET_ALL_WALLS", func)
-    MessageHandler.register("SET_PRESET", func)
-    MessageHandler.register("SET_BRIGHTNESS", func)
-    MessageHandler.register("STATUS", func)
-
-    function OnPowerMessage(argv) {
-      // True if ON
-      if (argv.power) {
-        // TODO
-      } else
-        LedLib.off(true)
-    }
-
     MessageHandler.handle(msg.type, msg.argv)
 
-    switch (msg.type) {
-      case 'off':
-        shouldLoop = false
-        LedLib.off()
-        LedLib.render()
-      break
-      case 'led':
-        shouldLoop = false
-        /** @type {wall_data} */
-        LedLib.setStripArray(msg.wall_data)
-        LedLib.render()
-      break
-      // case 'special':
-      //   clearInterval(loop)
-      //   LedLib.setBrightness(msg.bright)
-      //   ledSpecial(msg.bright, msg.mode, msg.arg)
-      // break
-      case 'brightness':
-        if (msg.ov == undefined) msg.ov = false
-        LedLib.setBrightness(msg.bright, msg.ov)
-      break
-      case 'preset':
-        shouldLoop = false
-        presetDBInstance.run(msg.presetId, msg.data)
-      break
-      case 'REQ_STATUS':
-        // do nothing, status is being sent automagically
-      break;
-    }
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   })
 })
+
+// ===== OnMessage functions =====
+
+function OnPowerMessage(argv) {
+  // True if ON
+  if (argv.power) {
+    // TODO
+  } else
+    LedLib.off(true)
+}
+
+// ===== OnMessage functions end =====
 
 function PresetDb() {
   this.presets = []
