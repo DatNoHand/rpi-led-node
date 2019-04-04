@@ -33,19 +33,19 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 let api = express.Router()
 
-app.get('/power/:power', (req, res) => {
+api.get('/power/:power', (req, res) => {
   let status =  MessageHandler.Handle("power",
                 JSON.stringify({ power: req.params.power }))
   res.send(JSON.stringify({ status: status }))
 })
 
-app.get('/brightness/:brightness', (req, res) => {
+api.get('/brightness/:brightness', (req, res) => {
   let status =  MessageHandler.Handle("set_brightness",
                 JSON.stringify({ brightness: req.params.brightness, override: req.query.ov }))
   res.send(JSON.stringify({ status: status }))
 })
 
-app.get('/preset/render/:preset/:data', (req, res) => {
+api.get('/preset/render/:preset/:data', (req, res) => {
   let status =  MessageHandler.Handle("render_preset",
                 JSON.stringify({ type: req.params.preset, data: decodeURI(req.params.data)}))
   res.send(JSON.stringify({ status: status }))
