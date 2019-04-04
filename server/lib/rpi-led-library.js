@@ -106,25 +106,13 @@ exports.SetAllLeds = (_color, _amount = 1, _on = true) => {
 	return true
 }
 
-/**
- * Turns off all LEDs but preserves color
- * @since 3.0.1
- * @param {Boolean} [_shouldRender = false]	If render() should be called
- * @deprecated since 4.0, will be removed in 5.0
- */
-exports.off = (_shouldRender) => {
-	exports.SetAllLeds(0, 0, 0)
-	exports.on = false
-	if (_shouldRender) exports.Render()
-}
-
 exports.SetPower = (power) => {
 	let bool = (power == 'true')
 	if (bool) {
-		exports.setStripArray(exports.wall_data)
+		exports.SetBrightness(150)
 		exports.on = true
 	} else {
-		exports.SetAllLeds(0, 0, 1)
+		exports.SetBrightness(0)
 		exports.on = false
 	}
 }
