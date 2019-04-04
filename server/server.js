@@ -36,7 +36,6 @@ app.get('/users/:userId', (req, res) => {
 });
 
 app.get('/power/:power', (req, res) => {
-  console.log(req)
   MessageHandler.handle("POWER", req.params.power)
 })
 
