@@ -159,7 +159,10 @@ function OnRequestStatusMessage(sender, argv) {
 
 function OnRenderAllWalls(sender, argv) {
   if (argv.wall_data == undefined) return "ERR_NULL_WALL_DATA"
-  return LedLib.setStripWallData(argv.wall_data)
+  let res = LedLib.setStripWallData(argv.wall_data)
+  if (res != 'success') return res
+
+  LedLib.Render()
 }
 
 
