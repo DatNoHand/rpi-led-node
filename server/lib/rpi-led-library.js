@@ -66,6 +66,7 @@ exports.Init = (_config) => {
 exports.SetBrightness = (_br, _override = false) => {
 	_br = parseInt( _override ? _br : (_br > exports.max_brightness) ? exports.max_brightness : _br )
 	strip.setBrightness(_br)
+	return "success"
 }
 
 exports.SetLedColor = (index, color) => {

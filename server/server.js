@@ -125,7 +125,6 @@ wss.on('connection', function(ws, req) {
       ws.terminate()
     }
 
-    console.log(msg.type, msg.argv)
     let result = MessageHandler.Handle(msg.type, msg.argv, ws)
     console.log(result)
     // Update all Clients
@@ -143,8 +142,7 @@ function OnBrightnessMessage(sender, argv) {
   if (argv.override == undefined) argv.override = false
 
   argv.override = (argv.override == 'true')
-  LedLib.SetBrightness(argv.brightness, argv.override)
-  return "success"
+  return LedLib.SetBrightness(argv.brightness, argv.override)
 }
 
 function OnRenderPresetMessage(sender, argv) {
@@ -161,7 +159,7 @@ function OnRequestStatusMessage(sender, argv) {
 
 function OnRenderAllWalls(sender, argv) {
   if (argv.wall_data == undefined) return "ERR_NULL_WALL_DATA"
-  LedLib.setStripWallData(argv.wall_data)
+  return LedLib.setStripWallData(argv.wall_data)
 }
 
 
