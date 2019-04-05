@@ -72,13 +72,14 @@ exports.SetBrightness = (_br, _override = false) => {
 exports.SetLedColor = (index, color) => {
 	if (index > exports.LedCount) return false
 	if (color.length != 6) color = 'ff0000'
-
+	
 	return exports.led_data[index].SetColor(color)
 }
 
 exports.SetLedState = (index, state) => {
 	if (index > exports.LedCount) return "ERR_OVER_MAX_INDEX"
 	let on = (state == 'true' || state)
+	console.log(on)
 	exports.led_data[index].SetState(on)
 }
 
@@ -154,8 +155,7 @@ exports.setStripWallData = (_data) => {
 			// If index % amount == 0 we set the color
 			// Because we can skip leds
 			if (index % parseInt(_data[i][2]) == 0) {
-				console.log('index: ' + index)
-				console.log('_data[i][2] ' + _data[i][2])
+
 				exports.SetLedState(index, _data[i][0])
 				exports.SetLedColor(index, _data[i][1])
 			} else { // else turn the led off ( looks weird if we don't )
