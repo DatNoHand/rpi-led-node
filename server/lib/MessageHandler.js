@@ -28,6 +28,8 @@ exports.Handle = (type, argv, sender = 'REST') => {
   for (let i = 0; i < exports.messages.length; i++) {
     let msg = exports.messages[i]
     if (msg.type.toUpperCase() == type.toUpperCase()) {
+      if (argv == undefined)
+        return msg.handler(sender, undefined)
       return msg.handler(sender, JSON.parse(argv))
     }
   }
