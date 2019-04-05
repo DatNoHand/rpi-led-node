@@ -162,7 +162,7 @@ function OnRenderAllWalls(sender, argv) {
   let res = LedLib.setStripWallData(argv.wall_data)
   if (res != 'success') return res
 
-  LedLib.Render()
+  return LedLib.Render()
 }
 
 

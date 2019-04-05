@@ -259,18 +259,12 @@ function OnOnOffClick() {
 // ----------------------------------------------------------------------
 // Begin LED functions
 
-function SetLed(bright, amount, _on = true) {
-  if (!_on) {
-    for (let i = 0; i < wall_data; i++) {
-      wall_data[i][0] = _on
-    }
-  } else {
-    // wall_data: [ bool on, string color, int amount]
-    for (let i = 0; i < wall_data.length; i++) {
-      wall_data[i][0] = true
-      wall_data[i][2] = amount
-    }
+function SetLed(bright, amount) {
+  // wall_data: [ bool on, string color, int amount]
+  for (let i = 0; i < wall_data.length; i++) {
+    wall_data[i][2] = amount
   }
+  
   SendBrightness(bright)
   send({type: 'render_all_walls', argv: JSON.stringify({ wall_data: wall_data }) })
 }

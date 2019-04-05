@@ -140,7 +140,7 @@ exports.Render = () => {
 	strip.render(exports.pixel_data)
 	exports.event.emit('render')
 
-	return true
+	return 'success'
 }
 
 /**
