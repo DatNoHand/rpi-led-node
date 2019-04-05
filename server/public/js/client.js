@@ -217,7 +217,7 @@ function UpdateWalls() {
 }
 
 function SendPreset(name, data) {
-  send({type: 'render_preset', { type: name, data: data } });
+  send({type: 'render_preset', argv: { type: name, data: data } });
 }
 
 // Set BG Color of the color buttons, based on what the server sent
@@ -278,15 +278,15 @@ function SetLed(bright, amount, _on = true) {
     }
   }
   SendBrightness(bright)
-  send({type: 'render_all_walls', { wall_data: wall_data } })
+  send({type: 'render_all_walls', argv: { wall_data: wall_data } })
 }
 
 function SendBrightness(bright) {
-  send({type: 'set_brightness', { brightness: bright } })
+  send({type: 'set_brightness', argv: { brightness: bright } })
 }
 
 function SendPower(power) {
-  send({type: 'power', { power: power }})
+  send({type: 'power', argv: { power: power }})
 }
 
 function rgbToHex(r, g, b) {
