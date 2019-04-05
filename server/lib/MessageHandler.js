@@ -20,13 +20,17 @@ exports.Register = (type, handler) => {
 }
 
 exports.Handle = (type, argv, sender = 'REST') => {
-  // Only allow valid JSON
-  try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
-    for (let i = 0; i < exports.messages.length; i++) {
-      let msg = exports.messages[i]
-      if (msg.type.toUpperCase() == type.toUpperCase()) {
-        return msg.handler(sender, JSON.parse(argv))
-      }
+  // If argv == undefined, skip JSON syntax check
+  if (argv != undefined)
+    try { JSON.parse(argv) } catch (e) { return "ERR_SYNTAX_INVALID_JSON" }
+    // Only allow valid JSON
+
+  for (let i = 0; i < exports.messages.length; i++) {
+    let msg = exports.messages[i]
+    if (msg.type.toUpperCase() == type.toUpperCase()) {
+      return msg.handler(sender, JSON.parse(argv))
     }
+  }
+
   return "ERR_NOTFOUND_HANDLER"
 }

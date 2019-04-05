@@ -216,9 +216,6 @@ function UpdateWalls() {
   }
 }
 
-function SendPreset(name, data) {
-  send({type: 'render_preset', argv: { type: name, data: data } });
-}
 
 // Set BG Color of the color buttons, based on what the server sent
 function setBg(colors) {
@@ -279,6 +276,10 @@ function SetLed(bright, amount, _on = true) {
   }
   SendBrightness(bright)
   send({type: 'render_all_walls', argv: { wall_data: wall_data } })
+}
+
+function SendPreset(name, data) {
+  send({type: 'render_preset', argv: { type: name, data: data } });
 }
 
 function SendBrightness(bright) {
