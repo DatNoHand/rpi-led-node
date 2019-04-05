@@ -121,6 +121,7 @@ exports.SetPower = (power) => {
 		exports.SetBrightness(0)
 		exports.on = false
 	}
+	return "success"
 }
 
 /**
@@ -153,6 +154,8 @@ exports.setStripWallData = (_data) => {
 			// If index % amount == 0 we set the color
 			// Because we can skip leds
 			if (index % parseInt(_data[i][2]) == 0) {
+				console.log('index: ' + index)
+				console.log('_data[i][2] ' + _data[i][2])
 				exports.SetLedState(index, _data[i][0])
 				exports.SetLedColor(index, _data[i][1])
 			} else { // else turn the led off ( looks weird if we don't )
