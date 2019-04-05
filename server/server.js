@@ -136,10 +136,7 @@ wss.on('connection', function(ws, req) {
 // ===== OnMessage functions =====
 
 function OnPowerMessage(sender, argv) {
-  LedLib.SetPower(argv.power)
-  LedLib.Render()
-
-  return "success"
+  return LedLib.SetPower(argv.power)
 }
 
 function OnBrightnessMessage(sender, argv) {
