@@ -126,8 +126,8 @@ wss.on('connection', function(ws, req) {
     }
 
     console.log(msg.type, msg.argv)
-    MessageHandler.Handle(msg.type, msg.argv, ws)
-
+    let result = MessageHandler.Handle(msg.type, msg.argv, ws)
+    console.log(result)
     // Update all Clients
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   })
