@@ -8,7 +8,9 @@
     'use strict';
     let preset;
     for (preset of presets) {
-      $('div.presetHolder').append('<div class="button preset" data-id="'+preset.id+'">' + preset.slug + '</div>');
+      $('div.presetHolder').append(
+        '<div class="button preset" data-name="'+preset.type+'">' + preset.type + '</div>'
+      )
     }
   }());
 </script>

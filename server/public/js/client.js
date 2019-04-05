@@ -62,7 +62,7 @@ function Start() {
 }
 
 function RequestStatus() {
-  send({type: 'REQ_STATUS'})
+  send({type: 'request_status'})
 }
 
 function OnStatusMsg(data) {
@@ -79,32 +79,9 @@ function OnStatusMsg(data) {
   setBg(data.favorites)
 }
 
-function Setup() {
-
-}
-
 /** Reloads the current page */
 function reload() {
   window.location.href = window.location
-}
-
-/**
- * @param {string} _text - The string to work with
- */
-function Text(_text) {
-  this.lines = _text.split('\n')
-  this.lineCount = _text.split('\n').length
-
-/**
- * Run the function for each line in the passed text
- * @callback doForEachLine
- * @param {doForEachLine} cb - Callback function to run for each line
- */
-  this.foreach = (cb) => {
-    for (let i = 0; i < this.lineCount; i++) {
-      cb(this.lines[i])
-    }
-  }
 }
 
 /**
@@ -161,7 +138,7 @@ $('div.b').on('click', '.button.amount', function () {
 })
 
 $('div.b').on('click', '.button.preset', function () {
-  SendPreset($(this).attr('data-id'));
+  SendPreset($(this).attr('data-name'));
 });
 
 $('div.b').on('click', '.button.main', () => {
@@ -215,7 +192,7 @@ $('div.b').on('contextmenu', '.color', function (e) {
 $('div.b').on('click', '#onOff', function () {
   var bright = $('#br').val()
   if (!lights_on)
-    SetLed(bright, 5)
+    SendPower(true)
   OnOnOffClick()
 });
 
@@ -239,8 +216,8 @@ function UpdateWalls() {
   }
 }
 
-function SendPreset(id, data) {
-  send({type: 'preset', presetId: id, data: data});
+function SendPreset(name, data) {
+  send({type: 'render_preset', { type: name, data: data } });
 }
 
 // Set BG Color of the color buttons, based on what the server sent
@@ -279,7 +256,7 @@ function Lamp(on = true) {
 }
 
 function OnOnOffClick() {
-  if (lights_on) SendOff()
+  if (lights_on) SendPower(false)
 }
 
 // End Button handlers
@@ -301,20 +278,15 @@ function SetLed(bright, amount, _on = true) {
     }
   }
   SendBrightness(bright)
-  send({type: 'led', wall_data: wall_data})
+  send({type: 'render_all_walls', { wall_data: wall_data } })
 }
 
 function SendBrightness(bright) {
-  send({type: 'brightness', bright: bright})
+  send({type: 'set_brightness', { brightness: bright } })
 }
 
-function SendOff() {
-  send({type: 'off'})
-}
-
-function ledRainbow(bright) {
-  SendBrightness(bright)
-  send({type: 'special', mode: 'rainbow', arg: {speed: 50}})
+function SendPower(power) {
+  send({type: 'power', { power: power }})
 }
 
 function rgbToHex(r, g, b) {

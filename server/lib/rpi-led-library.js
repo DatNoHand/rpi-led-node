@@ -143,16 +143,18 @@ exports.Render = () => {
  * Prepares to render with provided data
  * @param {wall_data} _data The data to set the LEDs
  */
-exports.setStripArray = (_data) => {
+exports.setStripWallData = (_data) => {
 	// Foreach wall
 	let index = 0
 	for (let i = 0; i < _data.length && i < exports.walls.length; i++) { // 0-4
 		for (index; index < exports.walls[i]; index++) {
 			// If index % amount == 0 we set the color
+			// Because we can skip leds
 			if (index % parseInt(_data[i][2]) == 0) {
-				exports.SetLed(index, _data[i][1], _data[i][0])
+				exports.SetLedState(index, _data[i][0])
+				exports.SetLedColor(index, _data[i][1])
 			} else { // else turn the led off ( looks weird if we don't )
-				exports.SetLed(index, 0, 0)
+				exports.SetLedState(index, false)
 			}
 		}
 	}
@@ -162,7 +164,7 @@ exports.setStripArray = (_data) => {
 
 /**
  * Sets the LEDs based on _data input
- * @param {Array.<String>} _data Format: 0xRRGGBB(hex)
+ * @param {Array.<String>} _data Format: (string)"0xRRGGBB" 00 - FF
  */
 exports.setStripAdvanced = (_data) => {
 	strip.render(_data)
@@ -191,7 +193,7 @@ function Led(_color = 'ff0000') {
 	 * @returns {Boolean} The new state of the LED
 	 */
 	this.toggle = () => {
-		this.on = !this.on
+		this.SetState(!this.on)
 		return this.on
 	}
 	/**
@@ -210,7 +212,6 @@ function Led(_color = 'ff0000') {
 	 */
 	this.SetColor = (_color = 'ff0000') => {
 		if (_color.length !== 6 || _color === undefined) return false
-		exports.on = true
 		this.color = exports.color = _color
 		return true
 	}

@@ -48,7 +48,7 @@ api.get('/brightness/:brightness', (req, res) => {
 api.get('/render/preset/:preset', (req, res) => {
   console.log(req.query.data)
   let status =  MessageHandler.Handle("render_preset",
-                JSON.stringify({ type: req.params.preset, data: decodeURI(req.query.data)}))
+                JSON.stringify({ type: req.params.preset, data: false))
   res.send(JSON.stringify({ status: status }))
 })
 
@@ -63,10 +63,8 @@ api.get('/status', (req, res) => {
   res.send(JSON.stringify({ status: status }))
 })
 
-
 app.use('/api', api)
 app.use(express.static(__dirname + '/public'))
-
 
 var port = config.port
 
@@ -118,17 +116,18 @@ wss.on('connection', function(ws, req) {
     try {
       var msg = JSON.parse(msg)
     } catch(e){
-      Send(ws, {type: 'err', msg: 'ERR_SYNTAX'})
+      Send(ws, {type: 'err', msg: 'ERR_SYNTAX_INVALID_JSON'})
       ws.terminate()
     }
 
-    if (!msg.type) {
-      Send(ws, {type: 'err', msg: 'ERR_SYNTAX'})
+    if (msg.type == undefined) {
+      Send(ws, {type: 'err', msg: 'ERR_NULL_MSG_TYPE'})
       ws.terminate()
     }
 
     MessageHandler.Handle(msg.type, msg.argv, ws)
 
+    // Update all Clients
     SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
   })
 })
@@ -163,7 +162,8 @@ function OnRequestStatusMessage(sender, argv) {
 }
 
 function OnRenderAllWalls(sender, argv) {
-
+  if (argv.wall_data == undefined) return "ERR_NULL_WALL_DATA"
+  LedLib.setStripWallData(argv.wall_data)
 }
 
 
