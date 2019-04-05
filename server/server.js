@@ -125,6 +125,7 @@ wss.on('connection', function(ws, req) {
       ws.terminate()
     }
 
+    console.log(msg.type, msg.argv)
     MessageHandler.Handle(msg.type, msg.argv, ws)
 
     // Update all Clients
