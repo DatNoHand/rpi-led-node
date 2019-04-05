@@ -61,9 +61,6 @@ function Start() {
   tries++
 }
 
-function RequestStatus() {
-  send({type: 'request_status'})
-}
 
 function OnStatusMsg(data) {
   lights_on = data.on
@@ -275,19 +272,23 @@ function SetLed(bright, amount, _on = true) {
     }
   }
   SendBrightness(bright)
-  send({type: 'render_all_walls', argv: { wall_data: wall_data } })
+  send({type: 'render_all_walls', argv: JSON.stringify({ wall_data: wall_data }) })
 }
 
 function SendPreset(name, data) {
-  send({type: 'render_preset', argv: { type: name, data: data } });
+  send({type: 'render_preset', argv: JSON.stringify({ type: name, data: data }) });
 }
 
 function SendBrightness(bright) {
-  send({type: 'set_brightness', argv: { brightness: bright } })
+  send({type: 'set_brightness', argv: JSON.stringify({ brightness: bright }) })
 }
 
 function SendPower(power) {
-  send({type: 'power', argv: { power: power }})
+  send({type: 'power', argv: JSON.stringify({ power: power })})
+}
+
+function RequestStatus() {
+  send({type: 'request_status'})
 }
 
 function rgbToHex(r, g, b) {
