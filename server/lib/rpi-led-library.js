@@ -110,7 +110,7 @@ exports.SetAllLeds = (_color, _amount = 1, _on = true) => {
 // Power is really just a brightness of 0
 exports.SetPower = (power) => {
 	if (typeof power != 'string') power.toString()
-	
+	console.log(typeof power)
 	let bool = (power.toUpperCase() == 'TRUE')
 	if (bool) {
 		exports.SetBrightness(exports.lastBrightness)
