@@ -156,7 +156,7 @@ function OnRenderPresetMessage(sender, argv) {
 }
 
 function OnRequestStatusMessage(sender, argv) {
-  let status = {type: 'status', on: LedLib.on, max: LedLib.max_brightness, color: LedLib.color, wall_data: LedLib.wall_data }
+  let status = {type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data }
   if (sender != 'REST')
     Send(sender, status)
   return status
