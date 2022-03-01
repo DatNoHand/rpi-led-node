@@ -52,11 +52,38 @@ LedLib.render()
 
 
 // TODO: Add RESTful API
+app.get('/ping', (req, res) => {
+  res.json({msg: "pong", ts: Date.now()})
+})
+
+app.get('/led/turn/:target', (req, res) => {
+  let success = false
+
+  if (['on', 'off', 'toggle'].includes(req.params.target)) {
+    switch(req.params.target) {
+      case 'off':
+        LedLib.off()
+        LedLib.render()
+      break;
+      case 'on':
+       LedLib.wall_data.forEach( (c, i, a) => { a[i][0] = true; })
+       LedLib.setStripArray(LedLib.wall_data)
+       LedLib.render()
+      break;
+
+    }
+    success = true
+  }
+
+  console.log(LedLib.wall_data)
+  SendToEveryone(GetStatusMessage())
+  res.json({msg: 'led.turn', target: req.params.target, success: success})
+})
 
 // If the server gets a connection
 wss.on('connection', function(ws, req) {
 
-  SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
+  SendToEveryone(GetStatusMessage())
 
   ws.on('message', (msg) => {
     try {
@@ -91,9 +118,17 @@ wss.on('connection', function(ws, req) {
         LedLib.setBrightness(msg.bright, msg.ov)
       break;
     }
-    SendToEveryone({type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data })
+
+    SendToEveryone(GetStatusMessage())
+    console.log(LedLib.wall_data)
+
   });
 });
+
+function GetStatusMessage() {
+  let status = {type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data }
+  return status
+}
 
 function wheel (pos) {
   if (pos < 85) {
