@@ -49,11 +49,39 @@ console.log('Listening on '+port);
 // On ready, show (green) lights
 LedLib.setAllLeds(config.led.ready_color, 5)
 LedLib.render()
-
+GetStatusMessage()
 
 // TODO: Add RESTful API
 app.get('/ping', (req, res) => {
-  res.json({msg: "pong", ts: Date.now()})
+  res.json({msg: "pong", ts: Date.now(), req: req})
+})
+
+app.get('/status', (req, res) => {
+  res.json(GetStatusMessage())
+})
+
+app.get('/led/brightness/:value', (req, res) => {
+  if (req.params.value != undefined && parseInt(req.params.value)) {
+    LedLib.setBrightness(parseInt(req.params.value, false))
+    SendToEveryone(GetStatusMessage())
+    res.json({msg: 'brightness', success: true, brightness: req.params.value})
+  }
+
+})
+
+app.get('/led/color/:color', (req, res) => {
+  let success = false
+  if (req.params.color.length == 6) {
+    LedLib.wall_data.forEach((c, i, a) => {
+      a[i][0] = true
+      a[i][1] = req.params.color
+    })
+    LedLib.setStripArray(LedLib.wall_data)
+    LedLib.render()
+    success = true
+  }
+  SendToEveryone(GetStatusMessage())
+  res.json({msg: 'led.set', success: success, color: req.params.color})
 })
 
 app.get('/led/turn/:target', (req, res) => {
@@ -70,12 +98,10 @@ app.get('/led/turn/:target', (req, res) => {
        LedLib.setStripArray(LedLib.wall_data)
        LedLib.render()
       break;
-
     }
     success = true
   }
 
-  console.log(LedLib.wall_data)
   SendToEveryone(GetStatusMessage())
   res.json({msg: 'led.turn', target: req.params.target, success: success})
 })
@@ -120,14 +146,45 @@ wss.on('connection', function(ws, req) {
     }
 
     SendToEveryone(GetStatusMessage())
-    console.log(LedLib.wall_data)
-
   });
 });
 
 function GetStatusMessage() {
-  let status = {type: 'status', on: LedLib.on, max: LedLib.max_brightness, favorites: favorites, color: LedLib.color, wall_data: LedLib.wall_data }
+  let status = {
+    type: 'status',
+    on: LedLib.on,
+    brightness: LedLib.brightness,
+    max: LedLib.max_brightness,
+    favorites: favorites,
+    color: LedLib.color,
+    hsl: colorToHSL(LedLib.color),
+    wall_data: LedLib.wall_data
+  }
   return status
+}
+
+function colorToHSL(color) {
+  let r = parseInt(color.substr(0,2), 16);
+  let g = parseInt(color.substr(2,4), 16);
+  let b = parseInt(color.substr(4,6), 16);
+
+  r /= 255, g /= 255, b /= 255;
+  let l = Math.max(r, g, b)
+  let s = l - Math.min(r, g, b)
+  let h = s
+    ? l === r
+      ? (g - b) / s
+      : l === g
+      ? 2 + (b - r) / s
+      : 4 + (r - g) / s
+    : 0;
+
+  let result = {
+    h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
+    s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * 1 - s))) : 0),
+    l: (100 * (2 * 1 - s)) / 2
+  }
+  return result
 }
 
 function wheel (pos) {

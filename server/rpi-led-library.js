@@ -62,6 +62,7 @@ exports.init = (_config) => {
  */
 exports.setBrightness = (_br, _override = false) => {
 	_br = parseInt( _override ? _br : (_br > exports.max_brightness) ? exports.max_brightness : _br )
+	exports.brightness = _br
 	strip.setBrightness(_br)
 }
 
